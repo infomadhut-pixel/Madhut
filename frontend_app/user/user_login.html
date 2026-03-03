@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MadHut - User Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" type="image/x-icon" href="../static/images/mad_hut.jpeg">
+
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:Arial; }
+
+        body {
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(120deg,#c7e6f2,#d6e8ff,#bff3e3);
+        }
+
+        .login-container {
+            width:480px;
+            padding:50px;
+            border-radius:15px;
+            background:white;
+            box-shadow:0 8px 20px rgba(0,0,0,0.2);
+            text-align:center;
+        }
+
+        .login-container h2 { margin-bottom:30px; }
+
+        .input-group { margin-bottom:20px; }
+
+        .input-group input {
+            width:100%;
+            padding:10px;
+            border:none;
+            border-bottom:2px solid #333;
+            outline:none;
+        }
+
+        .btn-login {
+            width:100%;
+            padding:12px;
+            background:#2d5c88;
+            border:none;
+            color:white;
+            cursor:pointer;
+            border-radius:5px;
+        }
+
+        .error-msg {
+            color:red;
+            margin-bottom:10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+    <h2>User Login</h2>
+
+    <div id="error" class="error-msg"></div>
+
+    <div class="input-group">
+        <input type="email" id="email" placeholder="Email ID">
+    </div>
+
+    <div class="input-group">
+        <input type="password" id="password" placeholder="Password">
+    </div>
+
+    <label>
+        <input type="checkbox" id="remember"> Remember me
+    </label>
+
+    <br><br>
+
+    <button class="btn-login" id="loginBtn">LOGIN</button>
+</div>
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    // Firebase config
+    const firebaseConfig = {
+        apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
+        authDomain: "madhut-97c1e.firebaseapp.com",
+        projectId: "madhut-97c1e",
+        appId: "1:443781397252:web:64f178cd71d0993cc0ae51"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const API_URL = "http://127.0.0.1:5000/user/login";
+
+    // ✅ DEFINE FUNCTION FIRST
+    async function loginUser() {
+
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const remember = document.getElementById("remember").checked;
+        const errorDiv = document.getElementById("error");
+
+        errorDiv.innerText = "";
+
+        if (!email || !password) {
+            errorDiv.innerText = "Please fill all fields";
+            return;
+        }
+
+        try {
+            // Firebase login
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            // Check verification
+            if (!user.emailVerified) {
+                errorDiv.innerText = "Please verify your email first!";
+                return;
+            }
+
+            // Get token
+            const token = await user.getIdToken();
+
+            // Get signup data
+            const signupData = JSON.parse(localStorage.getItem("signupData") || "{}");
+
+            console.log("TOKEN:", token);
+            console.log("DATA:", signupData);
+
+            // Send to backend
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: user.email,
+                    username: signupData.username,
+                    phone: signupData.phone,
+                    street: signupData.street,
+                    pin_code: signupData.pin_code,
+                    country: signupData.country
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+
+                // Store token
+                if (remember) {
+                    localStorage.setItem("userToken", token);
+                } else {
+                    sessionStorage.setItem("userToken", token);
+                }
+
+                localStorage.removeItem("signupData");
+
+                window.location.href = "index.html";
+
+            } else {
+                errorDiv.innerText = data.message || "Login failed!";
+            }
+
+        } catch (error) {
+            errorDiv.innerText = error.message;
+            console.error(error);
+        }
+    }
+
+    // ✅ ADD EVENT LISTENER AFTER FUNCTION
+    document.getElementById("loginBtn").addEventListener("click", loginUser);
+
+    // Enter key support
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Enter") {
+            loginUser();
+        }
+    });
+
+    // Auto login
+    window.onload = function () {
+        const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+        if (token) {
+            window.location.href = "index.html";
+        }
+    };
+
+</script>
+
+</body>
+</html>

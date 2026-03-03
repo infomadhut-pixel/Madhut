@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MadHut | Checkout</title>
+
+    <script>
+        const token = localStorage.getItem("userToken") ||
+                      sessionStorage.getItem("userToken");
+
+        if (!token) {
+            window.location.replace("user_login.html");
+        }
+    </script>
+
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI'}
+        body{background:#f5f7fa}
+        .wrapper{max-width:1100px;margin:40px auto;display:grid;grid-template-columns:2fr 1fr;gap:40px}
+        .section,.summary{background:#fff;padding:25px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+        .summary img{width:80px;height:80px;object-fit:cover;border-radius:8px}
+        .place-btn{margin-top:20px;width:100%;padding:14px;background:#0fa36b;color:#fff;border:none;border-radius:8px;cursor:pointer}
+    </style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <div>
+
+        <div class="section">
+            <h3>Shipping Address</h3>
+            <input id="fullName" placeholder="Full Name"><br><br>
+            <input id="phone" placeholder="Phone"><br><br>
+            <input id="address" placeholder="Address"><br><br>
+            <input id="city" placeholder="City"><br><br>
+            <input id="pincode" placeholder="Pincode">
+        </div>
+
+    </div>
+
+    <div class="summary">
+        <h3>Order Summary</h3>
+        <div id="productSummary"></div>
+        <p>Subtotal: ₹<span id="subtotal"></span></p>
+        <p>Delivery: ₹50</p>
+        <p><strong>Total: ₹<span id="finalTotal"></span></strong></p>
+        <button class="place-btn" onclick="placeOrder()">Place Order</button>
+    </div>
+
+</div>
+
+<script>
+
+    let checkoutItem = JSON.parse(localStorage.getItem("pendingOrder"));
+
+    if (!checkoutItem) {
+        alert("No order found");
+        window.location.href = "index.html";
+    }
+
+    let deliveryCharge = 50;
+
+    function loadSummary(){
+
+        document.getElementById("productSummary").innerHTML = `
+            <img src="${checkoutItem.imageBase64}">
+            <p>${checkoutItem.size} | ${checkoutItem.color}</p>
+            <p>Qty: ${checkoutItem.quantity}</p>
+        `;
+
+        const price = Number(checkoutItem.price);
+        const qty = Number(checkoutItem.quantity);
+        const subtotal = price * qty;
+
+        document.getElementById("subtotal").innerText = subtotal;
+        document.getElementById("finalTotal").innerText = subtotal + deliveryCharge;
+    }
+
+    async function placeOrder(){
+
+        const fullName = document.getElementById("fullName").value.trim();
+        const phone = document.getElementById("phone").value.trim();
+        const address = document.getElementById("address").value.trim();
+        const city = document.getElementById("city").value.trim();
+        const pincode = document.getElementById("pincode").value.trim();
+
+        if(!fullName || !phone || !address || !city || !pincode){
+            alert("Fill all fields");
+            return;
+        }
+
+        const price = Number(checkoutItem.price);
+        const quantity = Number(checkoutItem.quantity);
+
+        const subtotal = price * quantity;
+
+        try{
+
+            // convert base64 to blob
+            const res = await fetch(checkoutItem.imageBase64);
+            const blob = await res.blob();
+
+            const formData = new FormData();
+
+            formData.append("image", blob, "custom.png");
+            formData.append("color", checkoutItem.color);
+            formData.append("size", checkoutItem.size);
+            formData.append("price", price);
+            formData.append("quantity", quantity);
+
+            formData.append("fullName", fullName);
+            formData.append("phone", phone);
+            formData.append("address", address);
+            formData.append("city", city);
+            formData.append("pincode", pincode);
+
+            formData.append("payment_method", "COD");
+            formData.append("delivery_charge", deliveryCharge);
+
+            const response = await fetch(
+                "http://127.0.0.1:5000/user/order/customised/product",
+                {
+                    method:"POST",
+                    headers:{
+                        "Authorization":"Bearer " + token
+                    },
+                    body:formData
+                }
+            );
+
+            if(!response.ok){
+                alert("Order failed");
+                return;
+            }
+
+            alert("Order placed successfully");
+            localStorage.removeItem("pendingOrder");
+            window.location.href="order_success.html";
+
+        }catch(err){
+            console.error(err);
+            alert("Server error");
+        }
+    }
+
+    loadSummary();
+
+</script>
+
+</body>
+</html>

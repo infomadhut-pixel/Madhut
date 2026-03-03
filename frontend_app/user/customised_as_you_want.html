@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MadHut | Custom Checkout</title>
+
+    <script>
+        function redirectToLogin(){
+            localStorage.removeItem("userToken");
+            sessionStorage.removeItem("userToken");
+            window.location.replace("user_login.html");
+        }
+
+        const token = localStorage.getItem("userToken") ||
+                      sessionStorage.getItem("userToken");
+
+        if (!token) {
+            redirectToLogin();
+        }
+    </script>
+
+    <style>
+
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+        body{background:#f4f6f9;color:#222}
+
+        /* NAVBAR */
+        .navbar{
+            background:#111;
+            color:white;
+            padding:18px 60px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .brand{font-weight:700;font-size:20px;letter-spacing:1px}
+        .secure{font-size:13px;color:#bbb}
+
+        /* LAYOUT */
+        .container{
+            max-width:1200px;
+            margin:50px auto;
+            display:grid;
+            grid-template-columns:2fr 1fr;
+            gap:40px;
+            padding:0 20px;
+        }
+
+        /* CARDS */
+        .card{
+            background:white;
+            padding:35px;
+            border-radius:16px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.06);
+        }
+
+        /* UPLOAD */
+        .upload-box{
+            border:2px dashed #d6d6d6;
+            border-radius:12px;
+            height:300px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex-direction:column;
+            cursor:pointer;
+            transition:0.3s;
+        }
+        .upload-box:hover{
+            border-color:#111;
+        }
+        .upload-box img{
+            max-width:90%;
+            max-height:250px;
+        }
+
+        /* FORM */
+        label{
+            font-size:13px;
+            font-weight:600;
+            margin-top:20px;
+            display:block;
+        }
+
+        input, select{
+            width:100%;
+            padding:12px;
+            margin-top:6px;
+            border-radius:8px;
+            border:1px solid #ddd;
+            font-size:14px;
+        }
+
+        input:focus, select:focus{
+            outline:none;
+            border-color:#111;
+        }
+
+        /* SIZE BUTTONS */
+        .size-group{
+            display:flex;
+            gap:10px;
+            margin-top:10px;
+        }
+        .size-group button{
+            padding:8px 18px;
+            border-radius:6px;
+            border:1px solid #ccc;
+            background:white;
+            cursor:pointer;
+        }
+        .size-group button.active{
+            background:#111;
+            color:white;
+            border-color:#111;
+        }
+
+        /* SUMMARY */
+        .summary-item{
+            display:flex;
+            justify-content:space-between;
+            margin-bottom:12px;
+            font-size:14px;
+        }
+        .summary-total{
+            font-weight:700;
+            font-size:16px;
+            border-top:1px solid #eee;
+            padding-top:12px;
+        }
+
+        /* BUTTON */
+        .place-btn{
+            width:100%;
+            padding:14px;
+            margin-top:25px;
+            border:none;
+            border-radius:8px;
+            background:#111;
+            color:white;
+            font-weight:600;
+            cursor:pointer;
+            transition:0.3s;
+        }
+        .place-btn:hover{
+            background:#000;
+        }
+
+        /* MOBILE */
+        @media(max-width:900px){
+            .container{
+                grid-template-columns:1fr;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="brand">MADHUT</div>
+    <div class="secure">Secure Checkout</div>
+</div>
+
+<div class="container">
+
+    <!-- LEFT SIDE -->
+    <div class="card">
+
+        <h2>Customise Your T-Shirt</h2>
+
+        <div class="upload-box" onclick="document.getElementById('imageInput').click()">
+            <span id="uploadText">Click to Upload Design</span>
+            <img id="previewImg" style="display:none;">
+            <input type="file" id="imageInput" accept="image/*" style="display:none;">
+        </div>
+
+        <label>Color</label>
+        <select id="color">
+            <option value="">Select Color</option>
+            <option value="white">White</option>
+            <option value="black">Black</option>
+            <option value="grey">Grey</option>
+            <option value="navy">Navy</option>
+        </select>
+
+        <label>Size</label>
+        <div class="size-group">
+            <button data-size="S">S</button>
+            <button data-size="M">M</button>
+            <button data-size="L">L</button>
+            <button data-size="XL">XL</button>
+        </div>
+
+        <label>Price (₹199 - ₹999)</label>
+        <input type="range" id="price" min="199" max="999" value="499">
+        <div>₹<span id="priceValue">499</span></div>
+
+        <label>Quantity</label>
+        <input type="number" id="qty" min="1" value="1">
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="card">
+
+        <h2>Order Summary</h2>
+
+        <div class="summary-item">
+            <span>Product Total</span>
+            <span>₹<span id="subtotal">499</span></span>
+        </div>
+
+        <div class="summary-item">
+            <span>Delivery</span>
+            <span>₹50</span>
+        </div>
+
+        <div class="summary-item summary-total">
+            <span>Total</span>
+            <span>₹<span id="finalTotal">549</span></span>
+        </div>
+
+        <h3 style="margin-top:30px;">Shipping Address</h3>
+
+        <input id="fullName" placeholder="Full Name">
+        <input id="phone" placeholder="Phone">
+        <input id="address" placeholder="Address">
+        <input id="city" placeholder="City">
+        <input id="pincode" placeholder="Pincode">
+
+        <button class="place-btn" onclick="placeOrder()">Place Order</button>
+
+    </div>
+
+</div>
+
+<script>
+
+    let selectedSize="";
+    let price=499;
+    let deliveryCharge=50;
+
+    // Image preview
+    document.getElementById("imageInput").addEventListener("change",function(){
+        const file=this.files[0];
+        if(file){
+            const reader=new FileReader();
+            reader.onload=function(e){
+                document.getElementById("previewImg").src=e.target.result;
+                document.getElementById("previewImg").style.display="block";
+                document.getElementById("uploadText").style.display="none";
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Size
+    document.querySelectorAll(".size-group button").forEach(btn=>{
+        btn.addEventListener("click",function(){
+            document.querySelectorAll(".size-group button").forEach(b=>b.classList.remove("active"));
+            this.classList.add("active");
+            selectedSize=this.dataset.size;
+        });
+    });
+
+    // Price
+    document.getElementById("price").addEventListener("input",function(){
+        price=parseInt(this.value);
+        document.getElementById("priceValue").innerText=price;
+        updateTotal();
+    });
+
+    document.getElementById("qty").addEventListener("input",updateTotal);
+
+    function updateTotal(){
+        const qty=parseInt(document.getElementById("qty").value)||1;
+        const subtotal=price*qty;
+        document.getElementById("subtotal").innerText=subtotal;
+        document.getElementById("finalTotal").innerText=subtotal+deliveryCharge;
+    }
+
+    async function placeOrder(){
+
+        const file=document.getElementById("imageInput").files[0];
+        const color=document.getElementById("color").value;
+        const qty=parseInt(document.getElementById("qty").value)||1;
+
+        const fullName=document.getElementById("fullName").value.trim();
+        const phone=document.getElementById("phone").value.trim();
+        const address=document.getElementById("address").value.trim();
+        const city=document.getElementById("city").value.trim();
+        const pincode=document.getElementById("pincode").value.trim();
+
+        if(!file || !color || !selectedSize || !fullName || !phone || !address || !city || !pincode){
+            alert("Please fill all fields");
+            return;
+        }
+
+        const formData=new FormData();
+
+        formData.append("image",file);
+        formData.append("color",color);
+        formData.append("size",selectedSize);
+        formData.append("price",price);
+        formData.append("quantity",qty);
+        formData.append("payment_method","COD");
+        formData.append("delivery_charge",deliveryCharge);
+
+        formData.append("fullName",fullName);
+        formData.append("phone",phone);
+        formData.append("address",address);
+        formData.append("city",city);
+        formData.append("pincode",pincode);
+
+        try{
+            const response=await fetch(
+                "http://127.0.0.1:5000/user/order/customised/product",
+                {
+                    method:"POST",
+                    headers:{
+                        "Authorization":"Bearer "+token
+                    },
+                    body:formData
+                }
+            );
+
+            if(!response.ok){
+                alert("Order failed");
+                return;
+            }
+
+            alert("Order placed successfully!");
+            window.location.href="order_success.html";
+
+        }catch(err){
+            console.error(err);
+            alert("Server error");
+        }
+    }
+
+    updateTotal();
+
+</script>
+
+</body>
+</html>

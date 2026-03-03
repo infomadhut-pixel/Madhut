@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MadHut | Product Detail</title>
+    <link rel="icon" type="image/x-icon" href="../static/images/mad_hut.jpeg">
+
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+        body{background:#f5f7fa;}
+
+        .navbar{
+        position:sticky;top:0;background:#111;color:white;
+        display:flex;justify-content:space-between;align-items:center;
+        padding:15px 40px;z-index:1000;
+        }
+
+        .nav-left{display:flex;align-items:center;gap:20px;}
+        .nav-left span{cursor:pointer;font-weight:600;}
+        .logo{font-size:20px;font-weight:bold;letter-spacing:1px;}
+
+        .nav-right{display:flex;align-items:center;gap:25px;}
+        .cart-btn{cursor:pointer;}
+        .cart-count{
+        background:#0fa36b;color:white;padding:3px 8px;
+        border-radius:20px;font-size:12px;margin-left:6px;
+        }
+        .auth-btn{cursor:pointer;}
+        .auth-btn:hover{color:#0fa36b;}
+
+        .wrapper{max-width:1200px;margin:40px auto;padding:0 20px;}
+        .container{
+        display:grid;grid-template-columns:1fr 1fr;gap:50px;
+        background:white;padding:40px;border-radius:14px;
+        box-shadow:0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        .main-image{
+        width:100%;height:450px;object-fit:cover;
+        border-radius:12px;background:#f0f0f0;
+        }
+
+        .thumbnail-row{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;}
+        .thumbnail-row img{
+        width:75px;height:75px;object-fit:cover;
+        border-radius:8px;cursor:pointer;border:2px solid transparent;
+        }
+        .thumbnail-row img:hover{border:2px solid #0fa36b;}
+
+        .details h2{font-size:30px;margin-bottom:15px;font-weight:700;}
+        .price-row{display:flex;align-items:center;gap:15px;margin-bottom:20px;}
+        .price{font-size:26px;color:#0fa36b;font-weight:700;}
+        .old-price{text-decoration:line-through;color:#888;}
+        .discount{background:#ff4d4d;color:white;padding:4px 10px;border-radius:6px;font-size:13px;}
+        .description{line-height:1.6;color:#555;margin-bottom:25px;}
+
+        .section{margin-top:25px;}
+        .section h4{margin-bottom:10px;font-size:16px;font-weight:600;}
+
+        .option-group{display:flex;flex-wrap:wrap;gap:10px;}
+        .option-group span{
+        padding:8px 14px;border:1px solid #ddd;border-radius:6px;
+        cursor:pointer;font-size:14px;
+        }
+        .option-group span.active{
+        background:#111;color:white;border-color:#111;
+        }
+
+        .quantity-box{display:flex;align-items:center;gap:10px;}
+        .quantity-box button{
+        width:35px;height:35px;border:none;background:#111;
+        color:white;border-radius:6px;cursor:pointer;
+        }
+        .quantity-box input{
+        width:60px;text-align:center;height:35px;
+        border:1px solid #ddd;border-radius:6px;
+        }
+
+        .stock{margin-top:15px;font-weight:600;}
+
+        .action-buttons{margin-top:30px;display:flex;gap:20px;}
+        .add-btn,.buy-btn{
+        flex:1;padding:14px;border:none;border-radius:8px;
+        font-size:16px;cursor:pointer;font-weight:600;
+        }
+        .add-btn{background:#111;color:white;}
+        .buy-btn{background:#0fa36b;color:white;}
+
+        .hidden{display:none;}
+
+        @media(max-width:900px){
+        .container{grid-template-columns:1fr;}
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <span onclick="goBack()">Back</span>
+        <div class="logo">MADHUT</div>
+    </div>
+
+    <div class="nav-right">
+        <div class="cart-btn" onclick="goToCart()">
+            🛒 Cart <span class="cart-count" id="cartCount">0</span>
+        </div>
+        <div id="authSection"></div>
+    </div>
+</div>
+
+<div class="wrapper">
+    <div class="container">
+
+        <div>
+            <img id="mainImage" class="main-image">
+            <div id="thumbnailRow" class="thumbnail-row"></div>
+        </div>
+
+        <div class="details">
+            <h2 id="productName"></h2>
+
+            <div class="price-row">
+                <span class="price" id="price"></span>
+                <span class="old-price" id="oldPrice"></span>
+                <span class="discount" id="discount"></span>
+            </div>
+
+            <p id="description" class="description"></p>
+
+            <div class="section">
+                <h4>Select Size</h4>
+                <div id="sizes" class="option-group"></div>
+            </div>
+
+            <div class="section">
+                <h4>Select Color</h4>
+                <div id="colors" class="option-group"></div>
+            </div>
+
+            <div class="section">
+                <h4>Quantity</h4>
+                <div class="quantity-box">
+                    <button onclick="changeQty(-1)">-</button>
+                    <input type="number" id="quantity" value="1" min="1">
+                    <button onclick="changeQty(1)">+</button>
+                </div>
+            </div>
+
+            <div class="stock" id="stock"></div>
+
+            <div class="action-buttons">
+                <button class="add-btn" id="addBtn" onclick="addToCart()">Add To Cart</button>
+                <button class="buy-btn" onclick="buyNow()">Buy Now</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedSize=null;
+    let selectedColor=null;
+    let productId=new URLSearchParams(window.location.search).get("id");
+    let currentProductPrice=null;
+    let firstImageUrl=null;
+
+    function getToken(){
+    return localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+    }
+
+    function isLoggedIn(){
+    return !!getToken();
+    }
+
+    /* ================= AUTH UI ================= */
+    function updateAuthUI(){
+    const authSection=document.getElementById("authSection");
+    const addBtn=document.getElementById("addBtn");
+
+    if(isLoggedIn()){
+    authSection.innerHTML=`<div class="auth-btn" onclick="logout()">Logout</div>`;
+    addBtn.classList.remove("hidden");
+    }else{
+    authSection.innerHTML=`<div class="auth-btn" onclick="goToLogin()">Login</div>`;
+    addBtn.classList.add("hidden");
+    }
+    }
+
+    /* ================= LOGOUT (API CALL) ================= */
+    async function logout(){
+
+    const token=getToken();
+
+    if(token){
+    try{
+    await fetch("http://127.0.0.1:5000/user/logout",{
+    method:"POST",
+    headers:{
+    "Authorization":"Bearer "+token
+    }
+    });
+    }catch(err){
+    console.log("Logout API error:",err);
+    }
+    }
+
+    localStorage.removeItem("userToken");
+    sessionStorage.removeItem("userToken");
+
+    updateAuthUI();
+    fetchCartCount();
+
+    window.location.href="user_login.html";
+    }
+
+    /* ================= CART ================= */
+    async function fetchCartCount(){
+    if(!isLoggedIn()){
+    document.getElementById("cartCount").textContent=0;
+    return;
+    }
+
+    const res=await fetch("http://127.0.0.1:5000/fetch/total/item/in/cart",{
+    headers:{Authorization:"Bearer "+getToken()}
+    });
+
+    if(res.ok){
+    const data=await res.json();
+    document.getElementById("cartCount").textContent=data;
+    }
+    }
+
+    /* ================= PRODUCT ================= */
+    async function loadProduct(){
+    const res=await fetch(
+    `http://127.0.0.1:5000/user/product/detail/?productId=${productId}`
+    );
+    const product=await res.json();
+    displayProduct(product);
+    }
+
+    function displayProduct(product){
+    currentProductPrice=product.price;
+    firstImageUrl=product.images?.[0];
+
+    document.getElementById("productName").innerText=product.name;
+    document.getElementById("price").innerText="₹"+product.price;
+    document.getElementById("description").innerText=product.description;
+    document.getElementById("stock").innerText="Available Stock: "+product.stock;
+
+    if(product.old_price){
+    document.getElementById("oldPrice").innerText="₹"+product.old_price;
+    const discount=Math.round(((product.old_price-product.price)/product.old_price)*100);
+    document.getElementById("discount").innerText=discount+"% OFF";
+    }
+
+    const mainImage=document.getElementById("mainImage");
+    mainImage.src=firstImageUrl;
+
+    const thumbRow=document.getElementById("thumbnailRow");
+    thumbRow.innerHTML="";
+    product.images.forEach(img=>{
+    const image=document.createElement("img");
+    image.src=img;
+    image.onclick=()=> mainImage.src=img;
+    thumbRow.appendChild(image);
+    });
+
+    createOptions("sizes",product.sizes,"size");
+    createOptions("colors",product.colors,"color");
+    }
+
+    function createOptions(id,data,type){
+    const div=document.getElementById(id);
+    div.innerHTML="";
+    data.forEach(item=>{
+    const span=document.createElement("span");
+    span.innerText=item;
+    span.onclick=()=>{
+    document.querySelectorAll("#"+id+" span")
+    .forEach(s=>s.classList.remove("active"));
+    span.classList.add("active");
+    if(type==="size") selectedSize=item;
+    if(type==="color") selectedColor=item;
+    };
+    div.appendChild(span);
+    });
+    }
+
+    function changeQty(val){
+    const qty=document.getElementById("quantity");
+    qty.value=Math.max(1,parseInt(qty.value)+val);
+    }
+
+    /* ================= ACTIONS ================= */
+
+    async function addToCart(){
+    if(!selectedSize||!selectedColor){
+    alert("Select size and color");
+    return;
+    }
+
+    if(!isLoggedIn()){
+    goToLogin();
+    return;
+    }
+
+    await fetch("http://127.0.0.1:5000/user/add/item/cart",{
+    method:"POST",
+    headers:{
+    "Content-Type":"application/json",
+    Authorization:"Bearer "+getToken()
+    },
+    body:JSON.stringify({
+    product_id:productId,
+    size:selectedSize,
+    color:selectedColor,
+    quantity:parseInt(document.getElementById("quantity").value),
+    price:currentProductPrice,
+    image:firstImageUrl
+    })
+    });
+
+    fetchCartCount();
+    alert("Added to cart");
+    }
+
+    function buyNow(){
+    if(!selectedSize||!selectedColor){
+    alert("Select size and color");
+    return;
+    }
+
+    if(!isLoggedIn()){
+    goToLogin();
+    return;
+    }
+
+    const checkoutData={
+    product_id:productId,
+    name:document.getElementById("productName").innerText,
+    size:selectedSize,
+    color:selectedColor,
+    quantity:parseInt(document.getElementById("quantity").value),
+    price:currentProductPrice,
+    image:firstImageUrl
+    };
+
+    sessionStorage.setItem("checkoutItem",JSON.stringify(checkoutData));
+    window.location.href="check_out.html";
+    }
+
+    /* ================= NAV ================= */
+    function goBack(){window.history.back();}
+    function goToCart(){
+    if(!isLoggedIn()){goToLogin();return;}
+    window.location.href="cart.html";
+    }
+    function goToLogin(){window.location.href="user_login.html";}
+
+
+    window.addEventListener("DOMContentLoaded",()=>{
+    updateAuthUI();
+    loadProduct();
+    fetchCartCount();
+    });
+</script>
+
+</body>
+</html>

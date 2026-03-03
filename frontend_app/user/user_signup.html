@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== SEO ===== -->
+    <title>MadHut | Premium Custom T-Shirts in India</title>
+
+    <meta name="description"
+          content="MadHut - Premium customized T-shirts with creative prints. Design your own style with high-quality fabric and vibrant printing.">
+    <meta name="keywords"
+          content="MadHut, Custom T-Shirts, Printed T-Shirts, Personalized T-Shirts, T-Shirt Design India">
+    <meta name="author" content="MadHut">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="MadHut - Customized T-Shirts">
+    <meta property="og:description" content="Turn your ideas into wearable art with MadHut premium custom T-shirts.">
+    <meta property="og:image" content="https://yourdomain.com/static/images/mad_hut.jpeg">
+    <meta property="og:url" content="https://yourdomain.com">
+    <meta property="og:type" content="website">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../static/images/mad_hut.jpeg">
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(120deg, #c7e6f2, #d6e8ff, #bff3e3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            height: 90vh;
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            display: flex;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .form-section {
+            width: 40%;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 20px;
+            margin: 30px;
+        }
+
+        .form-section h2 {
+            margin-bottom: 20px;
+            color: #2d3a8c;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: #3b5bff;
+        }
+
+        .input-group input.error,
+        .input-group select.error {
+            border: 2px solid red;
+        }
+
+        .error-text {
+            font-size: 12px;
+            color: red;
+            display: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(to right, #3b5bff, #00d4ff);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .login-btn {
+            background: linear-gradient(to right, #ff6b6b, #ff9f43);
+        }
+
+        .right-section {
+            width: 60%;
+            padding: 60px;
+            color: #1f2c6d;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .right-section h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .right-section p {
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 500px;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 250px;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 200px;
+            margin-bottom: 30px;
+            transition: 0.9s;
+        }
+
+        .hero-image:hover {
+            transform: scale(1.03);
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .form-section,
+            .right-section {
+                width: 100%;
+                margin: 0;
+                border-radius: 0;
+            }
+
+            .right-section {
+                padding: 30px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- LEFT FORM -->
+    <!-- LEFT FORM -->
+    <div class="form-section">
+        <h2>Sign Up</h2>
+
+        <form id="signupForm">
+
+            <div class="input-group">
+                <input type="text" id="username" name="username" placeholder="Username">
+                <div class="error-text" id="userError">Username must be at least 6 characters</div>
+            </div>
+
+            <div class="input-group">
+                <input type="email" id="email" name="email" placeholder="Email">
+                <div class="error-text" id="emailError">Enter valid email</div>
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="password" name="password" placeholder="Password">
+                <div class="error-text" id="passError">Password must be at least 6 characters</div>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="phone_number" name="phone_number" placeholder="Contact Number">
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="street" name="street" placeholder="Street / Area / Town">
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="pin_code" name="pin_code" placeholder="Pin Code">
+            </div>
+
+            <div class="input-group">
+                <select id="country" name="country">
+                    <option value="">Select Country</option>
+                    <option>India</option>
+                    <option>United States</option>
+                    <option>United Kingdom</option>
+                </select>
+                <div class="error-text" id="countryError">Please select country</div>
+            </div>
+
+            <button type="submit" class="btn">Sign Up</button>
+        </form>
+
+        <button class="btn login-btn" id="loginRedirectBtn">Already have account? Login</button>
+    </div>
+    <!-- RIGHT CONTENT -->
+    <div class="right-section">
+
+        <img src="../static/images/mad_hut.jpeg"
+             alt="MadHut Premium Customized T-Shirt"
+             class="hero-image">
+
+        <h1>Welcome to MadHut</h1>
+        <p>
+            We create high-quality customized T-shirts that turn your ideas into wearable art.
+            Every piece is crafted with premium fabric and vibrant printing
+            to ensure comfort, durability and style.
+        </p>
+
+    </div>
+
+</div>
+
+<script type="module">
+
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
+        authDomain: "madhut-97c1e.firebaseapp.com",
+        projectId: "madhut-97c1e",
+        appId: "1:443781397252:web:64f178cd71d0993cc0ae51"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+
+    document.getElementById("signupForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        let username = document.getElementById("username").value;
+        let email = document.getElementById("email").value;
+        let country = document.getElementById("country").value;
+        let password = document.getElementById("password").value;
+
+        let phone = document.getElementById("phone_number").value;
+        let street = document.getElementById("street").value;
+        let pin_code = document.getElementById("pin_code").value;
+
+        if (username.length < 6) return alert("Username must be 6+ chars");
+        if (!email.includes("@")) return alert("Invalid email");
+        if (password.length < 6) return alert("Password must be 6+ chars");
+        if (!country) return alert("Select country");
+
+        try {
+
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+
+    await sendEmailVerification(user);
+
+        localStorage.setItem("signupData", JSON.stringify({
+            username,
+            phone,
+            street,
+            pin_code,
+            country
+    }));
+
+   alert("Verification email sent! Check your inbox.");
+
+
+        } catch (error) {
+            alert(error.message);
+            return;
+        }
+    });
+
+   document.getElementById("loginRedirectBtn").addEventListener("click", () => {
+            window.location.href = "user_login.html";
+   });
+
+</script>
+</body>
+</html>

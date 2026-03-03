@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MadHut Admin - Add Product</title>
+
+    <style>
+        body{
+            font-family:Segoe UI;
+            background:#eef2f7;
+            margin:0;
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar{
+            background:#ffffff;
+            padding:15px 40px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            border-bottom:1px solid #e5e7eb;
+            position:sticky;
+            top:0;
+            z-index:100;
+        }
+
+        .nav-left{
+            display:flex;
+            align-items:center;
+            gap:15px;
+        }
+
+        .nav-title{
+            font-size:25px;
+            font-weight:600;
+            color:#111827;
+        }
+
+        .back-btn-nav{
+            background:#f3f4f6;
+            color:#111;
+            border:1px solid #d1d5db;
+            padding:7px 14px;
+            border-radius:6px;
+            cursor:pointer;
+            font-size:14px;
+            transition:0.2s;
+        }
+
+        .back-btn-nav:hover{
+            background:#111;
+            color:white;
+            border-color:#111;
+        }
+
+        .nav-right{
+            font-size:20px;
+            color:#6b7278;
+            font-weight:bold;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container{
+            max-width:950px;
+            margin:40px auto;
+            background:white;
+            padding:40px;
+            border-radius:12px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        h2{
+            margin-bottom:30px;
+        }
+
+        .form-group{
+            margin-bottom:20px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:6px;
+            font-weight:600;
+        }
+
+        input, textarea, select{
+            width:100%;
+            padding:10px;
+            border:1px solid #ddd;
+            border-radius:6px;
+        }
+
+        textarea{
+            resize:none;
+        }
+
+        .checkbox-group{
+            display:flex;
+            gap:15px;
+            flex-wrap:wrap;
+        }
+
+        /* ===== IMAGE UPLOAD ===== */
+
+        .image-upload{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+            gap:15px;
+            margin-top:10px;
+        }
+
+        .image-box{
+            position:relative;
+            border:2px dashed #d0d7de;
+            border-radius:10px;
+            background:#f9fafb;
+            height:160px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex-direction:column;
+            transition:0.3s;
+            cursor:pointer;
+            overflow:hidden;
+        }
+
+        .image-box:hover{
+            border-color:#111;
+            background:#f1f3f5;
+        }
+
+        .image-box input{
+            position:absolute;
+            width:100%;
+            height:100%;
+            opacity:0;
+            cursor:pointer;
+        }
+
+        .upload-text{
+            font-size:13px;
+            color:#555;
+        }
+
+        .preview{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+            position:absolute;
+            top:0;
+            left:0;
+            display:none;
+        }
+
+        .image-box.has-image .upload-text{
+            display:none;
+        }
+
+        .image-box.has-image .preview{
+            display:block;
+        }
+
+        /* ===== BUTTON ===== */
+        button{
+            background:#111;
+            color:white;
+            padding:12px 20px;
+            border:none;
+            border-radius:6px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#0fa36b;
+        }
+
+        .success{ color:green; margin-top:15px;}
+        .error{ color:red; margin-top:15px;}
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:600px){
+            .navbar{
+                padding:12px 20px;
+                flex-direction:column;
+                gap:8px;
+                align-items:flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="nav-left">
+        <button class="back-btn-nav" onclick="goBack()">Back</button>
+        <div class="nav-title">Add Product</div>
+    </div>
+    <div class="nav-right">
+        Admin Panel
+    </div>
+</div>
+
+<div class="container">
+    <h2>Add New T-Shirt</h2>
+
+    <form id="productForm" enctype="multipart/form-data">
+
+        <div class="form-group">
+            <label>Product Name</label>
+            <input type="text" id="name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <textarea id="description" rows="3" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Price</label>
+            <input type="number" id="price" required>
+        </div>
+
+        <div class="form-group">
+            <label>Old Price</label>
+            <input type="number" id="old_price">
+        </div>
+
+        <div class="form-group">
+            <label>Upload Images (Min 1 required)</label>
+
+            <div class="image-upload">
+                <div class="image-box" id="box1">
+                    <span class="upload-text">Click to Upload</span>
+                    <input type="file" id="img1" accept="image/*" required>
+                    <img class="preview" id="preview1">
+                </div>
+
+                <div class="image-box" id="box2">
+                    <span class="upload-text">Click to Upload</span>
+                    <input type="file" id="img2" accept="image/*">
+                    <img class="preview" id="preview2">
+                </div>
+
+                <div class="image-box" id="box3">
+                    <span class="upload-text">Click to Upload</span>
+                    <input type="file" id="img3" accept="image/*">
+                    <img class="preview" id="preview3">
+                </div>
+
+                <div class="image-box" id="box4">
+                    <span class="upload-text">Click to Upload</span>
+                    <input type="file" id="img4" accept="image/*">
+                    <img class="preview" id="preview4">
+                </div>
+
+                <div class="image-box" id="box5">
+                    <span class="upload-text">Click to Upload</span>
+                    <input type="file" id="img5" accept="image/*">
+                    <img class="preview" id="preview5">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Sizes</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" value="S"> S</label>
+                <label><input type="checkbox" value="M"> M</label>
+                <label><input type="checkbox" value="L"> L</label>
+                <label><input type="checkbox" value="XL"> XL</label>
+                <label><input type="checkbox" value="XXL"> XXL</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Colors (comma separated)</label>
+            <input type="text" id="colors" placeholder="red, black, white">
+        </div>
+
+        <div class="form-group">
+            <label>Tags (comma separated)</label>
+            <input type="text" id="tags" placeholder="anime, streetwear">
+        </div>
+
+        <div class="form-group">
+            <label>Stock</label>
+            <input type="number" id="stock" required>
+        </div>
+
+        <div class="form-group">
+            <label>Category</label>
+            <select id="category">
+                <option value="printed">Printed</option>
+                <option value="oversized">Oversized</option>
+                <option value="plain">Plain</option>
+            </select>
+        </div>
+
+        <button type="submit">Add Product</button>
+        <div id="message"></div>
+
+    </form>
+</div>
+
+<script>
+    function previewImage(input, previewId, boxId) {
+        const file = input.files[0];
+        const preview = document.getElementById(previewId);
+        const box = document.getElementById(boxId);
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                preview.src = e.target.result;
+                box.classList.add("has-image");
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    for (let i = 1; i <= 5; i++) {
+        document.getElementById(`img${i}`)
+            .addEventListener("change", function() {
+                previewImage(this, `preview${i}`, `box${i}`);
+            });
+    }
+
+    document.getElementById("productForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        const formData = new FormData();
+
+        formData.append("name", name.value);
+        formData.append("description", description.value);
+        formData.append("price", price.value);
+        formData.append("old_price", old_price.value);
+        formData.append("stock", stock.value);
+        formData.append("category", category.value);
+
+        const sizes = [];
+        document.querySelectorAll("input[type='checkbox']:checked").forEach(cb => {
+            sizes.push(cb.value);
+        });
+        sizes.forEach(size => formData.append("sizes", size));
+
+        const colorsArray = colors.value.split(",").map(c => c.trim()).filter(c => c);
+        colorsArray.forEach(color => formData.append("colors", color));
+
+        const tagsArray = tags.value.split(",").map(t => t.trim()).filter(t => t);
+        tagsArray.forEach(tag => formData.append("tags", tag));
+
+        for (let i = 1; i <= 5; i++) {
+            const file = document.getElementById(`img${i}`).files[0];
+            if (file) formData.append("images", file);
+        }
+
+        try {
+            const res = await fetch("http://127.0.0.1:5000/admin/add-product", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await res.json();
+            message.innerHTML = `<p class="success">${data.message || "Product Added Successfully"}</p>`;
+            productForm.reset();
+
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`preview${i}`).src = "";
+                document.getElementById(`box${i}`).classList.remove("has-image");
+            }
+
+        } catch (err) {
+            message.innerHTML = `<p class="error">Something went wrong</p>`;
+        }
+    });
+
+    function goBack(){
+        window.location.href = "admin_dashboard.html";
+    }
+</script>
+
+</body>
+</html>
