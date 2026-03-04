@@ -3,6 +3,7 @@ from flask_smorest import Blueprint
 from flask import request
 from firebase_admin import auth as firebase_auth
 from ..Database.User.user_data import UserDatabase
+# from ..extensions import limiter
 
 blp = Blueprint('user login', __name__, description='firebase login')
 
@@ -12,6 +13,7 @@ class UserLogin(MethodView):
     def __init__(self):
         self.user_db = UserDatabase()
 
+    # @limiter.limit("2 per minute")
     def post(self):
         auth_header = request.headers.get("Authorization")
 

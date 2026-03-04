@@ -42,6 +42,14 @@ class UserDatabase:
         user_data = self.collection.find_one({'email': email})
         if user_data:
             user_data["_id"] = str(user_data.get('_id'))
+            user_data.pop('created_at', None)
             return user_data
         else:
             return None
+
+    def update_profile(self, email, updated_data):
+        self.collection.update_one(
+            {"email": email},
+            {'$set': updated_data}
+        )
+        return {"status": 'Success', "message": 'User profile updated successfully...'}, 200

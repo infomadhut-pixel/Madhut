@@ -3,83 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <title>MadHut | Checkout</title>
-
     <script>
-        const token = localStorage.getItem("userToken") ||
-                      sessionStorage.getItem("userToken");
+        function getToken(){
+            return localStorage.getItem("userToken") ||
+                   sessionStorage.getItem("userToken");
+        }
 
-        if (!token) {
+        function redirectToLogin(){
+            localStorage.removeItem("userToken");
+            sessionStorage.removeItem("userToken");
             window.location.replace("user_login.html");
+        }
+
+        if (!getToken()) {
+            redirectToLogin();
+        }
+
+        function goBack(){
+            if(document.referrer){
+                window.history.back();
+            }else{
+                window.location.href="index.html";
+            }
         }
     </script>
 
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI'}
-        body{background:#f5f7fa}
-        .wrapper{max-width:1100px;margin:40px auto;display:grid;grid-template-columns:2fr 1fr;gap:40px}
-        .section,.summary{background:#fff;padding:25px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.05)}
-        .summary img{width:80px;height:80px;object-fit:cover;border-radius:8px}
-        .place-btn{margin-top:20px;width:100%;padding:14px;background:#0fa36b;color:#fff;border:none;border-radius:8px;cursor:pointer}
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+        body{background:#f5f7fa;}
+
+        .header{
+        background:#111;
+        color:white;
+        padding:18px 40px;
+        font-size:20px;
+        font-weight:bold;
+        letter-spacing:1px;
+        }
+
+        .wrapper{
+        max-width:1200px;
+        margin:40px auto;
+        padding:0 20px;
+        display:grid;
+        grid-template-columns:1.2fr 0.8fr;
+        gap:40px;
+        }
+
+        .section{
+        background:white;
+        padding:30px;
+        border-radius:12px;
+        box-shadow:0 8px 25px rgba(0,0,0,0.05);
+        }
+
+        .section h2{
+        margin-bottom:20px;
+        font-size:22px;
+        font-weight:700;
+        }
+
+        input,select{
+        width:100%;
+        padding:12px;
+        margin-bottom:16px;
+        border:1px solid #ddd;
+        border-radius:8px;
+        font-size:14px;
+        }
+
+        input:focus,select:focus{
+        outline:none;
+        border-color:#0fa36b;
+        }
+
+        button{
+        width:100%;
+        padding:15px;
+        border:none;
+        background:#0fa36b;
+        color:white;
+        font-weight:600;
+        border-radius:10px;
+        font-size:16px;
+        cursor:pointer;
+        transition:0.2s;
+        }
+
+        button:hover{
+        background:#0c8f5e;
+        }
+
+        .product-card{
+        display:flex;
+        gap:20px;
+        margin-bottom:20px;
+        }
+
+        .product-card img{
+        width:120px;
+        height:120px;
+        object-fit:cover;
+        border-radius:10px;
+        }
+
+        .product-info h3{
+        font-size:18px;
+        margin-bottom:8px;
+        }
+
+        .summary-row{
+        display:flex;
+        justify-content:space-between;
+        margin-bottom:8px;
+        font-size:14px;
+        }
+
+        .total{
+        font-weight:700;
+        font-size:18px;
+        margin-top:10px;
+        }
+
+        @media(max-width:900px){
+        .wrapper{
+        grid-template-columns:1fr;
+        }
+        }
     </style>
 </head>
 
 <body>
 
+<div class="header">MADHUT CHECKOUT</div>
+
 <div class="wrapper">
 
-    <div>
+    <!-- LEFT: SHIPPING -->
+    <div class="section">
+        <h2>Shipping Details</h2>
 
-        <div class="section">
-            <h3>Shipping Address</h3>
-            <input id="fullName" placeholder="Full Name"><br><br>
-            <input id="phone" placeholder="Phone"><br><br>
-            <input id="address" placeholder="Address"><br><br>
-            <input id="city" placeholder="City"><br><br>
-            <input id="pincode" placeholder="Pincode">
-        </div>
+        <input type="text" id="fullName" placeholder="Full Name">
+        <input type="text" id="phone" placeholder="Phone Number">
+        <input type="text" id="address" placeholder="Full Address">
+        <input type="text" id="city" placeholder="City">
+        <input type="text" id="pincode" placeholder="Pincode">
 
+        <select id="paymentMode">
+            <option value="COD">Cash On Delivery</option>
+            <option value="ONLINE">Online Payment</option>
+        </select>
+
+        <button onclick="placeOrder()">Place Order</button>
     </div>
 
-    <div class="summary">
-        <h3>Order Summary</h3>
-        <div id="productSummary"></div>
-        <p>Subtotal: ₹<span id="subtotal"></span></p>
-        <p>Delivery: ₹50</p>
-        <p><strong>Total: ₹<span id="finalTotal"></span></strong></p>
-        <button class="place-btn" onclick="placeOrder()">Place Order</button>
+    <!-- RIGHT: ORDER SUMMARY -->
+    <div class="section">
+
+        <h2>Order Summary</h2>
+
+        <div class="product-card">
+            <img id="checkoutImage">
+            <div class="product-info">
+                <h3 id="checkoutName"></h3>
+                <p>Size: <span id="checkoutSize"></span></p>
+                <p>Color: <span id="checkoutColor"></span></p>
+                <p>Qty: <span id="checkoutQty"></span></p>
+            </div>
+        </div>
+
+        <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <span>₹<span id="subtotal"></span></span>
+        </div>
+
+        <div class="summary-row">
+            <span>Shipping</span>
+            <span>Free</span>
+        </div>
+
+        <div class="summary-row total">
+            <span>Total</span>
+            <span>₹<span id="checkoutTotal"></span></span>
+        </div>
+
     </div>
 
 </div>
 
 <script>
 
-    let checkoutItem = JSON.parse(localStorage.getItem("pendingOrder"));
+    /* ===== Get Buy Now Data from sessionStorage ===== */
 
-    if (!checkoutItem) {
+    const checkoutItem = JSON.parse(sessionStorage.getItem("buyNowProduct"));
+
+    if(!checkoutItem){
         alert("No order found");
-        window.location.href = "index.html";
+        window.location.href="index.html";
     }
 
-    let deliveryCharge = 50;
+    /* ===== Render Order Data ===== */
 
-    function loadSummary(){
+    document.getElementById("checkoutImage").src = checkoutItem.image;
+    document.getElementById("checkoutName").innerText = checkoutItem.name;
+    document.getElementById("checkoutSize").innerText = checkoutItem.size;
+    document.getElementById("checkoutColor").innerText = checkoutItem.color;
+    document.getElementById("checkoutQty").innerText = checkoutItem.quantity;
 
-        document.getElementById("productSummary").innerHTML = `
-            <img src="${checkoutItem.imageBase64}">
-            <p>${checkoutItem.size} | ${checkoutItem.color}</p>
-            <p>Qty: ${checkoutItem.quantity}</p>
-        `;
+    const total = checkoutItem.quantity * checkoutItem.price;
 
-        const price = Number(checkoutItem.price);
-        const qty = Number(checkoutItem.quantity);
-        const subtotal = price * qty;
+    document.getElementById("subtotal").innerText = total;
+    document.getElementById("checkoutTotal").innerText = total;
 
-        document.getElementById("subtotal").innerText = subtotal;
-        document.getElementById("finalTotal").innerText = subtotal + deliveryCharge;
+
+    /* ===== Token Helper ===== */
+
+    function getToken(){
+        return localStorage.getItem("userToken") ||
+               sessionStorage.getItem("userToken");
     }
 
-    async function placeOrder(){
 
+    /* ===== Form Validation ===== */
+
+    function validateForm(){
         const fullName = document.getElementById("fullName").value.trim();
         const phone = document.getElementById("phone").value.trim();
         const address = document.getElementById("address").value.trim();
@@ -87,67 +236,82 @@
         const pincode = document.getElementById("pincode").value.trim();
 
         if(!fullName || !phone || !address || !city || !pincode){
-            alert("Fill all fields");
+            alert("Please fill all shipping details");
+            return false;
+        }
+
+        if(phone.length < 10){
+            alert("Enter valid phone number");
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /* ===== Place Order ===== */
+
+    async function placeOrder(){
+
+        if(!validateForm()){
             return;
         }
 
-        const price = Number(checkoutItem.price);
-        const quantity = Number(checkoutItem.quantity);
+        const token = getToken();
 
-        const subtotal = price * quantity;
+        if(!token){
+            alert("Session expired. Please login again.");
+            window.location.href = "user_login.html";
+            return;
+        }
+
+        const orderData = {
+            ...checkoutItem,
+            full_name: document.getElementById("fullName").value.trim(),
+            phone: document.getElementById("phone").value.trim(),
+            address: document.getElementById("address").value.trim(),
+            city: document.getElementById("city").value.trim(),
+            pincode: document.getElementById("pincode").value.trim(),
+            payment_mode: document.getElementById("paymentMode").value
+        };
 
         try{
+            const res = await fetch("https://madhut-5.onrender.com/order/checkout",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json",
+                    "Authorization":"Bearer " + token
+                },
+                body:JSON.stringify(orderData)
+            });
 
-            // convert base64 to blob
-            const res = await fetch(checkoutItem.imageBase64);
-            const blob = await res.blob();
+            const data = await res.json();
 
-            const formData = new FormData();
-
-            formData.append("image", blob, "custom.png");
-            formData.append("color", checkoutItem.color);
-            formData.append("size", checkoutItem.size);
-            formData.append("price", price);
-            formData.append("quantity", quantity);
-
-            formData.append("fullName", fullName);
-            formData.append("phone", phone);
-            formData.append("address", address);
-            formData.append("city", city);
-            formData.append("pincode", pincode);
-
-            formData.append("payment_method", "COD");
-            formData.append("delivery_charge", deliveryCharge);
-
-            const response = await fetch(
-                "http://127.0.0.1:5000/user/order/customised/product",
-                {
-                    method:"POST",
-                    headers:{
-                        "Authorization":"Bearer " + token
-                    },
-                    body:formData
-                }
-            );
-
-            if(!response.ok){
-                alert("Order failed");
+            if(res.status === 401){
+                alert("Session expired. Please login again.");
+                localStorage.removeItem("userToken");
+                sessionStorage.removeItem("userToken");
+                window.location.href = "user_login.html";
                 return;
             }
 
-            alert("Order placed successfully");
-            localStorage.removeItem("pendingOrder");
-            window.location.href="order_success.html";
+            if(res.ok){
 
-        }catch(err){
-            console.error(err);
-            alert("Server error");
+                // 🔥 Clear temporary product
+                sessionStorage.removeItem("buyNowProduct");
+
+                alert("Order placed successfully 🎉");
+                window.location.href="index.html";
+            }else{
+                alert(data.message || "Something went wrong");
+            }
+
+        }catch(error){
+            console.error("Checkout Error:", error);
+            alert("Server error. Try again.");
         }
     }
 
-    loadSummary();
-
 </script>
-
 </body>
 </html>

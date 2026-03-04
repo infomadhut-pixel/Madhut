@@ -5,21 +5,26 @@ from .Admin_Api import register_admin_blueprint
 from .config import configure_app
 from .extensions import api, jwt, mail
 from .Database.User.user_data import UserDatabase
+from .Database.User.check_out import OrderTshirt
 from app.extensions import bcrypt
 from .User_Api.Blocklist import Blocklist
 import os
 import json
 import firebase_admin
 from firebase_admin import credentials
+# from .extensions import limiter
 
 
 def create_app():
     app = Flask(__name__)
     bcrypt.init_app(app)
     configure_app(app)
+    # limiter.init_app(app)
 
     user_db = UserDatabase()
     user_db.create_index()
+    order_db = OrderTshirt()
+    order_db.create_order_index()
     firebase_credentials = os.getenv("FIREBASE_CREDENTIALS")
 
     if not firebase_credentials:

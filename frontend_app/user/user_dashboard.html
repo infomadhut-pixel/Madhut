@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MadHut | Dashboard</title>
+
+    <style>
+
+        *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+        background:linear-gradient(135deg,#eef2f7,#f8fafc);
+        min-height:200vh;
+        }
+
+        /* NAVBAR */
+
+        .navbar{
+        position:sticky;
+        top:0;
+        z-index:1000;
+        height:70px;
+        background:white;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding:0 30px;
+        box-shadow:0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .logo{
+        font-size:22px;
+        font-weight:700;
+        color:#3f72af;
+        letter-spacing:1px;
+        }
+
+        .back-btn{
+        background:#3f72af;
+        border:none;
+        color:white;
+        padding:8px 16px;
+        border-radius:8px;
+        cursor:pointer;
+        font-size:14px;
+        transition:0.25s;
+        }
+
+        .back-btn:hover{
+        background:#2c5d96;
+        }
+
+        /* CONTAINER */
+
+        .container{
+        padding:60px 20px;
+        display:flex;
+        justify-content:center;
+        }
+
+        /* DASHBOARD CARD */
+
+        .dashboard{
+        width:750px;
+        background:white;
+        border-radius:20px;
+        box-shadow:0 15px 40px rgba(0,0,0,0.1);
+        padding:40px;
+        }
+
+        .dashboard h1{
+        text-align:center;
+        margin-bottom:35px;
+        color:#334155;
+        }
+
+        /* GRID */
+
+        .grid{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:25px;
+        }
+
+        /* CARD */
+
+        .card{
+        background:#f8fafc;
+        border-radius:16px;
+        padding:30px;
+        text-align:center;
+        cursor:pointer;
+        border:1px solid #e2e8f0;
+        transition:0.25s;
+        }
+
+        .card:hover{
+        transform:translateY(-6px);
+        box-shadow:0 10px 25px rgba(0,0,0,0.1);
+        background:white;
+        }
+
+        .card-icon{
+        font-size:35px;
+        margin-bottom:10px;
+        }
+
+        .card h3{
+        color:#334155;
+        margin-bottom:6px;
+        }
+
+        .card p{
+        font-size:14px;
+        color:#64748b;
+        }
+
+        /* LOGOUT BUTTON */
+
+        .logout{
+        margin-top:35px;
+        width:100%;
+        padding:12px;
+        background:#ef4444;
+        border:none;
+        border-radius:10px;
+        color:white;
+        font-size:15px;
+        cursor:pointer;
+        transition:0.25s;
+        }
+
+        .logout:hover{
+        background:#dc2626;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+    <button class="back-btn" onclick="goBack()">Back</button>
+
+    <div class="logo">MadHut</div>
+
+</div>
+
+
+<div class="container">
+
+    <div class="dashboard">
+
+        <h1>User Dashboard</h1>
+
+        <div class="grid">
+
+            <div class="card" onclick="goProfile()">
+                <div class="card-icon">👤</div>
+                <h3>Profile</h3>
+                <p>View and edit your profile</p>
+            </div>
+
+            <div class="card" onclick="goOrders()">
+                <div class="card-icon">📦</div>
+                <h3>Orders</h3>
+                <p>Your orders</p>
+            </div>
+
+            <div class="card" onclick="goCart()">
+                <div class="card-icon">🛒</div>
+                <h3>Cart</h3>
+                <p>Items in your cart</p>
+            </div>
+
+            <div class="card" onclick="goWishlist()">
+                <div class="card-icon">❤️</div>
+                <h3>Wishlist</h3>
+                <p>Saved products</p>
+            </div>
+
+            <div class="card" onclick="goSettings()">
+                <div class="card-icon">⚙️</div>
+                <h3>Settings</h3>
+                <p>Manage account</p>
+            </div>
+
+        </div>
+
+        <button class="logout" onclick="logout()">Logout</button>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
+    authDomain: "madhut-97c1e.firebaseapp.com",
+    projectId: "madhut-97c1e",
+    appId: "1:443781397252:web:64f178cd71d0993cc0ae51"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+
+
+    /* SECURITY CHECK */
+
+    onAuthStateChanged(auth,(user)=>{
+
+    if(!user || !token){
+    window.location.href="user_login.html";
+    }
+
+    });
+
+
+    /* NAVIGATION */
+
+    window.goBack=function(){
+    window.history.back();
+    }
+
+    window.goProfile=function(){
+    window.location.href="user_profile.html";
+    }
+
+    window.goOrders=function(){
+    window.location.href="orders.html";
+    }
+
+    window.goCart=function(){
+    window.location.href="fetch_add_item_in_cart.html";
+    }
+
+    window.goWishlist=function(){
+    window.location.href="wishlist.html";
+    }
+
+    window.goSettings=function(){
+    window.location.href="settings.html";
+    }
+
+
+    /* LOGOUT */
+
+    window.logout=function(){
+
+    signOut(auth)
+    .then(()=>{
+
+    localStorage.removeItem("userToken");
+    sessionStorage.removeItem("userToken");
+
+    window.location.href="user_login.html";
+
+    })
+
+    }
+
+</script>
+
+</body>
+</html>

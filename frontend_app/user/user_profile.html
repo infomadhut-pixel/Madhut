@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MadHut | User Profile</title>
+
+    <style>
+
+        *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+        background:linear-gradient(135deg,#e8edf5,#f8fafc);
+        min-height:100vh;
+        }
+
+        /* NAVBAR */
+
+        .navbar{
+        position:sticky;
+        top:0;
+        z-index:1000;
+        height:70px;
+        background:white;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        padding:0 30px;
+        box-shadow:0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .logo{
+        font-size:22px;
+        font-weight:700;
+        color:#3f72af;
+        }
+
+        .back-btn{
+        background:#3f72af;
+        border:none;
+        color:white;
+        padding:8px 16px;
+        border-radius:8px;
+        cursor:pointer;
+        }
+
+        /* PAGE */
+
+        .page{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        padding:60px 20px;
+        }
+
+        /* LOADER */
+
+        .loader{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:300px;
+        }
+
+        .spinner{
+        width:50px;
+        height:50px;
+        border:5px solid #e5e7eb;
+        border-top:5px solid #3f72af;
+        border-radius:50%;
+        animation:spin 1s linear infinite;
+        }
+
+        @keyframes spin{
+        0%{transform:rotate(0deg);}
+        100%{transform:rotate(360deg);}
+        }
+
+        /* CARD */
+
+        .profile-card{
+        width:480px;
+        background:white;
+        border-radius:18px;
+        box-shadow:0 15px 40px rgba(0,0,0,0.12);
+        overflow:hidden;
+        display:none;
+        }
+
+        /* HEADER */
+
+        .profile-header{
+        background:linear-gradient(135deg,#3f72af,#5f9cff);
+        padding:40px 20px;
+        text-align:center;
+        color:white;
+        }
+
+        .profile-header img{
+        width:90px;
+        height:90px;
+        border-radius:50%;
+        border:4px solid white;
+        margin-bottom:10px;
+        }
+
+        /* BODY */
+
+        .profile-body{
+        padding:35px;
+        }
+
+        .profile-row{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:14px 0;
+        border-bottom:1px solid #f0f0f0;
+        }
+
+        .profile-row span:first-child{
+        font-weight:600;
+        color:#64748b;
+        }
+
+        .profile-row input{
+        border:1px solid #dbe2ea;
+        border-radius:8px;
+        padding:6px 10px;
+        width:180px;
+        }
+
+        /* BUTTONS */
+
+        .profile-actions{
+        margin-top:30px;
+        display:flex;
+        gap:12px;
+        }
+
+        .btn{
+        flex:1;
+        padding:11px;
+        border:none;
+        border-radius:10px;
+        cursor:pointer;
+        color:white;
+        }
+
+        .edit-btn{background:#22c55e;}
+        .save-btn{background:#3f72af;display:none;}
+        .logout-btn{background:#ef4444;}
+
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <button class="back-btn" onclick="history.back()">Back</button>
+    <div class="logo">MadHut</div>
+</div>
+
+<div class="page">
+
+    <!-- LOADER -->
+    <div class="loader" id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="profile-card" id="profileCard">
+
+        <div class="profile-header">
+            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png">
+            <h2 id="username"></h2>
+        </div>
+
+        <div class="profile-body">
+
+            <div class="profile-row">
+                <span>Email</span>
+                <span id="email"></span>
+            </div>
+
+            <div class="profile-row">
+                <span>Phone</span>
+                <input id="phone" disabled>
+            </div>
+
+            <div class="profile-row">
+                <span>Street</span>
+                <input id="street" disabled>
+            </div>
+
+            <div class="profile-row">
+                <span>Pin Code</span>
+                <input id="pincode" disabled>
+            </div>
+
+            <div class="profile-row">
+                <span>Country</span>
+                <input id="country" disabled>
+            </div>
+
+            <div class="profile-row">
+                <span>User ID</span>
+                <span id="userid"></span>
+            </div>
+
+            <div class="profile-row">
+                <span>Role</span>
+                <span id="role"></span>
+            </div>
+
+            <div class="profile-actions">
+                <button class="btn edit-btn" id="editBtn" onclick="enableEdit()">Edit</button>
+                <button class="btn save-btn" id="saveBtn" onclick="saveProfile()">Save</button>
+                <button class="btn logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script type="module">
+
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig={
+    apiKey:"AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
+    authDomain:"madhut-97c1e.firebaseapp.com",
+    projectId:"madhut-97c1e",
+    appId:"1:443781397252:web:64f178cd71d0993cc0ae51"
+    };
+
+    const app=initializeApp(firebaseConfig);
+    const auth=getAuth(app);
+
+    /* AUTH CHECK */
+
+    onAuthStateChanged(auth,(user)=>{
+
+    if(!user){
+    window.location.href="user_login.html";
+    }else{
+    loadProfile();
+    }
+
+    });
+
+
+    async function loadProfile(){
+
+    try{
+
+    const token=await auth.currentUser.getIdToken(false);
+
+    const res=await fetch("https://madhut-5.onrender.com/user/profile",{
+    headers:{Authorization:"Bearer "+token}
+    });
+
+    if(res.status===401){
+    logout();
+    return;
+    }
+
+    const data=await res.json();
+
+    renderProfile(data);
+
+    }catch{
+    alert("Profile load failed");
+    }
+
+    }
+
+
+    function renderProfile(data){
+
+    username.innerText=data.username;
+    email.innerText=data.email;
+
+    phone.value=data.contact_number;
+    street.value=data.street;
+    pincode.value=data.pin_code;
+    country.value=data.country;
+
+    userid.innerText=data.unique_id;
+    role.innerText=data.role;
+
+    /* HIDE LOADER */
+
+    document.getElementById("loader").style.display="none";
+
+    /* SHOW CARD */
+
+    document.getElementById("profileCard").style.display="block";
+
+    }
+
+
+    /* EDIT */
+
+    window.enableEdit=function(){
+
+    phone.disabled=false;
+    street.disabled=false;
+    pincode.disabled=false;
+    country.disabled=false;
+
+    saveBtn.style.display="block";
+    editBtn.style.display="none";
+
+    }
+
+
+    /* SAVE */
+
+    window.saveProfile=async function(){
+
+    const token=await auth.currentUser.getIdToken(false);
+
+    const data={
+    contact_number:phone.value,
+    street:street.value,
+    pin_code:pincode.value,
+    country:country.value
+    };
+
+    const res=await fetch("https://madhut-5.onrender.com/user/edit/profile",{
+    method:"PATCH",
+    headers:{
+    "Content-Type":"application/json",
+    Authorization:"Bearer "+token
+    },
+    body:JSON.stringify(data)
+    });
+
+    if(res.ok){
+
+    phone.disabled=true;
+    street.disabled=true;
+    pincode.disabled=true;
+    country.disabled=true;
+
+    saveBtn.style.display="none";
+    editBtn.style.display="block";
+
+    loadProfile();
+
+    }else{
+    alert("Update failed");
+    }
+
+    }
+
+
+    /* LOGOUT */
+
+    window.logout=function(){
+
+    signOut(auth).then(()=>{
+    window.location.href="user_login.html";
+    });
+
+    }
+
+</script>
+
+</body>
+</html>

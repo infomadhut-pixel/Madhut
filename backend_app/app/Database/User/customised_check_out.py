@@ -63,4 +63,5 @@ class CustomisedProductDatabase:
         }
 
         result = self.collection.insert_one(order_data)
-        return str(result.inserted_id)
+        if result.inserted_id:
+            return {'message': 'Order created successfully...'}

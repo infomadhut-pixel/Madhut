@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>MadHut | My Cart</title>
+
+    <style>
+
+        *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+        background:#f5f7fa;
+        }
+
+        /* NAVBAR */
+
+        .navbar{
+        background:white;
+        padding:15px 40px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        box-shadow:0 3px 8px rgba(0,0,0,0.05);
+        position:sticky;
+        top:0;
+        z-index:100;
+        }
+
+        .logo{
+        font-size:22px;
+        font-weight:700;
+        color:#111;
+        letter-spacing:1px;
+        cursor:pointer;
+        }
+
+        .nav-actions{
+        display:flex;
+        gap:15px;
+        }
+
+        .back-btn{
+        background:#eee;
+        border:none;
+        padding:8px 16px;
+        border-radius:6px;
+        cursor:pointer;
+        font-weight:500;
+        }
+
+        .back-btn:hover{
+        background:#ddd;
+        }
+
+
+        /* PREMIUM TOAST */
+
+        .toast{
+        position:fixed;
+        top:25px;
+        right:-400px;
+        display:flex;
+        align-items:center;
+        gap:12px;
+        background:white;
+        padding:14px 18px;
+        border-radius:10px;
+        box-shadow:0 10px 25px rgba(0,0,0,0.12);
+        font-size:14px;
+        color:#333;
+        z-index:999;
+        transition:all 0.4s ease;
+        border-left:5px solid #22c55e;
+        }
+
+        .toast.show{
+        right:25px;
+        }
+
+        .toast-icon{
+        font-size:18px;
+        color:#22c55e;
+        }
+
+        .toast-message{
+        font-weight:500;
+        }
+
+
+        /* MAIN */
+
+        .container{
+        max-width:1200px;
+        margin:auto;
+        padding:40px;
+        }
+
+        .page-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:25px;
+        }
+
+        .page-title{
+        font-size:28px;
+        font-weight:600;
+        }
+
+        /* CART */
+
+        .cart-layout{
+        display:flex;
+        gap:25px;
+        }
+
+        .cart-section{
+        flex:2;
+        }
+
+        .cart-item{
+        display:flex;
+        align-items:center;
+        background:white;
+        padding:20px;
+        margin-bottom:15px;
+        border-radius:10px;
+        box-shadow:0 3px 10px rgba(0,0,0,0.05);
+        transition:0.25s;
+        }
+
+        .cart-item:hover{
+        box-shadow:0 8px 18px rgba(0,0,0,0.08);
+        }
+
+        .cart-img{
+        width:120px;
+        margin-right:20px;
+        }
+
+        .cart-img img{
+        width:100%;
+        border-radius:8px;
+        }
+
+        .cart-info{
+        flex:1;
+        }
+
+        .cart-meta{
+        color:#666;
+        margin-bottom:5px;
+        }
+
+        .qty-box{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        margin-top:10px;
+        }
+
+        .qty-btn{
+        background:#eee;
+        border:none;
+        padding:6px 12px;
+        cursor:pointer;
+        border-radius:4px;
+        font-weight:bold;
+        }
+
+        .qty-btn:hover{
+        background:#ddd;
+        }
+
+        .remove-btn{
+        background:#ff4d4d;
+        border:none;
+        color:white;
+        padding:8px 15px;
+        border-radius:6px;
+        cursor:pointer;
+        }
+
+        .remove-btn:hover{
+        background:#ff2c2c;
+        }
+
+        .buy-btn-small{
+        background:#111;
+        border:none;
+        color:white;
+        padding:8px 15px;
+        border-radius:6px;
+        cursor:pointer;
+        }
+
+        .action-buttons{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+        }
+
+        /* SUMMARY */
+
+        .summary-box{
+        flex:1;
+        background:white;
+        padding:25px;
+        border-radius:10px;
+        box-shadow:0 3px 10px rgba(0,0,0,0.05);
+        height:fit-content;
+        position:sticky;
+        top:100px;
+        }
+
+        .summary-row{
+        display:flex;
+        justify-content:space-between;
+        margin-bottom:10px;
+        }
+
+        .summary-total{
+        font-weight:bold;
+        font-size:18px;
+        margin-top:10px;
+        }
+
+        .buy-btn{
+        width:100%;
+        margin-top:20px;
+        background:#111;
+        color:white;
+        padding:14px;
+        border:none;
+        font-size:16px;
+        border-radius:8px;
+        cursor:pointer;
+        transition:0.2s;
+        }
+
+        .buy-btn:hover{
+        background:#333;
+        }
+
+        .empty-cart{
+        text-align:center;
+        padding:50px;
+        color:#777;
+        font-size:18px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+    <div class="logo" onclick="window.location.href='index.html'">
+        MadHut
+    </div>
+
+    <div class="nav-actions">
+        <button class="back-btn" onclick="goBack()">Back</button>
+    </div>
+
+</div>
+
+
+<div id="toast" class="toast">
+    <div class="toast-icon">✔</div>
+    <div class="toast-message" id="toastMessage"></div>
+</div>
+
+
+<div class="container">
+
+    <div class="page-header">
+        <h1 class="page-title">🛒 My Cart</h1>
+        <h3>Total Items : <span id="totalItemsTop">0</span></h3>
+    </div>
+
+    <div class="cart-layout">
+
+        <div class="cart-section" id="cartContainer">
+            <div class="empty-cart">Loading cart...</div>
+        </div>
+
+        <div class="summary-box">
+
+            <h2>Order Summary</h2>
+
+            <div class="summary-row">
+                <span>Total Items</span>
+                <span id="totalItems">0</span>
+            </div>
+
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span>₹<span id="totalPrice">0</span></span>
+            </div>
+
+            <div class="summary-row">
+                <span>Delivery</span>
+                <span>Free</span>
+            </div>
+
+            <hr style="margin:15px 0">
+
+            <div class="summary-row summary-total">
+                <span>Total</span>
+                <span>₹<span id="grandTotal">0</span></span>
+            </div>
+
+            <button class="buy-btn">
+                Proceed to Checkout
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+    const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken")
+
+    if(!token){
+    window.location.replace("user_login.html")
+    }
+
+    let cartData = null
+
+
+    /* BETTER BACK BUTTON */
+
+    function goBack(){
+
+    if(window.history.length > 1){
+    window.history.back()
+    }else{
+    window.location.href = "user_dashboard.html"
+    }
+
+    }
+
+
+    /* TOAST */
+
+    function showToast(message){
+
+    const toast = document.getElementById("toast")
+    const toastMessage = document.getElementById("toastMessage")
+
+    toastMessage.innerText = message
+
+    toast.classList.add("show")
+
+    setTimeout(()=>{
+    toast.classList.remove("show")
+    },3000)
+
+    }
+
+
+    /* LOAD CART */
+
+    async function loadCart(){
+
+    try{
+
+    const response = await fetch("https://madhut-5.onrender.com/user/fetch/item/detail/in/cart",{
+    headers:{
+    "Authorization":"Bearer "+token
+    }
+    })
+
+    if(response.status === 401){
+    localStorage.removeItem("userToken")
+    window.location.replace("user_login.html")
+    return
+    }
+
+    cartData = await response.json()
+
+    renderCart(cartData)
+
+    }catch(error){
+
+    document.getElementById("cartContainer").innerHTML =
+    "<div class='empty-cart'>Failed to load cart</div>"
+
+    }
+
+    }
+
+
+    /* RENDER CART */
+
+    function renderCart(data){
+
+    const container = document.getElementById("cartContainer")
+
+    container.innerHTML=""
+
+    let totalPrice = 0
+
+    if(!data || data.items.length === 0){
+
+    container.innerHTML = `<div class="empty-cart">Your cart is empty</div>`
+
+    document.getElementById("totalItems").innerText = 0
+    document.getElementById("totalItemsTop").innerText = 0
+    document.getElementById("totalPrice").innerText = 0
+    document.getElementById("grandTotal").innerText = 0
+
+    return
+    }
+
+    data.items.forEach((item,index)=>{
+
+    let price = item.color
+    let qty = item.quantity
+
+    totalPrice += price * qty
+
+    container.innerHTML += `
+
+    <div class="cart-item">
+
+    <div class="cart-img">
+    <img src="${item.image}">
+    </div>
+
+    <div class="cart-info">
+
+    <h3>T-Shirt</h3>
+
+    <p class="cart-meta">Color : ${item.size}</p>
+    <p class="cart-meta">Size : ${item.price_at_added}</p>
+    <p class="cart-meta">Price : ₹${price}</p>
+
+    <div class="qty-box">
+
+    <button class="qty-btn" onclick="updateQty(${index},-1)">-</button>
+    <span>${qty}</span>
+    <button class="qty-btn" onclick="updateQty(${index},1)">+</button>
+
+    </div>
+
+    </div>
+
+    <div class="action-buttons">
+
+    <button class="remove-btn" onclick="removeItem('${item.cart_id}')">
+    Remove
+    </button>
+
+    <button class="buy-btn-small">
+    Buy
+    </button>
+
+    </div>
+
+    </div>
+
+    `
+
+    })
+
+    document.getElementById("totalItems").innerText = data.total_items
+    document.getElementById("totalItemsTop").innerText = data.total_items
+    document.getElementById("totalPrice").innerText = totalPrice
+    document.getElementById("grandTotal").innerText = totalPrice
+
+    }
+
+
+    /* UPDATE QTY */
+
+    function updateQty(index,change){
+
+    let item = cartData.items[index]
+
+    item.quantity += change
+
+    if(item.quantity < 1){
+    item.quantity = 1
+    }
+
+    renderCart(cartData)
+
+    }
+
+
+    /* REMOVE ITEM */
+
+    function removeItem(cartId){
+
+    const tempUrl = window.location.pathname + "?cart_id=" + cartId
+    history.replaceState(null,"",tempUrl)
+
+    cartData.items = cartData.items.filter(i => i.cart_id !== cartId)
+
+    cartData.total_items = cartData.items.reduce((sum,i)=>sum+i.quantity,0)
+
+    renderCart(cartData)
+
+    fetch(`https://madhut-5.onrender.com/remove/item/from/cart?cart_id=${cartId}`,{
+    method:"DELETE",
+    headers:{
+    "Authorization":"Bearer "+token
+    }
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+    showToast(data.message)
+
+    history.replaceState(null,"",window.location.pathname)
+
+    })
+    .catch(err=>{
+    console.log(err)
+    })
+
+    }
+
+    loadCart()
+
+</script>
+
+</body>
+</html>

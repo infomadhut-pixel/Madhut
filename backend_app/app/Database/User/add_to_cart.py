@@ -1,5 +1,10 @@
 from pymongo import MongoClient
 from datetime import datetime
+import random
+
+
+def generate_id():
+    return "MH" + datetime.utcnow().strftime("%Y%m%d%H%M%S") + str(random.randint(100, 999))
 
 
 class AddToCart:
@@ -55,6 +60,7 @@ class AddToCart:
                             "$push": {
                                 "items": {
                                     "product_id": product_id,
+                                    'cart_id': generate_id(),
                                     "size": size,
                                     "color": color,
                                     "quantity": quantity,
@@ -78,6 +84,7 @@ class AddToCart:
                     "email": email,
                     "items": [{
                         "product_id": product_id,
+                        'cart_id': generate_id(),
                         "size": size,
                         "color": color,
                         "quantity": quantity,
@@ -103,3 +110,16 @@ class AddToCart:
         data = self.collection.find_one({'email': email})
         return data['total_items']
 
+    def fetch_item_in_cart(self, email):
+        cart_item = self.collection.find_one({"email": email})
+        cart_item["_id"] = str(cart_item.get("_id"))
+        return cart_item
+
+    def remove_and_update_cart_data(self, email, cart_id):
+        self.collection.update_one({'email': email},
+                                   {"$pull": {"items": {"cart_id": cart_id}}})
+        cart = self.collection.find_one({"email": email})
+        total_items = cart['total_items']
+        self.collection.update_one({'email': email},
+                                   {"$set": {'total_items': total_items - 1}})
+        return {'message': 'Item removed from cart successfully....'}

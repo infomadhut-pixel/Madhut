@@ -21,7 +21,7 @@ class TshirtDatabase:
         result = self.collection.insert_one(product_data)
         product_data['_id'] = str(result.inserted_id)
 
-        return {"message": 'Product added successfully', 'product': product_data}, 201
+        return {"message": 'Product added successfully'}, 201
 
     def fetch_product(self, page, limit, min_price=None, max_price=None):
         skip = (page - 1) * limit
@@ -64,4 +64,12 @@ class TshirtDatabase:
         detail["_id"] = str(detail.get('_id'))
         return detail
 
-
+    def update_stock(self, product_id, quantity):
+        # print(product_id, quantity)
+        stock_update = self.collection.update_one(
+            {
+                "_id": product_id,
+                "stock": {"$gte": quantity}
+            },
+            {"$inc": {'stock': -quantity}}
+        )

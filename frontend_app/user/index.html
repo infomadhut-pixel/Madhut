@@ -58,12 +58,14 @@
 
     <header class="header">
         <div class="logo">MADHUT</div>
+
         <nav>
             <a href="customised_as_you_want.html">Customised</a>
             <a href="#">New Arrivals</a>
-            <a href="#">Combos</a>
+            <a href="#">Coffee-Mug</a>
             <a href="#">Winterwear</a>
         </nav>
+
         <div>
             <span class="cart">🛒 Cart (<span id="cartCount">0</span>)</span>
             <span id="authSection"></span>
@@ -120,6 +122,7 @@
     let minPrice = null;
     let maxPrice = null;
     const limit = 15;
+    let isLoading = false;
 
     /* ================= AUTH ================= */
 
@@ -127,8 +130,14 @@
         const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
 
         if(token){
-            authSection.innerHTML = `<span class="auth-btn" id="logoutBtn">Logout</span>`;
+            authSection.innerHTML = `
+                <span class="auth-btn" id="profileBtn">👤 Profile</span>
+                <span class="auth-btn" id="logoutBtn">Logout</span>
+            `;
+
             document.getElementById("logoutBtn").addEventListener("click", logout);
+            document.getElementById("profileBtn").addEventListener("click", goToProfile);
+
         }else{
             authSection.innerHTML = `<span class="auth-btn" id="loginBtn">Login</span>`;
             document.getElementById("loginBtn").addEventListener("click", goToLogin);
@@ -148,9 +157,7 @@
 
         localStorage.removeItem("userToken");
         sessionStorage.removeItem("userToken");
-
         cartCount.textContent = 0;
-
         window.location.href = "user_login.html";
     }
 
@@ -165,7 +172,7 @@
         }
 
         try{
-            const res = await fetch("http://127.0.0.1:5000/fetch/total/item/in/cart",{
+            const res = await fetch("https://madhut-5.onrender.com/fetch/total/item/in/cart",{
                 headers:{ "Authorization":"Bearer "+token }
             });
 
@@ -175,7 +182,7 @@
             }
 
             const data = await res.json();
-            cartCount.textContent = data;
+            cartCount.textContent = data.count;
 
         }catch{
             cartCount.textContent = 0;
@@ -196,10 +203,31 @@
         }
     }
 
+    function getCacheKey(){
+        return `tshirts_page_${currentPage}_${minPrice}_${maxPrice}`;
+    }
+
     async function loadTshirts(){
+
+        if(isLoading) return;
+        isLoading = true;
+
         showSkeleton();
 
-        let url = `http://127.0.0.1:5000/user/tshirts?page=${currentPage}&limit=${limit}`;
+        const cacheKey = getCacheKey();
+        const cachedData = sessionStorage.getItem(cacheKey);
+
+        // 🔥 If data already cached → use it instantly
+        if(cachedData){
+            const data = JSON.parse(cachedData);
+            displayProducts(data.products);
+            totalPages = data.total_pages;
+            setupPagination();
+            isLoading = false;
+            return;
+        }
+
+        let url = `https://madhut-5.onrender.com/user/tshirts?page=${currentPage}&limit=${limit}`;
 
         if(minPrice!==null && maxPrice!==null){
             url+=`&minPrice=${minPrice}&maxPrice=${maxPrice}`;
@@ -209,13 +237,42 @@
             const res = await fetch(url);
             const data = await res.json();
 
+            // 🔥 Save in cache
+            sessionStorage.setItem(cacheKey, JSON.stringify(data));
+
             displayProducts(data.products);
             totalPages = data.total_pages;
             setupPagination();
 
+            // 🚀 Prefetch next page silently
+            if(currentPage < totalPages){
+                prefetchNextPage();
+            }
+
         }catch{
             container.innerHTML = "<p>Failed to load products</p>";
         }
+
+        isLoading = false;
+    }
+
+    async function prefetchNextPage(){
+        const nextPage = currentPage + 1;
+        const cacheKey = `tshirts_page_${nextPage}_${minPrice}_${maxPrice}`;
+
+        if(sessionStorage.getItem(cacheKey)) return;
+
+        let url = `https://madhut-5.onrender.com/user/tshirts?page=${nextPage}&limit=${limit}`;
+
+        if(minPrice!==null && maxPrice!==null){
+            url+=`&minPrice=${minPrice}&maxPrice=${maxPrice}`;
+        }
+
+        try{
+            const res = await fetch(url);
+            const data = await res.json();
+            sessionStorage.setItem(cacheKey, JSON.stringify(data));
+        }catch{}
     }
 
     function displayProducts(products){
@@ -238,7 +295,7 @@
             card.className = "card";
 
             card.innerHTML = `
-                <img src="${firstImage}">
+                <img src="${firstImage}" loading="lazy">
                 <h4>${product.name}</h4>
                 <p>
                     <span class="price">₹${product.price}</span>
@@ -263,7 +320,11 @@
     function setupPagination(){
         paginationDiv.innerHTML="";
 
-        for(let i=1;i<=totalPages;i++){
+        const maxButtons = 5;
+        let start = Math.max(1, currentPage - 2);
+        let end = Math.min(totalPages, start + maxButtons - 1);
+
+        for(let i=start;i<=end;i++){
             const btn = document.createElement("button");
 
             btn.innerText = i;
@@ -271,6 +332,7 @@
 
             btn.addEventListener("click", ()=>{
                 currentPage = i;
+                window.scrollTo({top:0, behavior:"smooth"});
                 loadTshirts();
             });
 
@@ -299,6 +361,9 @@
 
         setInterval(fetchCartCount,15000);
     });
+    function goToProfile(){
+       window.location.href = "user_dashboard.html";
+    }
 
 </script>
 
