@@ -16,8 +16,8 @@ class FetchTshirt(MethodView):
     def get(self):
         page = int(request.args.get('page', 1))
         limit = int(request.args.get('limit', 15))
-        min_price = request.args.get('minprice')
-        max_price = request.args.get('maxprice')
+        min_price = request.args.get('minPrice')
+        max_price = request.args.get('maxPrice')
         if min_price and max_price:
             min_price = float(min_price)
             max_price = float(max_price)

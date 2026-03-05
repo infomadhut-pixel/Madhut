@@ -16,6 +16,7 @@ class UserLogin(MethodView):
     # @limiter.limit("2 per minute")
     def post(self):
         auth_header = request.headers.get("Authorization")
+        print(auth_header)
 
         if not auth_header or not auth_header.startswith("Bearer "):
             return {"message": "Invalid token format"}, 401
