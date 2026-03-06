@@ -461,7 +461,7 @@
 
     try{
 
-    const res = await fetch("https://madhut-5.onrender.comfetch/total/item/in/cart",{
+    const res = await fetch("https://madhut-5.onrender.com/fetch/total/item/in/cart",{
     headers:{ "Authorization":"Bearer "+token }
     });
 
@@ -529,7 +529,7 @@
 
     }
 
-    let url = `https://madhut-5.onrender.comuser/tshirts?page=${currentPage}&limit=${limit}`;
+    let url = `https://madhut-5.onrender.com/user/tshirts?page=${currentPage}&limit=${limit}`;
 
     if(minPrice!==null && maxPrice!==null){
     url+=`&minPrice=${minPrice}&maxPrice=${maxPrice}`;
@@ -572,7 +572,7 @@
 
     if(sessionStorage.getItem(cacheKey)) return;
 
-    let url = `https://madhut-5.onrender.comuser/tshirts?page=${nextPage}&limit=${limit}`;
+    let url = `https://madhut-5.onrender.com/user/tshirts?page=${nextPage}&limit=${limit}`;
 
     if(minPrice!==null && maxPrice!==null){
     url+=`&minPrice=${minPrice}&maxPrice=${maxPrice}`;
