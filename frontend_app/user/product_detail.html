@@ -1,340 +1,781 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>MadHut | Product Detail</title>-->
+<!--    <link rel="icon" type="image/x-icon" href="static/images/mad_hut.jpeg">-->
+
+<!--    <style>-->
+
+<!--        *{-->
+<!--        margin:0;-->
+<!--        padding:0;-->
+<!--        box-sizing:border-box;-->
+<!--        font-family:'Segoe UI',sans-serif;-->
+<!--        }-->
+
+<!--        body{-->
+<!--        background:#f5f7fa;-->
+<!--        }-->
+
+<!--        /* NAVBAR */-->
+
+<!--        .navbar{-->
+<!--        position:sticky;-->
+<!--        top:0;-->
+<!--        background:#111;-->
+<!--        color:white;-->
+<!--        display:flex;-->
+<!--        justify-content:space-between;-->
+<!--        align-items:center;-->
+<!--        padding:15px 40px;-->
+<!--        z-index:1000;-->
+<!--        flex-wrap:wrap;-->
+<!--        }-->
+
+<!--        .nav-left{-->
+<!--        display:flex;-->
+<!--        align-items:center;-->
+<!--        gap:20px;-->
+<!--        }-->
+
+<!--        .nav-left span{-->
+<!--        cursor:pointer;-->
+<!--        font-weight:600;-->
+<!--        }-->
+
+<!--        .logo{-->
+<!--        font-size:20px;-->
+<!--        font-weight:bold;-->
+<!--        }-->
+
+<!--        .nav-right{-->
+<!--        display:flex;-->
+<!--        align-items:center;-->
+<!--        gap:25px;-->
+<!--        }-->
+
+<!--        .cart-btn{-->
+<!--        cursor:pointer;-->
+<!--        }-->
+
+<!--        .cart-count{-->
+<!--        background:#0fa36b;-->
+<!--        color:white;-->
+<!--        padding:3px 8px;-->
+<!--        border-radius:20px;-->
+<!--        font-size:12px;-->
+<!--        margin-left:6px;-->
+<!--        }-->
+
+<!--        .auth-btn{-->
+<!--        cursor:pointer;-->
+<!--        }-->
+
+<!--        .auth-btn:hover{-->
+<!--        color:#0fa36b;-->
+<!--        }-->
+
+<!--        /* WRAPPER */-->
+
+<!--        .wrapper{-->
+<!--        max-width:1200px;-->
+<!--        margin:40px auto;-->
+<!--        padding:0 20px;-->
+<!--        }-->
+
+<!--        /* PRODUCT CONTAINER */-->
+
+<!--        .container{-->
+<!--        display:grid;-->
+<!--        grid-template-columns:1fr 1fr;-->
+<!--        gap:50px;-->
+<!--        background:white;-->
+<!--        padding:40px;-->
+<!--        border-radius:14px;-->
+<!--        box-shadow:0 8px 25px rgba(0,0,0,0.06);-->
+<!--        }-->
+
+<!--        /* IMAGE */-->
+
+<!--        .main-image{-->
+<!--        width:100%;-->
+<!--        max-height:600px;-->
+<!--        object-fit:contain;-->
+<!--        border-radius:12px;-->
+<!--        background:white;-->
+<!--        transition:transform 0.4s ease;-->
+<!--        }-->
+
+<!--        .main-image:hover{-->
+<!--        transform:scale(1.08);-->
+<!--        }-->
+
+<!--        /* THUMBNAILS */-->
+
+<!--        .thumbnail-row{-->
+<!--        display:flex;-->
+<!--        gap:12px;-->
+<!--        margin-top:18px;-->
+<!--        flex-wrap:wrap;-->
+<!--        }-->
+
+<!--        .thumbnail-row img{-->
+<!--        width:75px;-->
+<!--        height:75px;-->
+<!--        object-fit:cover;-->
+<!--        border-radius:8px;-->
+<!--        cursor:pointer;-->
+<!--        border:2px solid transparent;-->
+<!--        }-->
+
+<!--        .thumbnail-row img:hover{-->
+<!--        border:2px solid #0fa36b;-->
+<!--        }-->
+
+<!--        /* DETAILS */-->
+
+<!--        .details h2{-->
+<!--        font-size:30px;-->
+<!--        margin-bottom:15px;-->
+<!--        font-weight:700;-->
+<!--        }-->
+
+<!--        .price{-->
+<!--        font-size:26px;-->
+<!--        color:#0fa36b;-->
+<!--        font-weight:700;-->
+<!--        }-->
+
+<!--        .details p{-->
+<!--        margin-top:10px;-->
+<!--        line-height:1.6;-->
+<!--        color:#555;-->
+<!--        }-->
+
+<!--        /* OPTIONS */-->
+
+<!--        .option-group{-->
+<!--        display:flex;-->
+<!--        flex-wrap:wrap;-->
+<!--        gap:10px;-->
+<!--        margin-top:8px;-->
+<!--        }-->
+
+<!--        .option-group span{-->
+<!--        padding:8px 14px;-->
+<!--        border:1px solid #ddd;-->
+<!--        border-radius:6px;-->
+<!--        cursor:pointer;-->
+<!--        font-size:14px;-->
+<!--        }-->
+
+<!--        .option-group span.active{-->
+<!--        background:#111;-->
+<!--        color:white;-->
+<!--        border-color:#111;-->
+<!--        }-->
+
+<!--        /* QUANTITY */-->
+
+<!--        .quantity-box{-->
+<!--        display:flex;-->
+<!--        align-items:center;-->
+<!--        gap:10px;-->
+<!--        margin-top:10px;-->
+<!--        }-->
+
+<!--        .quantity-box button{-->
+<!--        width:35px;-->
+<!--        height:35px;-->
+<!--        border:none;-->
+<!--        background:#111;-->
+<!--        color:white;-->
+<!--        border-radius:6px;-->
+<!--        cursor:pointer;-->
+<!--        }-->
+
+<!--        .quantity-box input{-->
+<!--        width:60px;-->
+<!--        text-align:center;-->
+<!--        height:35px;-->
+<!--        border:1px solid #ddd;-->
+<!--        border-radius:6px;-->
+<!--        }-->
+
+<!--        /* BUTTONS */-->
+
+<!--        .action-buttons{-->
+<!--        margin-top:30px;-->
+<!--        display:flex;-->
+<!--        gap:20px;-->
+<!--        }-->
+
+<!--        .add-btn,.buy-btn{-->
+<!--        flex:1;-->
+<!--        padding:14px;-->
+<!--        border:none;-->
+<!--        border-radius:8px;-->
+<!--        font-size:16px;-->
+<!--        cursor:pointer;-->
+<!--        font-weight:600;-->
+<!--        }-->
+
+<!--        .add-btn{-->
+<!--        background:#111;-->
+<!--        color:white;-->
+<!--        }-->
+
+<!--        .buy-btn{-->
+<!--        background:#0fa36b;-->
+<!--        color:white;-->
+<!--        }-->
+
+<!--        /* ================= RESPONSIVE ================= */-->
+
+<!--        /* Tablet */-->
+
+<!--        @media (max-width:1000px){-->
+
+<!--        .container{-->
+<!--        grid-template-columns:1fr;-->
+<!--        gap:30px;-->
+<!--        }-->
+
+<!--        .main-image{-->
+<!--        max-height:400px;-->
+<!--        }-->
+
+<!--        }-->
+
+<!--        /* Mobile */-->
+
+<!--        @media (max-width:600px){-->
+
+<!--        .navbar{-->
+<!--        padding:15px 20px;-->
+<!--        }-->
+
+<!--        .logo{-->
+<!--        font-size:18px;-->
+<!--        }-->
+
+<!--        .wrapper{-->
+<!--        margin:20px auto;-->
+<!--        }-->
+
+<!--        .container{-->
+<!--        padding:20px;-->
+<!--        }-->
+
+<!--        .details h2{-->
+<!--        font-size:24px;-->
+<!--        }-->
+
+<!--        .price{-->
+<!--        font-size:22px;-->
+<!--        }-->
+
+<!--        .thumbnail-row img{-->
+<!--        width:60px;-->
+<!--        height:60px;-->
+<!--        }-->
+
+<!--        .action-buttons{-->
+<!--        flex-direction:column;-->
+<!--        }-->
+
+<!--        .add-btn,.buy-btn{-->
+<!--        width:100%;-->
+<!--        }-->
+
+<!--        }-->
+
+<!--    </style>-->
+<!--</head>-->
+
+<!--<body>-->
+
+<!--<div class="navbar">-->
+<!--    <div class="nav-left">-->
+<!--        <span onclick="goBack()">Back</span>-->
+<!--        <div class="logo">MADHUT</div>-->
+<!--    </div>-->
+
+<!--    <div class="nav-right">-->
+<!--        <div class="cart-btn" onclick="goToCart()">-->
+<!--            🛒 Cart <span class="cart-count" id="cartCount">0</span>-->
+<!--        </div>-->
+<!--        <div id="authSection"></div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<div class="wrapper">-->
+<!--    <div class="container">-->
+
+<!--        <div>-->
+<!--            <img id="mainImage" class="main-image">-->
+
+<!--            <div id="thumbnailRow" class="thumbnail-row"></div>-->
+<!--        </div>-->
+
+<!--        <div class="details">-->
+
+<!--            <h2 id="productName"></h2>-->
+
+<!--            <div class="price" id="price"></div>-->
+
+<!--            <p id="description"></p>-->
+
+<!--            <h4>Select Size</h4>-->
+<!--            <div id="sizes" class="option-group"></div>-->
+
+<!--            <h4 style="margin-top:20px;">Select Color</h4>-->
+<!--            <div id="colors" class="option-group"></div>-->
+
+<!--            <h4 style="margin-top:20px;">Quantity</h4>-->
+
+<!--            <div class="quantity-box">-->
+<!--                <button onclick="changeQty(-1)">-</button>-->
+<!--                <input type="number" id="quantity" value="1" min="1">-->
+<!--                <button onclick="changeQty(1)">+</button>-->
+<!--            </div>-->
+
+<!--            <div class="action-buttons">-->
+<!--                <button class="add-btn" onclick="addToCart()">Add To Cart</button>-->
+<!--                <button class="buy-btn" onclick="buyNow()">Buy Now</button>-->
+<!--            </div>-->
+
+<!--        </div>-->
+
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+
+<!--    /* ====== YOUR ORIGINAL JS (UNCHANGED) ====== */-->
+
+<!--    let selectedSize = null;-->
+<!--    let selectedColor = null;-->
+<!--    let productId = new URLSearchParams(window.location.search).get("id");-->
+
+<!--    let currentProductPrice = null;-->
+<!--    let currentProductImage = null;-->
+<!--    let isLoading = false;-->
+
+<!--    function getToken(){-->
+<!--    return localStorage.getItem("userToken") || sessionStorage.getItem("userToken");-->
+<!--    }-->
+
+<!--    function isLoggedIn(){-->
+<!--    return !!getToken();-->
+<!--    }-->
+
+<!--    function updateAuthUI(){-->
+<!--    const authSection=document.getElementById("authSection");-->
+<!--    authSection.innerHTML=isLoggedIn()-->
+<!--    ? `<div class="auth-btn" onclick="logout()">Logout</div>`-->
+<!--    : `<div class="auth-btn" onclick="goToLogin()">Login</div>`;-->
+<!--    }-->
+
+<!--    function showSkeleton(){-->
+<!--    document.getElementById("productName").innerText="Loading...";-->
+<!--    document.getElementById("price").innerText="Loading...";-->
+<!--    document.getElementById("description").innerText="Please wait...";-->
+<!--    }-->
+
+<!--    function getCacheKey(){-->
+<!--    return `product_detail_${productId}`;-->
+<!--    }-->
+
+<!--    async function loadProduct(){-->
+
+<!--    if(isLoading) return;-->
+<!--    isLoading = true;-->
+
+<!--    showSkeleton();-->
+
+<!--    const cacheKey = getCacheKey();-->
+<!--    const cachedData = sessionStorage.getItem(cacheKey);-->
+
+<!--    if(cachedData){-->
+<!--    const product = JSON.parse(cachedData);-->
+<!--    renderProduct(product);-->
+<!--    isLoading = false;-->
+<!--    return;-->
+<!--    }-->
+
+<!--    try{-->
+
+<!--    const res=await fetch(`https://madhut-5.onrender.com/user/product/detail/?productId=${productId}`);-->
+
+<!--    const product=await res.json();-->
+
+<!--    sessionStorage.setItem(cacheKey, JSON.stringify(product));-->
+
+<!--    renderProduct(product);-->
+
+<!--    }catch{-->
+
+<!--    document.getElementById("productName").innerText="Failed to load product";-->
+
+<!--    }-->
+
+<!--    isLoading = false;-->
+
+<!--    }-->
+
+<!--    function renderProduct(product){-->
+
+<!--    currentProductPrice = product.price;-->
+<!--    currentProductImage = product.images?.[0];-->
+
+<!--    document.getElementById("productName").innerText=product.name;-->
+<!--    document.getElementById("price").innerText="₹"+product.price;-->
+<!--    document.getElementById("description").innerText=product.description;-->
+
+<!--    const mainImg = document.getElementById("mainImage");-->
+
+<!--    mainImg.src=currentProductImage;-->
+
+<!--    mainImg.loading="lazy";-->
+
+<!--    const thumbRow = document.getElementById("thumbnailRow");-->
+
+<!--    thumbRow.innerHTML="";-->
+
+<!--    product.images.forEach(img=>{-->
+
+<!--    const image=document.createElement("img");-->
+
+<!--    image.src=img;-->
+
+<!--    image.loading="lazy";-->
+
+<!--    image.onclick=()=>{-->
+
+<!--    mainImg.src=img;-->
+
+<!--    currentProductImage = img;-->
+
+<!--    window.scrollTo({top:0, behavior:"smooth"});-->
+
+<!--    };-->
+
+<!--    thumbRow.appendChild(image);-->
+
+<!--    });-->
+
+<!--    createOptions("sizes",product.sizes,"size");-->
+
+<!--    createOptions("colors",product.colors,"color");-->
+
+<!--    }-->
+
+<!--    function createOptions(id,data,type){-->
+
+<!--    const div=document.getElementById(id);-->
+
+<!--    div.innerHTML="";-->
+
+<!--    data.forEach(item=>{-->
+
+<!--    const span=document.createElement("span");-->
+
+<!--    span.innerText=item;-->
+
+<!--    span.onclick=()=>{-->
+
+<!--    document.querySelectorAll("#"+id+" span").forEach(s=>s.classList.remove("active"));-->
+
+<!--    span.classList.add("active");-->
+
+<!--    if(type==="size") selectedSize=item;-->
+
+<!--    if(type==="color") selectedColor=item;-->
+
+<!--    };-->
+
+<!--    div.appendChild(span);-->
+
+<!--    });-->
+
+<!--    }-->
+
+<!--    function changeQty(val){-->
+
+<!--    const qty=document.getElementById("quantity");-->
+
+<!--    qty.value=Math.max(1,parseInt(qty.value)+val);-->
+
+<!--    }-->
+
+<!--    async function addToCart(){-->
+
+<!--    if(!selectedSize || !selectedColor){-->
+
+<!--    alert("Please select size and color");-->
+
+<!--    return;-->
+
+<!--    }-->
+
+<!--    if(!isLoggedIn()){-->
+
+<!--    goToLogin();-->
+
+<!--    return;-->
+
+<!--    }-->
+
+<!--    const btn = document.querySelector(".add-btn");-->
+
+<!--    btn.innerText = "Adding...";-->
+
+<!--    btn.disabled = true;-->
+
+<!--    const payload={-->
+
+<!--    product_id:productId,-->
+
+<!--    size:selectedSize,-->
+
+<!--    color:selectedColor,-->
+
+<!--    quantity:parseInt(document.getElementById("quantity").value),-->
+
+<!--    price: currentProductPrice,-->
+
+<!--    image: currentProductImage-->
+
+<!--    };-->
+
+<!--    try{-->
+
+<!--    await fetch("https://madhut-5.onrender.com/user/add/item/cart",{-->
+
+<!--    method:"POST",-->
+
+<!--    headers:{-->
+
+<!--    "Content-Type":"application/json",-->
+
+<!--    "Authorization":"Bearer "+getToken()-->
+
+<!--    },-->
+
+<!--    body:JSON.stringify(payload)-->
+
+<!--    });-->
+
+<!--    btn.innerText = "Added ";-->
+
+<!--    updateCartCount();-->
+
+<!--    setTimeout(()=>{-->
+
+<!--    btn.innerText="Add To Cart";-->
+
+<!--    btn.disabled=false;-->
+
+<!--    },1500);-->
+
+<!--    }catch{-->
+
+<!--    btn.innerText="Add To Cart";-->
+
+<!--    btn.disabled=false;-->
+
+<!--    }-->
+
+<!--    }-->
+
+<!--    async function updateCartCount(){-->
+
+<!--    if(!isLoggedIn()){-->
+
+<!--    document.getElementById("cartCount").innerText=0;-->
+
+<!--    return;-->
+
+<!--    }-->
+
+<!--    try{-->
+
+<!--    const res=await fetch("https://madhut-5.onrender.com/fetch/total/item/in/cart",{-->
+
+<!--    headers:{-->
+
+<!--    "Authorization":"Bearer "+getToken()-->
+
+<!--    }-->
+
+<!--    });-->
+
+<!--    const data=await res.json();-->
+
+<!--    document.getElementById("cartCount").innerText=data.count || 0;-->
+
+<!--    }catch{-->
+
+<!--    document.getElementById("cartCount").innerText=0;-->
+
+<!--    }-->
+
+<!--    }-->
+
+<!--    function buyNow(){-->
+
+<!--    if(!selectedSize || !selectedColor){-->
+
+<!--    alert("Please select size and color");-->
+
+<!--    return;-->
+
+<!--    }-->
+
+<!--    if(!isLoggedIn()){-->
+
+<!--    goToLogin();-->
+
+<!--    return;-->
+
+<!--    }-->
+
+<!--    const productData = {-->
+
+<!--    product_id: productId,-->
+
+<!--    name: document.getElementById("productName").innerText,-->
+
+<!--    price: currentProductPrice,-->
+
+<!--    image: currentProductImage,-->
+
+<!--    size: selectedSize,-->
+
+<!--    color: selectedColor,-->
+
+<!--    quantity: parseInt(document.getElementById("quantity").value)-->
+
+<!--    };-->
+
+<!--    sessionStorage.setItem("buyNowProduct", JSON.stringify(productData));-->
+
+<!--    window.location.href = "check_out.html";-->
+
+<!--    }-->
+
+<!--    function goBack(){window.history.back();}-->
+
+<!--    function goToCart(){window.location.href="cart.html";}-->
+
+<!--    function goToLogin(){window.location.href="user_login.html";}-->
+
+<!--    function logout(){-->
+
+<!--    localStorage.removeItem("userToken");-->
+
+<!--    sessionStorage.removeItem("userToken");-->
+
+<!--    window.location.href="user_login.html";-->
+
+<!--    }-->
+
+<!--    window.addEventListener("DOMContentLoaded",()=>{-->
+
+<!--    updateAuthUI();-->
+
+<!--    loadProduct();-->
+
+<!--    updateCartCount();-->
+
+<!--    });-->
+
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>MadHut | Product Detail</title>
-    <link rel="icon" type="image/x-icon" href="static/images/mad_hut.jpeg">
 
     <style>
-
-        *{
-        margin:0;
-        padding:0;
-        box-sizing:border-box;
-        font-family:'Segoe UI',sans-serif;
-        }
-
-        body{
-        background:#f5f7fa;
-        }
-
-        /* NAVBAR */
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
+        body{background:#f5f7fa;}
 
         .navbar{
-        position:sticky;
-        top:0;
-        background:#111;
-        color:white;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
-        padding:15px 40px;
-        z-index:1000;
-        flex-wrap:wrap;
+        position:sticky;top:0;background:#111;color:white;
+        display:flex;justify-content:space-between;align-items:center;
+        padding:15px 40px;z-index:1000;
         }
 
-        .nav-left{
-        display:flex;
-        align-items:center;
-        gap:20px;
-        }
+        .logo{font-weight:bold;}
 
-        .nav-left span{
-        cursor:pointer;
-        font-weight:600;
-        }
-
-        .logo{
-        font-size:20px;
-        font-weight:bold;
-        }
-
-        .nav-right{
-        display:flex;
-        align-items:center;
-        gap:25px;
-        }
-
-        .cart-btn{
-        cursor:pointer;
-        }
-
-        .cart-count{
-        background:#0fa36b;
-        color:white;
-        padding:3px 8px;
-        border-radius:20px;
-        font-size:12px;
-        margin-left:6px;
-        }
-
-        .auth-btn{
-        cursor:pointer;
-        }
-
-        .auth-btn:hover{
-        color:#0fa36b;
-        }
-
-        /* WRAPPER */
-
-        .wrapper{
-        max-width:1200px;
-        margin:40px auto;
-        padding:0 20px;
-        }
-
-        /* PRODUCT CONTAINER */
+        .wrapper{max-width:1200px;margin:40px auto;padding:0 20px;}
 
         .container{
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        gap:50px;
-        background:white;
-        padding:40px;
-        border-radius:14px;
-        box-shadow:0 8px 25px rgba(0,0,0,0.06);
+        display:grid;grid-template-columns:1fr 1fr;
+        gap:40px;background:white;padding:30px;border-radius:12px;
         }
-
-        /* IMAGE */
 
         .main-image{
-        width:100%;
-        max-height:600px;
-        object-fit:contain;
-        border-radius:12px;
-        background:white;
-        transition:transform 0.4s ease;
+        width:100%;max-height:500px;object-fit:contain;
+        transition:0.3s;
         }
+        .main-image:hover{transform:scale(1.05);}
 
-        .main-image:hover{
-        transform:scale(1.08);
-        }
+        .thumbnail-row{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
+        .thumbnail-row img{width:70px;height:70px;cursor:pointer;}
 
-        /* THUMBNAILS */
-
-        .thumbnail-row{
-        display:flex;
-        gap:12px;
-        margin-top:18px;
-        flex-wrap:wrap;
-        }
-
-        .thumbnail-row img{
-        width:75px;
-        height:75px;
-        object-fit:cover;
-        border-radius:8px;
-        cursor:pointer;
-        border:2px solid transparent;
-        }
-
-        .thumbnail-row img:hover{
-        border:2px solid #0fa36b;
-        }
-
-        /* DETAILS */
-
-        .details h2{
-        font-size:30px;
-        margin-bottom:15px;
-        font-weight:700;
-        }
-
-        .price{
-        font-size:26px;
-        color:#0fa36b;
-        font-weight:700;
-        }
-
-        .details p{
-        margin-top:10px;
-        line-height:1.6;
-        color:#555;
-        }
-
-        /* OPTIONS */
-
-        .option-group{
-        display:flex;
-        flex-wrap:wrap;
-        gap:10px;
-        margin-top:8px;
-        }
-
+        .option-group{display:flex;gap:10px;margin-top:10px;flex-wrap:wrap;}
         .option-group span{
-        padding:8px 14px;
-        border:1px solid #ddd;
-        border-radius:6px;
-        cursor:pointer;
-        font-size:14px;
+        padding:8px 12px;border:1px solid #ddd;cursor:pointer;
         }
+        .option-group span.active{background:black;color:white;}
 
-        .option-group span.active{
-        background:#111;
-        color:white;
-        border-color:#111;
-        }
+        .quantity-box{margin-top:10px;display:flex;gap:10px;}
+        button{cursor:pointer;}
 
-        /* QUANTITY */
-
-        .quantity-box{
-        display:flex;
-        align-items:center;
-        gap:10px;
-        margin-top:10px;
-        }
-
-        .quantity-box button{
-        width:35px;
-        height:35px;
-        border:none;
-        background:#111;
-        color:white;
-        border-radius:6px;
-        cursor:pointer;
-        }
-
-        .quantity-box input{
-        width:60px;
-        text-align:center;
-        height:35px;
-        border:1px solid #ddd;
-        border-radius:6px;
-        }
-
-        /* BUTTONS */
-
-        .action-buttons{
-        margin-top:30px;
-        display:flex;
-        gap:20px;
-        }
-
-        .add-btn,.buy-btn{
-        flex:1;
-        padding:14px;
-        border:none;
-        border-radius:8px;
-        font-size:16px;
-        cursor:pointer;
-        font-weight:600;
-        }
-
-        .add-btn{
-        background:#111;
-        color:white;
-        }
-
-        .buy-btn{
-        background:#0fa36b;
-        color:white;
-        }
-
-        /* ================= RESPONSIVE ================= */
-
-        /* Tablet */
-
-        @media (max-width:1000px){
-
-        .container{
-        grid-template-columns:1fr;
-        gap:30px;
-        }
-
-        .main-image{
-        max-height:400px;
-        }
-
-        }
-
-        /* Mobile */
-
-        @media (max-width:600px){
-
-        .navbar{
-        padding:15px 20px;
-        }
-
-        .logo{
-        font-size:18px;
-        }
-
-        .wrapper{
-        margin:20px auto;
-        }
-
-        .container{
-        padding:20px;
-        }
-
-        .details h2{
-        font-size:24px;
-        }
-
-        .price{
-        font-size:22px;
-        }
-
-        .thumbnail-row img{
-        width:60px;
-        height:60px;
-        }
-
-        .action-buttons{
-        flex-direction:column;
-        }
-
-        .add-btn,.buy-btn{
-        width:100%;
-        }
-
-        }
-
+        .action-buttons{margin-top:20px;display:flex;gap:10px;}
+        .add-btn{background:black;color:white;padding:10px;}
+        .buy-btn{background:#0fa36b;color:white;padding:10px;}
     </style>
 </head>
 
 <body>
 
 <div class="navbar">
-    <div class="nav-left">
-        <span onclick="goBack()">Back</span>
-        <div class="logo">MADHUT</div>
-    </div>
-
-    <div class="nav-right">
-        <div class="cart-btn" onclick="goToCart()">
-            🛒 Cart <span class="cart-count" id="cartCount">0</span>
-        </div>
-        <div id="authSection"></div>
-    </div>
+    <div onclick="goBack()">← Back</div>
+    <div class="logo">MADHUT</div>
+    <div onclick="goToCart()">🛒 <span id="cartCount">0</span></div>
 </div>
 
 <div class="wrapper">
     <div class="container">
 
+        <!-- LEFT -->
         <div>
             <img id="mainImage" class="main-image">
-
             <div id="thumbnailRow" class="thumbnail-row"></div>
         </div>
 
-        <div class="details">
-
-            <h2 id="productName"></h2>
-
-            <div class="price" id="price"></div>
-
+        <!-- RIGHT -->
+        <div>
+            <h2 id="productName">Loading...</h2>
+            <h3 id="price"></h3>
             <p id="description"></p>
 
-            <h4>Select Size</h4>
+            <h4>Size</h4>
             <div id="sizes" class="option-group"></div>
 
-            <h4 style="margin-top:20px;">Select Color</h4>
+            <h4>Color</h4>
             <div id="colors" class="option-group"></div>
 
-            <h4 style="margin-top:20px;">Quantity</h4>
-
+            <h4>Qty</h4>
             <div class="quantity-box">
                 <button onclick="changeQty(-1)">-</button>
                 <input type="number" id="quantity" value="1" min="1">
@@ -342,10 +783,9 @@
             </div>
 
             <div class="action-buttons">
-                <button class="add-btn" onclick="addToCart()">Add To Cart</button>
-                <button class="buy-btn" onclick="buyNow()">Buy Now</button>
+                <button class="add-btn" onclick="addToCart()">Add</button>
+                <button class="buy-btn" onclick="buyNow()">Buy</button>
             </div>
-
         </div>
 
     </div>
@@ -353,344 +793,225 @@
 
 <script>
 
-    /* ====== YOUR ORIGINAL JS (UNCHANGED) ====== */
+    let selectedSize=null;
+    let selectedColor=null;
+    let productId=new URLSearchParams(window.location.search).get("id");
 
-    let selectedSize = null;
-    let selectedColor = null;
-    let productId = new URLSearchParams(window.location.search).get("id");
+    let currentProductPrice=null;
+    let currentProductImage=null;
 
-    let currentProductPrice = null;
-    let currentProductImage = null;
-    let isLoading = false;
+    /* ================= QUICK LOAD ================= */
+
+    const quickData=sessionStorage.getItem("quickProduct");
+    if(quickData){
+        renderProduct(JSON.parse(quickData));
+    }
+
+    /* ================= AUTH ================= */
 
     function getToken(){
-    return localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+    return localStorage.getItem("userToken")||sessionStorage.getItem("userToken");
     }
+    function isLoggedIn(){return !!getToken();}
 
-    function isLoggedIn(){
-    return !!getToken();
-    }
-
-    function updateAuthUI(){
-    const authSection=document.getElementById("authSection");
-    authSection.innerHTML=isLoggedIn()
-    ? `<div class="auth-btn" onclick="logout()">Logout</div>`
-    : `<div class="auth-btn" onclick="goToLogin()">Login</div>`;
-    }
-
-    function showSkeleton(){
-    document.getElementById("productName").innerText="Loading...";
-    document.getElementById("price").innerText="Loading...";
-    document.getElementById("description").innerText="Please wait...";
-    }
-
-    function getCacheKey(){
-    return `product_detail_${productId}`;
-    }
+    /* ================= LOAD PRODUCT ================= */
 
     async function loadProduct(){
 
-    if(isLoading) return;
-    isLoading = true;
+    const cacheKey=`product_${productId}`;
+    const cached=sessionStorage.getItem(cacheKey);
 
-    showSkeleton();
-
-    const cacheKey = getCacheKey();
-    const cachedData = sessionStorage.getItem(cacheKey);
-
-    if(cachedData){
-    const product = JSON.parse(cachedData);
-    renderProduct(product);
-    isLoading = false;
-    return;
+    if(cached){
+        renderProduct(JSON.parse(cached));
     }
 
     try{
+        const res=await fetch(`https://madhut-5.onrender.com/user/product/detail/?productId=${productId}`);
+        const data=await res.json();
 
-    const res=await fetch(`https://madhut-5.onrender.com/user/product/detail/?productId=${productId}`);
-
-    const product=await res.json();
-
-    sessionStorage.setItem(cacheKey, JSON.stringify(product));
-
-    renderProduct(product);
+        sessionStorage.setItem(cacheKey,JSON.stringify(data));
+        renderProduct(data);
 
     }catch{
-
-    document.getElementById("productName").innerText="Failed to load product";
+        document.getElementById("productName").innerText="Error loading";
+    }
 
     }
 
-    isLoading = false;
+    /* ================= RENDER ================= */
 
-    }
+    function renderProduct(p){
 
-    function renderProduct(product){
+    currentProductPrice=p.price;
+    currentProductImage=p.images?.[0];
 
-    currentProductPrice = product.price;
-    currentProductImage = product.images?.[0];
+    document.getElementById("productName").innerText=p.name;
+    document.getElementById("price").innerText="₹"+p.price;
+    document.getElementById("description").innerText=p.description;
 
-    document.getElementById("productName").innerText=product.name;
-    document.getElementById("price").innerText="₹"+product.price;
-    document.getElementById("description").innerText=product.description;
+    const main=document.getElementById("mainImage");
+    main.src=currentProductImage;
+    main.loading="eager";
 
-    const mainImg = document.getElementById("mainImage");
+    /* thumbnails optimized */
+    const row=document.getElementById("thumbnailRow");
+    row.innerHTML="";
+    const fragment=document.createDocumentFragment();
 
-    mainImg.src=currentProductImage;
-
-    mainImg.loading="lazy";
-
-    const thumbRow = document.getElementById("thumbnailRow");
-
-    thumbRow.innerHTML="";
-
-    product.images.forEach(img=>{
-
-    const image=document.createElement("img");
-
-    image.src=img;
-
-    image.loading="lazy";
-
-    image.onclick=()=>{
-
-    mainImg.src=img;
-
-    currentProductImage = img;
-
-    window.scrollTo({top:0, behavior:"smooth"});
-
-    };
-
-    thumbRow.appendChild(image);
-
+    p.images.forEach(img=>{
+        const i=document.createElement("img");
+        i.src=img;
+        i.loading="lazy";
+        i.onclick=()=>{
+            main.src=img;
+            currentProductImage=img;
+        };
+        fragment.appendChild(i);
     });
 
-    createOptions("sizes",product.sizes,"size");
+    row.appendChild(fragment);
 
-    createOptions("colors",product.colors,"color");
+    /* options */
+    createOptions("sizes",p.sizes,"size");
+    createOptions("colors",p.colors,"color");
 
     }
+
+    /* ================= OPTIONS ================= */
 
     function createOptions(id,data,type){
 
     const div=document.getElementById(id);
-
     div.innerHTML="";
 
     data.forEach(item=>{
+        const span=document.createElement("span");
+        span.innerText=item;
 
-    const span=document.createElement("span");
+        span.onclick=()=>{
+            document.querySelectorAll("#"+id+" span").forEach(s=>s.classList.remove("active"));
+            span.classList.add("active");
 
-    span.innerText=item;
+            if(type==="size") selectedSize=item;
+            if(type==="color") selectedColor=item;
+        };
 
-    span.onclick=()=>{
-
-    document.querySelectorAll("#"+id+" span").forEach(s=>s.classList.remove("active"));
-
-    span.classList.add("active");
-
-    if(type==="size") selectedSize=item;
-
-    if(type==="color") selectedColor=item;
-
-    };
-
-    div.appendChild(span);
-
+        div.appendChild(span);
     });
 
     }
 
-    function changeQty(val){
-
-    const qty=document.getElementById("quantity");
-
-    qty.value=Math.max(1,parseInt(qty.value)+val);
-
-    }
+    /* ================= CART ================= */
 
     async function addToCart(){
 
-    if(!selectedSize || !selectedColor){
-
-    alert("Please select size and color");
-
-    return;
-
+    if(!selectedSize||!selectedColor){
+        alert("Select size & color");
+        return;
     }
 
     if(!isLoggedIn()){
-
-    goToLogin();
-
-    return;
-
+        goToLogin();
+        return;
     }
 
-    const btn = document.querySelector(".add-btn");
-
-    btn.innerText = "Adding...";
-
-    btn.disabled = true;
-
-    const payload={
-
-    product_id:productId,
-
-    size:selectedSize,
-
-    color:selectedColor,
-
-    quantity:parseInt(document.getElementById("quantity").value),
-
-    price: currentProductPrice,
-
-    image: currentProductImage
-
-    };
+    const btn=document.querySelector(".add-btn");
+    btn.innerHTML="✔ Adding...";
+    btn.disabled=true;
 
     try{
-
     await fetch("https://madhut-5.onrender.com/user/add/item/cart",{
-
     method:"POST",
-
     headers:{
-
     "Content-Type":"application/json",
-
     "Authorization":"Bearer "+getToken()
-
     },
-
-    body:JSON.stringify(payload)
-
+    body:JSON.stringify({
+    product_id:productId,
+    size:selectedSize,
+    color:selectedColor,
+    quantity:parseInt(quantity.value),
+    price:currentProductPrice,
+    image:currentProductImage
+    })
     });
 
-    btn.innerText = "Added ";
+    btn.innerHTML="✔ Added";
+
+    setTimeout(()=>{
+    btn.innerHTML="Add";
+    btn.disabled=false;
+    },1200);
 
     updateCartCount();
 
-    setTimeout(()=>{
-
-    btn.innerText="Add To Cart";
-
-    btn.disabled=false;
-
-    },1500);
-
     }catch{
-
-    btn.innerText="Add To Cart";
-
+    btn.innerHTML="Add";
     btn.disabled=false;
-
     }
 
     }
+
+    /* ================= BUY ================= */
+
+    function buyNow(){
+
+    if(!selectedSize||!selectedColor){
+        alert("Select size & color");
+        return;
+    }
+
+    sessionStorage.setItem("buyNowProduct",JSON.stringify({
+    product_id:productId,
+    price:currentProductPrice,
+    image:currentProductImage,
+    size:selectedSize,
+    color:selectedColor,
+    quantity:parseInt(quantity.value)
+    }));
+
+    window.location.href="check_out.html";
+
+    }
+
+    /* ================= EXTRA ================= */
+
+    function changeQty(v){
+    let q=document.getElementById("quantity");
+    q.value=Math.max(1,parseInt(q.value)+v);
+    }
+
+    function goBack(){history.back();}
+    function goToCart(){location.href="cart.html";}
+    function goToLogin(){location.href="user_login.html";}
+
+    /* ================= CART COUNT ================= */
 
     async function updateCartCount(){
 
     if(!isLoggedIn()){
-
     document.getElementById("cartCount").innerText=0;
-
     return;
-
     }
 
     try{
-
     const res=await fetch("https://madhut-5.onrender.com/fetch/total/item/in/cart",{
-
-    headers:{
-
-    "Authorization":"Bearer "+getToken()
-
-    }
-
+    headers:{"Authorization":"Bearer "+getToken()}
     });
-
     const data=await res.json();
-
-    document.getElementById("cartCount").innerText=data.count || 0;
-
+    document.getElementById("cartCount").innerText=data.count||0;
     }catch{
-
     document.getElementById("cartCount").innerText=0;
-
     }
 
     }
 
-    function buyNow(){
+    /* ================= INIT ================= */
 
-    if(!selectedSize || !selectedColor){
-
-    alert("Please select size and color");
-
-    return;
-
-    }
-
-    if(!isLoggedIn()){
-
-    goToLogin();
-
-    return;
-
-    }
-
-    const productData = {
-
-    product_id: productId,
-
-    name: document.getElementById("productName").innerText,
-
-    price: currentProductPrice,
-
-    image: currentProductImage,
-
-    size: selectedSize,
-
-    color: selectedColor,
-
-    quantity: parseInt(document.getElementById("quantity").value)
-
-    };
-
-    sessionStorage.setItem("buyNowProduct", JSON.stringify(productData));
-
-    window.location.href = "check_out.html";
-
-    }
-
-    function goBack(){window.history.back();}
-
-    function goToCart(){window.location.href="cart.html";}
-
-    function goToLogin(){window.location.href="user_login.html";}
-
-    function logout(){
-
-    localStorage.removeItem("userToken");
-
-    sessionStorage.removeItem("userToken");
-
-    window.location.href="user_login.html";
-
-    }
-
-    window.addEventListener("DOMContentLoaded",()=>{
-
-    updateAuthUI();
-
+    window.onload=()=>{
     loadProduct();
-
     updateCartCount();
-
-    });
+    };
 
 </script>
 
