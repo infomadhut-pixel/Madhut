@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>MadHut Admin - Add Product</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
         body{
@@ -159,6 +160,9 @@
         .image-box.has-image .preview{
             display:block;
         }
+        .image-box.has-image .remove-btn{
+            display:block;
+        }
 
         /* ===== BUTTON ===== */
         button{
@@ -169,6 +173,32 @@
             border-radius:6px;
             cursor:pointer;
         }
+        .remove-btn{
+            position:absolute;
+            top:8px;
+            right:8px;
+            width:26px;
+            height:26px;
+            background:rgba(0,0,0,0.6);
+            color:white;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            border-radius:50%;
+            cursor:pointer;
+            font-size:12px;
+            opacity:0;
+            transition:0.2s;
+            z-index:10;
+        }
+        .image-box:hover .remove-btn,
+            .image-box.has-image .remove-btn{
+                opacity:1;
+            }
+       .remove-btn:hover{
+            background:pink;
+            transform:scale(1.1);
+       }
 
         button:hover{
             background:#0fa36b;
@@ -247,35 +277,43 @@
             <label>Upload Images (Min 1 required)</label>
 
             <div class="image-upload">
+
+                <!-- 🔥 ONLY CHANGE: remove button added -->
                 <div class="image-box" id="box1">
                     <span class="upload-text">Click to Upload</span>
                     <input type="file" id="img1" accept="image/*" required>
                     <img class="preview" id="preview1">
+                    <span class="remove-btn" onclick="removeImage(1)"><i class="fa-solid fa-xmark"></i></span>
                 </div>
 
                 <div class="image-box" id="box2">
                     <span class="upload-text">Click to Upload</span>
-                    <input type="file" id="img2" accept="image/*">
+                    <input type="file" id="img2">
                     <img class="preview" id="preview2">
+                    <span class="remove-btn" onclick="removeImage(2)"><i class="fa-solid fa-xmark"></i></span>
                 </div>
 
                 <div class="image-box" id="box3">
                     <span class="upload-text">Click to Upload</span>
-                    <input type="file" id="img3" accept="image/*">
+                    <input type="file" id="img3">
                     <img class="preview" id="preview3">
+                    <span class="remove-btn" onclick="removeImage(3)"><i class="fa-solid fa-xmark"></i></span>
                 </div>
 
                 <div class="image-box" id="box4">
                     <span class="upload-text">Click to Upload</span>
-                    <input type="file" id="img4" accept="image/*">
+                    <input type="file" id="img4">
                     <img class="preview" id="preview4">
+                    <span class="remove-btn" onclick="removeImage(4)"><i class="fa-solid fa-xmark"></i></span>
                 </div>
 
                 <div class="image-box" id="box5">
                     <span class="upload-text">Click to Upload</span>
-                    <input type="file" id="img5" accept="image/*">
+                    <input type="file" id="img5">
                     <img class="preview" id="preview5">
+                    <span class="remove-btn" onclick="removeImage(5)"><i class="fa-solid fa-xmark"></i></span>
                 </div>
+
             </div>
         </div>
 
@@ -350,6 +388,11 @@
                 previewImage(this,`preview${i}`,`box${i}`)
             })
 
+    }
+    function removeImage(index){
+        document.getElementById(`img${index}`).value = "";
+        document.getElementById(`preview${index}`).src = "";
+        document.getElementById(`box${index}`).classList.remove("has-image");
     }
 
     const form = document.getElementById("productForm");
@@ -470,6 +513,5 @@
     }
 
 </script>
-
 </body>
 </html>
