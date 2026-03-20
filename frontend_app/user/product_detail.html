@@ -422,7 +422,7 @@
 
     /* 2. always fetch in background (update fresh data) */
     try{
-        const res=await fetch(`http://127.0.0.1:5000/user/product/detail/?productId=${productId}`);
+        const res=await fetch(`https://madhut-2.onrender.com/user/product/detail/?productId=${productId}`);
 
         const product=await res.json();
 
@@ -550,7 +550,7 @@
 
     try{
 
-    await fetch("http://127.0.0.1:5000/user/add/item/cart",{
+    await fetch("https://madhut-2.onrender.com/user/add/item/cart",{
     method:"POST",
     headers:{
     "Content-Type":"application/json",
@@ -585,7 +585,7 @@
 
     try{
 
-    const res=await fetch("http://127.0.0.1:5000/fetch/total/item/in/cart",{
+    const res=await fetch("https://madhut-2.onrender.com/fetch/total/item/in/cart",{
     headers:{
     "Authorization":"Bearer "+getToken()
     }
