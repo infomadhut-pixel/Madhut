@@ -146,7 +146,7 @@
                                 <p class="font-bold">₹${item.price}</p>
 
                                 ${
-                                    order.order_status === "delivered"
+                                    order.order_status === "pending"
                                     ? `
                                     <button onclick="openReview('${item.product_id}', '${order.order_id}')"
                                     class="mt-2 inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium
