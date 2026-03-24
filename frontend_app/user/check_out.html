@@ -5,6 +5,7 @@
     <title>MadHut | Checkout</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="static/images/mad_hut.jpeg">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script>
         function getToken(){
@@ -317,63 +318,106 @@
 
     async function placeOrder(){
 
-        if(!validateForm()){
-            return;
-        }
+    if(!validateForm()) return;
 
-        const token = getToken();
+    const token = getToken();
 
-        if(!token){
-            alert("Session expired. Please login again.");
-            window.location.href = "user_login.html";
-            return;
-        }
+    if(!token){
+        alert("Session expired. Please login again.");
+        window.location.href = "user_login.html";
+        return;
+    }
 
-        const orderData = {
-            ...checkoutItem,
-            full_name: document.getElementById("fullName").value.trim(),
-            phone: document.getElementById("phone").value.trim(),
-            address: document.getElementById("address").value.trim(),
-            city: document.getElementById("city").value.trim(),
-            pincode: document.getElementById("pincode").value.trim(),
-            payment_mode: document.getElementById("paymentMode").value
+    const orderData = {
+        ...checkoutItem,
+        full_name: document.getElementById("fullName").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        address: document.getElementById("address").value.trim(),
+        city: document.getElementById("city").value.trim(),
+        pincode: document.getElementById("pincode").value.trim(),
+        payment_mode: document.getElementById("paymentMode").value
+    };
+
+    // 🟢 COD FLOW (simple)
+    if(orderData.payment_mode === "COD"){
+        return sendOrderToBackend(orderData, token);
+    }
+
+    // 🔵 ONLINE PAYMENT FLOW
+    try{
+        const paymentRes = await fetch("https://madhut-2.onrender.com/payment/create-order",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                amount: checkoutItem.price * checkoutItem.quantity
+            })
+        });
+
+        const paymentData = await paymentRes.json();
+
+        const options = {
+            key: paymentData.key,
+            amount: paymentData.amount,
+            currency: "INR",
+            name: "MadHut",
+            description: "T-shirt Purchase",
+            order_id: paymentData.order_id,
+
+            handler: async function (response){
+
+                // 👇 after payment success
+                orderData.razorpay_payment_id = response.razorpay_payment_id;
+
+                await sendOrderToBackend(orderData, token);
+            },
+
+            prefill: {
+                name: document.getElementById("fullName").value,
+                contact: document.getElementById("phone").value
+            },
+
+            theme: {
+                color: "#0fa36b"
+            }
         };
 
-        try{
-            const res = await fetch("https://madhut-2.onrender.com/order/checkout",{
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json",
-                    "Authorization":"Bearer " + token
-                },
-                body:JSON.stringify(orderData)
-            });
+        const rzp = new Razorpay(options);
+        rzp.open();
 
-            const data = await res.json();
-
-            if(res.status === 401){
-                alert("Session expired. Please login again.");
-                localStorage.removeItem("userToken");
-                sessionStorage.removeItem("userToken");
-                window.location.href = "user_login.html";
-                return;
-            }
-
-            if(res.ok){
-
-                sessionStorage.removeItem("buyNowProduct");
-
-                alert("Order placed successfully 🎉");
-                window.location.href="index.html";
-            }else{
-                alert(data.message || "Something went wrong");
-            }
-
-        }catch(error){
-            console.error("Checkout Error:", error);
-            alert("Server error. Try again.");
-        }
+    }catch(err){
+        console.error(err);
+        alert("Payment failed");
     }
+}
+
+    async function sendOrderToBackend(orderData, token){
+
+    try{
+        const res = await fetch("https://madhut-2.onrender.com/order/checkout",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                "Authorization":"Bearer " + token
+            },
+            body:JSON.stringify(orderData)
+        });
+
+        const data = await res.json();
+
+        if(res.ok){
+            alert("Order placed successfully 🎉");
+            sessionStorage.removeItem("buyNowProduct");
+            window.location.href="index.html";
+        }else{
+            alert(data.message || "Something went wrong");
+        }
+
+    }catch(err){
+        alert("Server error");
+    }
+}
 
 </script>
 </body>
