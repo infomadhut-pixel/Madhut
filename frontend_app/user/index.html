@@ -387,7 +387,7 @@
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     // ===== CONFIG =====
-    const BASE_URL = "https://madhut-7.onrender.com"; // 🔥 CHANGE THIS
+    const BASE_URL = "https://madhut-7.onrender.com";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
@@ -419,9 +419,6 @@
     socket.on("new_product", addNewProductToTop);
     socket.on("delete_product", (data) => removeProductFromUI(data._id));
 
-    // =====================================
-    // 🔥 FETCH WITH TIMEOUT
-    // =====================================
     async function fetchWithTimeout(url, options = {}, timeout = 8000) {
         const controller = new AbortController();
         const id = setTimeout(() => controller.abort(), timeout);
@@ -436,9 +433,6 @@
         }
     }
 
-    // =====================================
-    // AUTH UI
-    // =====================================
     onAuthStateChanged(auth, (user) => {
 
         if (user) {
@@ -520,7 +514,7 @@
                 nextBatch = null;
             } else {
 
-                let url = `${BASE_URL}/user/tshirts?limit=30`;
+                let url = `${BASE_URL}/user/tshirts?limit=20`;
 
                 if (lastId) {
                     url += `&last_id=${lastId}`;
