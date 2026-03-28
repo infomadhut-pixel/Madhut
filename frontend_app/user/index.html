@@ -559,13 +559,16 @@
         loader.style.visibility = show ? "visible" : "hidden";
     }
 
-    window.addEventListener("scroll",()=>{
-        if(allLoaded) return;
+   window.addEventListener("scroll",()=>{
+        if(allLoaded || isLoading) return;
 
-        if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 200){
+        const scrollPosition = window.innerHeight + window.scrollY;
+        const threshold = document.body.scrollHeight - 100;
+
+        if(scrollPosition >= threshold){
             loadTshirts();
         }
-    });
+   });
 
     window.onload=()=>{
         updateAuthUI();
