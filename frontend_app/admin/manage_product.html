@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Products</title>
+
+    <style>
+        body{
+            font-family:Arial;
+            background:#f4f6f9;
+            padding:20px;
+        }
+
+        h2{
+            margin-bottom:20px;
+        }
+
+        /* Top Actions */
+        .actions{
+            display:flex;
+            gap:15px;
+            margin-bottom:25px;
+            flex-wrap:wrap;
+        }
+
+        .action-box{
+            background:white;
+            padding:20px;
+            border-radius:6px;
+            cursor:pointer;
+            box-shadow:0 2px 5px rgba(0,0,0,0.1);
+            min-width:180px;
+            text-align:center;
+            transition:0.2s;
+        }
+
+        .action-box:hover{
+            background:#ecf0f1;
+        }
+
+        /* Table */
+        table{
+            width:100%;
+            background:white;
+            border-collapse:collapse;
+        }
+
+        th, td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+            text-align:center;
+        }
+
+        th{
+            background:#2c3e50;
+            color:white;
+        }
+
+        img{
+            width:50px;
+            height:50px;
+            object-fit:cover;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Manage Products</h2>
+
+<div class="actions">
+
+    <div class="action-box" onclick="goAddProduct()"> Add Product</div>
+
+    <div class="action-box" onclick="goViewAll()"> View Products</div>
+
+    <div class="action-box" onclick="goReview()"> Manage Reviews</div>
+
+</div>
+
+<!-- PRODUCT TABLE -->
+
+
+<script>
+    function goAddProduct(){
+        window.location.href = "product_upload.html";
+    }
+     function goViewAll(){
+        window.location.href = "admin_product.html";
+    }
+    function goReview(){
+        window.location.href = "admin_review.html";
+    }
+
+
+/* ================= TOKEN ================= */
+<!--    function getToken(){-->
+<!--        return localStorage.getItem("userToken") || sessionStorage.getItem("userToken");-->
+<!--    }-->
+</script>
+
+</body>
+</html>

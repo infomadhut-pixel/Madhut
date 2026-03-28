@@ -15,6 +15,8 @@ class RemoveItemFromCart(MethodView):
 
     def delete(self):
         email = get_current_user()
+        if not email:
+            return {"message": "Unauthorized"}, 401
         cart_id = request.args.get('cart_id')
         response = self.cart_db.remove_and_update_cart_data(email, cart_id)
         return response

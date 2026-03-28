@@ -15,6 +15,6 @@ class FetchTshirt(MethodView):
     @cache.cached(timeout=120, query_string=True)
     def get(self):
         page = int(request.args.get('page', 1))
-        limit = int(request.args.get('limit', 15))
+        limit = int(request.args.get('limit', 5))
         result = self.tshirt_db.fetch_products(page, limit)
         return jsonify(result)

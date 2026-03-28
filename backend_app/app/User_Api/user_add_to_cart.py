@@ -14,6 +14,8 @@ class AddItemCart(MethodView):
 
     def post(self):
         email = get_current_user()
+        if not email:
+            return {"message": "Unauthorized"}, 401
         data = request.get_json()
         product_id = data['product_id']
         color = data['color']

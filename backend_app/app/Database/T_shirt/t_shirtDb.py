@@ -20,10 +20,11 @@ class TshirtDatabase:
                         'created_at': datetime.utcnow(),
                         'updated_at': datetime.utcnow(),
                         'random': random.random()}
+        image = images[0]
         result = self.collection.insert_one(product_data)
-        product_data['_id'] = str(result.inserted_id)
 
-        return {"message": 'Product added successfully', "success": True}, 201
+        return {"_id": str(result.inserted_id), "name": name, 'price': price, "old_price": old_price,
+                "image": image}
 
     def fetch_products(self, page, limit):
         skip = (page - 1) * limit
@@ -33,7 +34,9 @@ class TshirtDatabase:
             "name": 1,
             "price": 1,
             "old_price": 1,
-            "images": {"$slice": 1},
+            "discount_percent":1,
+            "images": {"$slice": 1}
+            
         }
 
         datas = (
@@ -77,14 +80,22 @@ class TshirtDatabase:
             product_list.append(data)
         return {'products': product_list}
 
+    def update_product_detail(self, project_id, data):
+        self.collection.update_one({"_id": ObjectId(project_id)}, {"$set": data})
+        return {"message": "Product updated..."}, 200
+
+    def delete_product(self, product_id):
+        response = self.collection.delete_one({'_id': ObjectId(product_id)})
+        if response.deleted_count > 0:
+            return {"message": "Deleted Successfully"}, 200
+        else:
+            return {"message": "Product not found or some unknown error occurred..."}, 404
+
     def update_stock(self, product_id, quantity):
-        # print(product_id, quantity)
-        stock_update = self.collection.update_one(
+        self.collection.update_one(
             {
                 "_id": product_id,
                 "stock": {"$gte": quantity}
             },
             {"$inc": {'stock': -quantity}}
         )
-
-

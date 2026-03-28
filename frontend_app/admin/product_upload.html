@@ -38,19 +38,16 @@
         }
 
         .back-btn-nav{
-            background:#f3f4f6;
-            color:#111;
-            border:1px solid #d1d5db;
-            padding:7px 14px;
-            border-radius:6px;
+            padding:12px 20px;
+            border:none;
+            border-radius:10px;
             cursor:pointer;
             font-size:14px;
-            transition:0.2s;
+            font-weight:500;
         }
 
         .back-btn-nav:hover{
-            background:#111;
-            color:white;
+            color:black;
             border-color:#111;
         }
 
@@ -237,7 +234,6 @@
 
 <body>
 
-<!-- NAVBAR -->
 <div class="navbar">
     <div class="nav-left">
         <button class="back-btn-nav" onclick="goBack()">Back</button>
@@ -277,8 +273,6 @@
             <label>Upload Images (Min 1 required)</label>
 
             <div class="image-upload">
-
-                <!-- 🔥 ONLY CHANGE: remove button added -->
                 <div class="image-box" id="box1">
                     <span class="upload-text">Click to Upload</span>
                     <input type="file" id="img1" accept="image/*" required>
@@ -377,84 +371,60 @@
 
             reader.readAsDataURL(file);
         }
-
     }
 
-    // image preview
     for(let i=1;i<=5;i++){
-
         document.getElementById(`img${i}`)
             .addEventListener("change",function(){
                 previewImage(this,`preview${i}`,`box${i}`)
             })
-
     }
     function removeImage(index){
         document.getElementById(`img${index}`).value = "";
         document.getElementById(`preview${index}`).src = "";
         document.getElementById(`box${index}`).classList.remove("has-image");
     }
-
     const form = document.getElementById("productForm");
     const button = document.querySelector("#productForm button");
     const messageDiv = document.getElementById("message");
 
-
     form.addEventListener("submit", async function(e){
-
         e.preventDefault();
-
-        // clear old message
         messageDiv.innerHTML = "";
-
-        // disable button
         button.disabled = true;
         button.innerText = "Uploading...";
-
         const formData = new FormData();
-
         formData.append("name", document.getElementById("name").value);
         formData.append("description", document.getElementById("description").value);
         formData.append("price", document.getElementById("price").value);
         formData.append("old_price", document.getElementById("old_price").value);
         formData.append("stock", document.getElementById("stock").value);
         formData.append("category", document.getElementById("category").value);
-
         document.querySelectorAll("input[type='checkbox']:checked").forEach(cb=>{
             formData.append("sizes", cb.value);
         });
-
         const colors = document.getElementById("colors").value
             .split(",")
             .map(c=>c.trim())
             .filter(c=>c);
-
         colors.forEach(color=>{
             formData.append("colors",color);
         });
-
         const tags = document.getElementById("tags").value
             .split(",")
             .map(t=>t.trim())
             .filter(t=>t);
-
         tags.forEach(tag=>{
             formData.append("tags",tag);
         });
-
         for(let i=1;i<=5;i++){
-
             const file = document.getElementById(`img${i}`).files[0];
-
             if(file){
                 formData.append("images",file);
             }
-
         }
-
         try{
-
-            const response = await fetch("https://madhut-2.onrender.com/admin/add-product",{
+            const response = await fetch("http://127.0.0.1:5000/admin/add-product",{
                 method:"POST",
                 body:formData
             });
@@ -462,56 +432,40 @@
             const data = await response.json();
 
             if(response.ok){
-
                 messageDiv.innerHTML =
                 `<p class="success">✔ ${data.message}</p>`;
 
                 form.reset();
 
-                // reset image preview
                 for(let i=1;i<=5;i++){
-
                     document.getElementById(`preview${i}`).src="";
                     document.getElementById(`box${i}`).classList.remove("has-image");
-
                 }
+                setTimeout(() => {
+                    window.location.href = "admin_product.html";
+                }, 1000);
 
-                // auto remove message after 3 sec
                 setTimeout(()=>{
                     messageDiv.innerHTML="";
                 },3000);
 
-            }
-            else{
-
+            }else{
                 messageDiv.innerHTML =
                 `<p class="error"> ${data.error || "Upload failed"}</p>`;
-
             }
 
-        }
-        catch(err){
-
+        }catch(err){
             console.error(err);
-
-            messageDiv.innerHTML =
-            `<p class="error">Server connection failed</p>`;
-
         }
         finally{
-
             button.disabled = false;
             button.innerText = "Add Product";
-
         }
-
     });
 
-
     function goBack(){
-        window.location.href = "index.html";
+        window.location.href = "admin_product.html";
     }
-
 </script>
 </body>
 </html>

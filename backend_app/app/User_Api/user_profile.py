@@ -13,5 +13,7 @@ class UserProfile(MethodView):
 
     def get(self):
         email = get_current_user()
+        if not email:
+            return {"message": "Unauthorized"}, 401
         result = self.user_db.find_user(email)
         return result

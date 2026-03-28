@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Orders</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+            background:#f4f6f9;
+            padding:20px;
+        }
+
+        .orders-container{
+            display:flex;
+            flex-direction:column;
+            gap:15px;
+        }
+
+        .order-card{
+            background:white;
+            border-radius:15px;
+            box-shadow:0 5px 15px rgba(0,0,0,0.08);
+            padding:15px;
+        }
+
+        .order-header{
+            display:flex;
+            justify-content:space-between;
+            cursor:pointer;
+        }
+
+        .status{
+            padding:5px 10px;
+            border-radius:20px;
+            font-size:12px;
+            color:white;
+        }
+
+        .order-summary{
+            margin-top:8px;
+            display:flex;
+            justify-content:space-between;
+            color:#666;
+            cursor:pointer;
+        }
+
+        .order-details{
+            max-height:0;
+            overflow:hidden;
+            transition:0.4s ease;
+        }
+
+        .order-card.active .order-details{
+            max-height:1000px;
+        }
+
+        .item{
+            display:flex;
+            gap:10px;
+            margin-top:10px;
+        }
+
+        .item img{
+            width:60px;
+            height:60px;
+            border-radius:8px;
+        }
+
+        .box{
+            margin-top:15px;
+            padding:10px;
+            border:1px solid #eee;
+            border-radius:10px;
+            background:#fafafa;
+        }
+
+        input, select{
+            width:100%;
+            padding:8px;
+            margin-top:5px;
+            border-radius:8px;
+            border:1px solid #ccc;
+        }
+
+        button{
+            margin-top:10px;
+            padding:8px;
+            width:100%;
+            border:none;
+            border-radius:8px;
+            background:#111;
+            color:white;
+            cursor:pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Admin Orders</h1>
+<div id="ordersContainer" class="orders-container"></div>
+
+<script>
+
+    async function loadOrders(){
+        const res = await fetch("http://127.0.0.1:5000/admin/seen/all/order?page=1&limit=5",{method:"POST"});
+        const data = await res.json();
+        renderOrders(data);
+    }
+
+    function renderOrders(orders){
+
+        const container = document.getElementById("ordersContainer");
+        container.innerHTML = "";
+
+        orders.forEach(order => {
+
+            const statusLower = order.order_status.toLowerCase();
+
+            const card = document.createElement("div");
+            card.className = "order-card";
+
+            card.innerHTML = `
+                <div class="order-header">
+                    <b>${order.order_id}</b>
+                    <span class="status" style="background:${getStatusColor(statusLower)}">
+                        ${statusLower}
+                    </span>
+                </div>
+
+                <div class="order-summary">
+                    <span>${order.user_email}</span>
+                    <span>₹${order.total_amount}</span>
+                </div>
+
+                <div class="order-details">
+
+                    ${order.items.map(item => `
+                        <div class="item">
+                            <img src="${item.image}">
+                            <div>
+                                <div>${item.name}</div>
+                                <small>${item.size} | ${item.color}</small>
+                            </div>
+                        </div>
+                    `).join("")}
+
+                    <div class="box">
+                        <h3>Update Status</h3>
+
+                        <select id="status-${order.order_id}">
+                            <option value="pending" ${statusLower === "pending" ? "selected" : ""}>Pending</option>
+                            <option value="processing" ${statusLower === "processing" ? "selected" : ""}>Processing</option>
+                            <option value="dispatch" ${statusLower === "dispatch" ? "selected" : ""}>Dispatch</option>
+                            <option value="delivered" ${statusLower === "delivered" ? "selected" : ""}>Delivered</option>
+                        </select>
+
+                        <button class="update-btn" data-id="${order.order_id}">
+                            Update Status
+                        </button>
+                    </div>
+
+                    <div class="box">
+                        <h3>Add Tracking</h3>
+                        <input type="text" id="track-${order.order_id}" placeholder="Enter Tracking ID">
+                        <button class="track-btn" data-id="${order.order_id}">
+                            Add Tracking
+                        </button>
+                    </div>
+
+                </div>
+            `;
+
+            card.querySelector(".order-header").onclick = ()=> card.classList.toggle("active");
+            card.querySelector(".order-summary").onclick = ()=> card.classList.toggle("active");
+
+            // UPDATE STATUS
+            card.querySelector(".update-btn").onclick = async (e)=>{
+                e.stopPropagation();
+
+                const order_id = e.target.dataset.id;
+                const status = document.getElementById(`status-${order_id}`).value;
+
+                const res = await fetch("http://127.0.0.1:5000/admin/update/status/order",{
+                    method:"PUT",
+                    headers:{"Content-Type":"application/json"},
+                    body: JSON.stringify({order_id, status})
+                });
+
+                const data = await res.json();
+                alert(data.message);
+
+                const statusEl = e.target.closest(".order-card").querySelector(".status");
+                statusEl.innerText = status;
+                statusEl.style.background = getStatusColor(status);
+            };
+
+            // TRACKING
+            card.querySelector(".track-btn").onclick = async (e)=>{
+                e.stopPropagation();
+
+                const order_id = e.target.dataset.id;
+                const tracking_id = document.getElementById(`track-${order_id}`).value;
+
+                const res = await fetch("http://127.0.0.1:5000/admin/add/tracking",{
+                    method:"PUT",
+                    headers:{"Content-Type":"application/json"},
+                    body: JSON.stringify({order_id, tracking_id})
+                });
+
+                const data = await res.json();
+                alert(data.message);
+            };
+
+            container.appendChild(card);
+        });
+    }
+
+    function getStatusColor(status){
+        status = status.toLowerCase();
+
+        if(status === "pending") return "#ff4d4d";
+        if(status === "processing") return "#ffa500";
+        if(status === "dispatch") return "#007bff";
+        if(status === "delivered") return "#28a745";
+        return "#999";
+    }
+    loadOrders();
+</script>
+</body>
+</html>

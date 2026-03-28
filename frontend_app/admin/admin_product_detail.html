@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Product Detail</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+            background:#f4f6f9;
+            padding:30px;
+        }
+
+        /* LOADER */
+        #loader{
+            text-align:center;
+            margin-top:150px;
+            font-size:18px;
+            font-weight:500;
+        }
+
+        /* CONTAINER */
+        .container{
+            max-width:1100px;
+            margin:auto;
+            display:none; /* hide initially */
+        }
+
+        /* CARD */
+        .card{
+            background:#fff;
+            border-radius:16px;
+            padding:25px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        /* GRID */
+        .grid{
+            display:grid;
+            grid-template-columns:400px 1fr;
+            gap:30px;
+        }
+
+        /* IMAGE */
+        .image-box{
+            background:#f8f9fa;
+            border-radius:12px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            height:420px;
+        }
+
+        .image-box img{
+            max-width:100%;
+            max-height:100%;
+            object-fit:contain;
+        }
+
+        /* TITLE */
+        .title{
+            font-size:22px;
+            font-weight:600;
+            margin-bottom:10px;
+        }
+
+        /* PRICE */
+        .price{
+            font-size:24px;
+            font-weight:700;
+            margin:10px 0;
+        }
+
+        .old{
+            text-decoration:line-through;
+            color:#999;
+            font-size:14px;
+            margin-left:10px;
+        }
+
+        /* SECTION */
+        .section{
+            margin-top:15px;
+        }
+
+        .label{
+            font-weight:600;
+            margin-bottom:5px;
+            font-size:14px;
+        }
+
+        .value{
+            font-size:14px;
+            color:#444;
+        }
+
+        /* TAGS */
+        .tags{
+            display:flex;
+            flex-wrap:wrap;
+            gap:6px;
+        }
+
+        .tag{
+            background:#eef2ff;
+            padding:5px 10px;
+            border-radius:20px;
+            font-size:12px;
+        }
+
+        /* ACTIONS */
+        .actions{
+            margin-top:20px;
+            display:flex;
+            gap:15px;
+        }
+
+        button{
+            padding:12px 20px;
+            border:none;
+            border-radius:10px;
+            cursor:pointer;
+            font-size:14px;
+            font-weight:500;
+        }
+
+        .edit{
+            background:#2d6cdf;
+            color:white;
+        }
+
+        .delete{
+            background:#e74c3c;
+            color:white;
+        }
+
+        .back{
+            margin-bottom:15px;
+            cursor:pointer;
+            color:#555;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Loader -->
+<div id="loader">Loading product details...</div>
+
+<div class="container" id="mainContent">
+
+    <div class="back" onclick="goBack()">← Back</div>
+
+    <div class="card">
+        <div class="grid" id="productDetail"></div>
+    </div>
+
+</div>
+
+<script>
+
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("id");
+
+    async function loadProduct(){
+
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("mainContent").style.display = "none";
+
+        try{
+            const res = await fetch(`http://127.0.0.1:5000/admin/product/detail?product_id=${productId}`,{
+                method:"POST"
+            });
+
+            const p = await res.json();
+
+            renderProduct(p);
+
+        }catch(err){
+            console.error(err);
+            document.getElementById("loader").innerText = "Failed to load product";
+        }
+
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+    }
+
+    function renderProduct(p){
+
+        document.getElementById("productDetail").innerHTML = `
+
+            <div class="image-box">
+                <img src="${p.images[0]}">
+            </div>
+
+            <div>
+
+                <div class="title">${p.name}</div>
+
+                <div class="price">
+                    ₹${p.price}
+                    <span class="old">₹${p.old_price}</span>
+                </div>
+
+                <div class="section">
+                    <div class="label">Description</div>
+                    <div class="value">${p.description || "-"}</div>
+                </div>
+
+                <div class="section">
+                    <div class="label">Category</div>
+                    <div class="value">${p.category}</div>
+                </div>
+
+                <div class="section">
+                    <div class="label">Stock</div>
+                    <div class="value">${p.stock}</div>
+                </div>
+
+                <div class="section">
+                    <div class="label">Sizes</div>
+                    <div class="value">${p.sizes.join(", ")}</div>
+                </div>
+
+                <div class="section">
+                    <div class="label">Colors</div>
+                    <div class="value">${p.colors.join(", ")}</div>
+                </div>
+
+                <div class="section">
+                    <div class="label">Discount</div>
+                    <div class="value">${p.discount_percent}%</div>
+                </div>
+
+                <div class="section">
+                    <div class="label">Tags</div>
+                    <div class="tags">
+                        ${p.tags.map(tag=>`<span class="tag">${tag}</span>`).join("")}
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="edit" onclick="editProduct()">Edit</button>
+                    <button class="delete" onclick="deleteProduct()">Delete</button>
+                </div>
+
+            </div>
+        `;
+    }
+
+    function editProduct(){
+         window.location.href = `edit_product.html?id=${productId}`;
+    }
+
+    async function deleteProduct(){
+
+        if(!confirm("Delete this product?")) return;
+
+        try{
+            const res = await fetch(`http://127.0.0.1:5000/admin/delete/product?product_id=${productId}`,{
+                method:"DELETE"
+            });
+
+            const data = await res.json();
+            alert(data.message);
+
+            window.location.href = `admin_product.html?deleted=${productId}`;
+
+        }catch(err){
+            console.error(err);
+            alert("Something went wrong....");
+        }
+    }
+
+    function goBack(){
+        window.location.href = "admin_product.html";
+    }
+
+    loadProduct();
+
+</script>
+
+</body>
+</html>

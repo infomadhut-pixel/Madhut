@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MadHut - User Login</title>
+    <title>MADHUT - User Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="icon" type="image/x-icon" href="static/images/mad_hut.jpeg">
 
     <style>
-
         *{
         margin:0;
         padding:0;
@@ -82,59 +81,6 @@
         margin-bottom:10px;
         font-size:14px;
         }
-
-        .signup-text{
-        margin-top:15px;
-        font-size:14px;
-        }
-
-        .signup-text span{
-        color:#2d5c88;
-        cursor:pointer;
-        font-weight:bold;
-        }
-
-        @media (max-width:768px){
-
-        .login-container{
-        padding:40px;
-        }
-
-        .login-container h2{
-        font-size:24px;
-        }
-
-        }
-
-        @media (max-width:480px){
-
-        body{
-        padding:15px;
-        }
-
-        .login-container{
-        padding:30px 25px;
-        border-radius:12px;
-        }
-
-        .login-container h2{
-        font-size:22px;
-        margin-bottom:25px;
-        }
-
-        .input-group input{
-        padding:10px;
-        font-size:14px;
-        }
-
-        .btn-login,
-        .btn-signup{
-        padding:11px;
-        font-size:14px;
-        }
-
-        }
-
     </style>
 </head>
 
@@ -172,137 +118,131 @@
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
-    apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
-    authDomain: "madhut-97c1e.firebaseapp.com",
-    projectId: "madhut-97c1e",
-    appId: "1:443781397252:web:64f178cd71d0993cc0ae51"
+        apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
+        authDomain: "MADHUT-97c1e.firebaseapp.com",
+        projectId: "MADHUT-97c1e",
+        appId: "1:443781397252:web:64f178cd71d0993cc0ae51"
     };
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const API_URL = "https://madhut-2.onrender.com/user/login";
+    const API_URL = "http://127.0.0.1:5000/user/login";
 
     async function loginUser(){
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const remember = document.getElementById("remember").checked;
-    const errorDiv = document.getElementById("error");
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const remember = document.getElementById("remember").checked;
+        const errorDiv = document.getElementById("error");
 
-    errorDiv.innerText="";
+        errorDiv.innerText="";
 
-    if(!email || !password){
-    errorDiv.innerText="Please fill all fields";
-    return;
-    }
+        if(!email || !password){
+            errorDiv.innerText="Please fill all fields";
+            return;
+        }
 
-    try{
+        try{
 
-    const userCredential = await signInWithEmailAndPassword(auth,email,password);
-    const user = userCredential.user;
+            const userCredential = await signInWithEmailAndPassword(auth,email,password);
+            const user = userCredential.user;
 
-    await user.reload();
+            await user.reload();
 
-    if(!user.emailVerified){
-    errorDiv.innerText="Please verify your email first!";
-    return;
-    }
+            if(!user.emailVerified){
+                errorDiv.innerText="Please verify your email first!";
+                return;
+            }
 
-    const token = await user.getIdToken();
+            const token = await user.getIdToken();
 
-    const signupData = JSON.parse(localStorage.getItem("signupData") || "{}");
+            const signupData = JSON.parse(localStorage.getItem("signupData") || "{}");
 
-    const response = await fetch(API_URL,{
-    method:"POST",
-    headers:{
-    "Authorization":"Bearer "+token,
-    "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-    email:user.email,
-    username:signupData.username,
-    phone:signupData.phone,
-    street:signupData.street,
-    pin_code:signupData.pin_code,
-    country:signupData.country
-    })
-    });
+            const response = await fetch(API_URL,{
+                method:"POST",
+                headers:{
+                    "Authorization":"Bearer "+token,
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    email:user.email,
+                    username:signupData.username,
+                    phone:signupData.phone,
+                    street:signupData.street,
+                    pin_code:signupData.pin_code,
+                    country:signupData.country
+                })
+            });
 
-    const data = await response.json();
+            const data = await response.json();
 
-    if(response.ok){
+            if(response.ok){
+                if(remember){
+                    localStorage.setItem("userToken",token);
+                }else{
+                    sessionStorage.setItem("userToken",token);
+                }
 
-    if(remember){
-    localStorage.setItem("userToken",token);
-    }else{
-    sessionStorage.setItem("userToken",token);
-    }
+                localStorage.removeItem("signupData");
 
-    localStorage.removeItem("signupData");
+                const redirectUrl = sessionStorage.getItem("redirectAfterLogin");
 
-    window.location.href="index.html";
+                if(redirectUrl){
+                    sessionStorage.removeItem("redirectAfterLogin");
+                    window.location.href = redirectUrl;
+                }else{
+                    window.location.href = "index.html";
+                }
 
-    }else{
+            }else{
+                errorDiv.innerText=data.message || "Login failed!";
+            }
 
-    errorDiv.innerText=data.message || "Login failed!";
+        }catch(error){
 
-    }
+            console.error("Firebase Error:",error);
 
-    }catch(error){
-
-    console.error("Firebase Error:",error);
-
-    switch(error.code){
-
-    case "auth/invalid-email":
-    errorDiv.innerText="Invalid email address.";
-    break;
-
-    case "auth/user-not-found":
-    errorDiv.innerText="No account found with this email.";
-    break;
-
-    case "auth/wrong-password":
-    errorDiv.innerText="Incorrect password.";
-    break;
-
-    case "auth/too-many-requests":
-    errorDiv.innerText="Too many login attempts. Please try again later.";
-    break;
-
-    case "auth/network-request-failed":
-    errorDiv.innerText="Network error. Please check your internet.";
-    break;
-
-    default:
-    errorDiv.innerText="Login failed. Please try again.";
-
-    }
-
-    }
-
+            switch(error.code){
+                case "auth/invalid-email":
+                    errorDiv.innerText="Invalid email address.";
+                    break;
+                case "auth/user-not-found":
+                    errorDiv.innerText="No account found.";
+                    break;
+                case "auth/wrong-password":
+                    errorDiv.innerText="Incorrect password.";
+                    break;
+                default:
+                    errorDiv.innerText="Login failed. Try again.";
+            }
+        }
     }
 
     document.getElementById("loginBtn").addEventListener("click",loginUser);
 
     document.addEventListener("keydown",function(e){
-    if(e.key==="Enter"){
-    loginUser();
-    }
+        if(e.key==="Enter"){
+            loginUser();
+        }
     });
 
-    window.onload=function(){
-    const token=localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
-    if(token){
-    window.location.href="index.html";
-    }
+    window.onload = function(){
+        const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+        if(token){
+            const redirectUrl = sessionStorage.getItem("redirectAfterLogin");
+
+            if(redirectUrl){
+                sessionStorage.removeItem("redirectAfterLogin");
+                window.location.href = redirectUrl;
+            }else{
+                window.location.href = "index.html";
+            }
+        }
     };
-
     window.goToSignup=function(){
-    window.location.href="user_signup.html";
+        window.location.href="user_signup.html";
     }
-
 </script>
 
 </body>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MadHut | User Profile</title>
+    <title>MADHUT | User Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="static/images/mad_hut.jpeg">
 
@@ -27,7 +27,7 @@
         top:0;
         z-index:1000;
         height:70px;
-        background:white;
+        background:#111;
         display:flex;
         align-items:center;
         justify-content:space-between;
@@ -39,8 +39,9 @@
         .logo{
         font-size:22px;
         font-weight:700;
-        color:#3f72af;
-        }
+        color:#f1c40f;
+        cursor:pointer;
+    }
 
         .back-btn{
         background:#3f72af;
@@ -236,8 +237,7 @@
 <body>
 
 <div class="navbar">
-    <button class="back-btn" onclick="history.back()">Back</button>
-    <div class="logo">MadHut</div>
+    <div class="logo" onclick="goBack()" style="cursor:pointer;">MADHUT</div>
 </div>
 
 <div class="page">
@@ -308,8 +308,8 @@
 
     const firebaseConfig={
     apiKey:"AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
-    authDomain:"madhut-97c1e.firebaseapp.com",
-    projectId:"madhut-97c1e",
+    authDomain:"MADHUT-97c1e.firebaseapp.com",
+    projectId:"MADHUT-97c1e",
     appId:"1:443781397252:web:64f178cd71d0993cc0ae51"
     };
 
@@ -332,7 +332,7 @@
 
     const token=await auth.currentUser.getIdToken(false);
 
-    const res=await fetch(" https://madhut-2.onrender.com/user/profile",{
+    const res=await fetch(" http://127.0.0.1:5000/user/profile",{
     headers:{Authorization:"Bearer "+token}
     });
 
@@ -392,7 +392,7 @@
     country:country.value
     };
 
-    const res=await fetch(" https://madhut-2.onrender.com/user/edit/profile",{
+    const res=await fetch(" http://127.0.0.1:5000/user/edit/profile",{
     method:"PATCH",
     headers:{
     "Content-Type":"application/json",
@@ -426,6 +426,13 @@
     });
 
     }
+    window.goBack = function(){
+    if(document.referrer){
+        window.history.back();
+    }else{
+        window.location.href="index.html";
+    }
+}
 
 </script>
 

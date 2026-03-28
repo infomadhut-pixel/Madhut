@@ -3,8 +3,11 @@ from flask_mail import Mail
 from flask_smorest import Api
 from flask_bcrypt import Bcrypt
 from flask_caching import Cache
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
+# from flask_limiter import Limiter
+# from flask_limiter.util import get_remote_address
+from flask_socketio import SocketIO
+
+socketio = SocketIO(cors_allowed_origins="*")
 
 bcrypt = Bcrypt()
 

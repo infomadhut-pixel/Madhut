@@ -13,5 +13,7 @@ class FetchItemDetailInCart(MethodView):
 
     def get(self):
         email = get_current_user()
+        if not email:
+            return {"message": "Unauthorized"}, 401
         response = self.item_db.fetch_item_in_cart(email)
         return response

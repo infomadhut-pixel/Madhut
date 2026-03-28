@@ -2,169 +2,181 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>MadHut - New Arrivals</title>
+    <title>MADHUT - New Arrivals</title>
+    <link rel="icon" type="image/x-icon" href="static/images/mad_hut.jpeg">
 
     <style>
         body{
-            margin:0;
-            font-family: 'Segoe UI', sans-serif;
-            background:#f3f4f6;
-        }
+    margin:0;
+    font-family:'Segoe UI', sans-serif;
+    background:#f3f4f6;
+}
 
-        /* ===== NAVBAR ===== */
-        .navbar{
-            background:#fff;
-            padding:15px 30px;
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            box-shadow:0 2px 6px rgba(0,0,0,0.05);
-            position:sticky;
-            top:0;
-            z-index:100;
-        }
+/* ===== NAVBAR ===== */
+.navbar{
+    background:#111;
+    padding:15px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
 
-        /* LEFT LOGO */
-        .logo{
-            font-size:22px;
-            font-weight:bold;
-            cursor:pointer;
-        }
+.logo{
+    font-size:22px;
+    font-weight:bold;
+    cursor:pointer;
+    color:#f1c40f;
+}
 
-        /* CENTER TITLE */
-        .nav-title{
-            font-size:18px;
-            font-weight:600;
-        }
+.nav-title{
+    font-size:18px;
+    font-weight:600;
+    color:white;
+}
 
-        /* ===== GRID ===== */
-        #product-container{
-            display:grid;
-            grid-template-columns:repeat(5, 1fr);
-            gap:20px;
-            padding:20px 30px;
-        }
+/* ===== GRID ===== */
+#product-container{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:20px;
+    padding:20px 30px;
+}
 
-        /* ===== CARD ===== */
-        .product-card{
-            background:#fff;
-            border-radius:12px;
-            padding:12px;
-            transition:0.3s;
-            cursor:pointer;
-        }
+/* ===== CARD ===== */
+.product-card{
+    background:#fff;
+    border-radius:12px;
+    padding:12px;
+    cursor:pointer;
+    transition:0.3s;
+}
 
-        .product-card:hover{
-            transform:translateY(-6px);
-            box-shadow:0 8px 20px rgba(0,0,0,0.12);
-        }
+.product-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 8px 20px rgba(0,0,0,0.12);
+}
 
-        /* IMAGE */
-        .product-card img{
-            width:100%;
-            height:250px;
-            object-fit:cover;
-            border-radius:8px;
-            transition:0.3s;
-        }
+/* 🔥 IMAGE WRAPPER (FIX) */
+.product-image{
+    width:100%;
+    height:250px;
+    background:#f9f9f9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    overflow:hidden;
+}
 
-        .product-card:hover img{
-            transform:scale(1.05);
-        }
+/* IMAGE */
+.product-image img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    transition:0.3s;
+}
 
-        /* NAME */
-        .product-name{
-            font-size:14px;
-            margin:10px 0;
-            height:42px;
-            overflow:hidden;
-        }
+/* HOVER ZOOM */
+.product-card:hover .product-image img{
+    transform:scale(1.05);
+}
 
-        /* PRICE */
-        .price{
-            font-size:15px;
-            font-weight:bold;
-            color:#1a7f37;
-        }
+/* NAME */
+.product-name{
+    font-size:14px;
+    margin:10px 0;
+    height:42px;
+    overflow:hidden;
+}
 
-        .old-price{
-            font-size:12px;
-            color:#888;
-            text-decoration:line-through;
-            margin-left:6px;
-        }
+/* PRICE */
+.price{
+    font-size:15px;
+    font-weight:bold;
+    color:#1a7f37;
+}
 
-        .discount{
-            font-size:11px;
-            color:red;
-            margin-left:6px;
-        }
+.old-price{
+    font-size:12px;
+    color:#888;
+    text-decoration:line-through;
+    margin-left:6px;
+}
 
-        /* BUTTON */
-        .btn{
-            margin-top:8px;
-            width:100%;
-            padding:8px;
-            background:black;
-            color:white;
-            border:none;
-            border-radius:5px;
-            cursor:pointer;
-        }
+.discount{
+    font-size:11px;
+    color:red;
+    margin-left:6px;
+}
 
-        .btn:hover{
-            background:#333;
-        }
+/* BUTTON */
+.btn{
+    margin-top:8px;
+    width:100%;
+    padding:8px;
+    background:black;
+    color:white;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
 
-        /* NEW */
-        .new-label{
-            font-size:11px;
-            color:#ff3f6c;
-            font-weight:bold;
-            margin-bottom:5px;
-        }
+.btn:hover{
+    background:#333;
+}
 
-        /* PAGINATION */
-        .pagination{
-            display:flex;
-            justify-content:center;
-            gap:10px;
-            margin:20px 0;
-        }
+/* NEW */
+.new-label{
+    font-size:11px;
+    color:#ff3f6c;
+    font-weight:bold;
+    margin-bottom:5px;
+}
 
-        .page-btn{
-            padding:6px 12px;
-            border:none;
-            background:#fff;
-            border-radius:5px;
-            cursor:pointer;
-            box-shadow:0 2px 6px rgba(0,0,0,0.1);
-        }
+/* PAGINATION */
+.pagination{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:20px 0;
+}
 
-        .page-btn.active{
-            background:black;
-            color:white;
-        }
+.page-btn{
+    padding:6px 12px;
+    border:none;
+    background:#fff;
+    border-radius:5px;
+    cursor:pointer;
+    box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
 
-        .page-btn:hover{
-            background:#ddd;
-        }
+.page-btn.active{
+    background:black;
+    color:white;
+}
 
-        /* RESPONSIVE */
-        @media(max-width:1200px){
-            #product-container{grid-template-columns:repeat(4,1fr);}
-        }
-        @media(max-width:900px){
-            #product-container{grid-template-columns:repeat(3,1fr);}
-        }
-        @media(max-width:600px){
-            #product-container{grid-template-columns:repeat(2,1fr);}
-        }
+.page-btn:hover{
+    background:#ddd;
+}
 
-        .loading{
-            text-align:center;
-            padding:20px;
-        }
+/* RESPONSIVE */
+@media(max-width:1200px){
+    #product-container{grid-template-columns:repeat(4,1fr);}
+}
+@media(max-width:900px){
+    #product-container{grid-template-columns:repeat(3,1fr);}
+}
+@media(max-width:600px){
+    #product-container{grid-template-columns:repeat(2,1fr);}
+}
+
+.loading{
+    text-align:center;
+    padding:20px;
+}
     </style>
 
 </head>
@@ -173,7 +185,7 @@
 
 <!-- ===== NAVBAR ===== -->
 <div class="navbar">
-    <div class="logo" onclick="goHome()">MadHut</div>
+    <div class="logo" onclick="goHome()">MADHUT</div>
     <div class="nav-title">New Arrivals</div>
     <div></div> <!-- empty for spacing -->
 </div>
@@ -186,11 +198,11 @@
 
 <script>
     let currentPage = 1;
-    const limit = 10;
+    const limit = 25;
 
     async function loadProducts(page=1){
         try{
-            const response = await fetch(`https://madhut-2.onrender.com/new/arrival/t-shirt?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://127.0.0.1:5000/new/arrival/t-shirt?page=${page}&limit=${limit}`);
             const data = await response.json();
 
             const container = document.getElementById("product-container");
@@ -211,7 +223,9 @@
                 card.innerHTML = `
                     <div class="new-label">NEW</div>
 
-                    <img src="${product.images[0]}" alt="product">
+                    <div class="product-image">
+                        <img src="${product.images[0]}" alt="product">
+                    </div>
 
                     <div class="product-name">${product.name}</div>
 

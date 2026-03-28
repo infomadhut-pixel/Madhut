@@ -22,6 +22,8 @@ class CustomisedProduct(MethodView):
     def post(self):
         from ..Config.cloudinary import cloudinary
         email = get_current_user()
+        if not email:
+            return {"message": "Unauthorized"}, 401
         payment_method = request.form.get("payment_method")
         delivery_charge = request.form.get("delivery_charge")
 

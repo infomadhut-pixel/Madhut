@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>MadHut | Checkout</title>
+    <title>MADHUT | Checkout</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/x-icon" href="static/images/mad_hut.jpeg">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
@@ -22,18 +22,9 @@
         if (!getToken()) {
             redirectToLogin();
         }
-
-        function goBack(){
-            if(document.referrer){
-                window.history.back();
-            }else{
-                window.location.href="index.html";
-            }
-        }
     </script>
 
     <style>
-
         *{
         margin:0;
         padding:0;
@@ -45,19 +36,14 @@
         background:#f5f7fa;
         }
 
-        /* HEADER */
-
         .header{
         background:#111;
         color:white;
         padding:18px 40px;
         font-size:20px;
         font-weight:bold;
-        letter-spacing:1px;
         text-align:center;
         }
-
-        /* MAIN WRAPPER */
 
         .wrapper{
         max-width:1200px;
@@ -68,8 +54,6 @@
         gap:40px;
         }
 
-        /* SECTIONS */
-
         .section{
         background:white;
         padding:30px;
@@ -79,11 +63,7 @@
 
         .section h2{
         margin-bottom:20px;
-        font-size:22px;
-        font-weight:700;
         }
-
-        /* INPUT */
 
         input,select{
         width:100%;
@@ -91,15 +71,7 @@
         margin-bottom:16px;
         border:1px solid #ddd;
         border-radius:8px;
-        font-size:14px;
         }
-
-        input:focus,select:focus{
-        outline:none;
-        border-color:#0fa36b;
-        }
-
-        /* BUTTON */
 
         button{
         width:100%;
@@ -107,18 +79,10 @@
         border:none;
         background:#0fa36b;
         color:white;
-        font-weight:600;
         border-radius:10px;
         font-size:16px;
         cursor:pointer;
-        transition:0.2s;
         }
-
-        button:hover{
-        background:#0c8f5e;
-        }
-
-        /* PRODUCT CARD */
 
         .product-card{
         display:flex;
@@ -134,16 +98,10 @@
         border-radius:10px;
         }
 
-        .product-info h3{
-        font-size:18px;
-        margin-bottom:8px;
-        }
-
         .summary-row{
         display:flex;
         justify-content:space-between;
         margin-bottom:8px;
-        font-size:14px;
         }
 
         .total{
@@ -152,54 +110,11 @@
         margin-top:10px;
         }
 
-        /* TABLET */
-
         @media(max-width:1000px){
-
         .wrapper{
         grid-template-columns:1fr;
         }
-
         }
-
-        /* MOBILE */
-
-        @media(max-width:600px){
-
-        .header{
-        font-size:18px;
-        padding:15px;
-        }
-
-        .section{
-        padding:20px;
-        }
-
-        .product-card{
-        flex-direction:column;
-        align-items:flex-start;
-        }
-
-        .product-card img{
-        width:100%;
-        height:200px;
-        }
-
-        .product-info h3{
-        font-size:16px;
-        }
-
-        .summary-row{
-        font-size:13px;
-        }
-
-        button{
-        font-size:15px;
-        padding:14px;
-        }
-
-        }
-
     </style>
 </head>
 
@@ -209,7 +124,7 @@
 
 <div class="wrapper">
 
-    <!-- LEFT: SHIPPING -->
+    <!-- LEFT -->
     <div class="section">
         <h2>Shipping Details</h2>
 
@@ -227,14 +142,14 @@
         <button onclick="placeOrder()">Place Order</button>
     </div>
 
-    <!-- RIGHT: ORDER SUMMARY -->
+    <!-- RIGHT -->
     <div class="section">
 
         <h2>Order Summary</h2>
 
         <div class="product-card">
             <img id="checkoutImage">
-            <div class="product-info">
+            <div>
                 <h3 id="checkoutName"></h3>
                 <p>Size: <span id="checkoutSize"></span></p>
                 <p>Color: <span id="checkoutColor"></span></p>
@@ -242,7 +157,7 @@
             </div>
         </div>
 
-        <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+        <hr style="margin:20px 0;">
 
         <div class="summary-row">
             <span>Subtotal</span>
@@ -251,7 +166,7 @@
 
         <div class="summary-row">
             <span>Shipping</span>
-            <span>Free</span>
+            <span id="shippingText"></span>
         </div>
 
         <div class="summary-row total">
@@ -260,7 +175,6 @@
         </div>
 
     </div>
-
 </div>
 
 <script>
@@ -268,158 +182,141 @@
     const checkoutItem = JSON.parse(sessionStorage.getItem("buyNowProduct"));
 
     if(!checkoutItem){
-        alert("No order found");
-        window.location.href="index.html";
+    alert("No order found");
+    window.location.href="index.html";
     }
 
-    /* Render Order */
-
+    // Render product
     document.getElementById("checkoutImage").src = checkoutItem.image;
     document.getElementById("checkoutName").innerText = checkoutItem.name;
     document.getElementById("checkoutSize").innerText = checkoutItem.size;
     document.getElementById("checkoutColor").innerText = checkoutItem.color;
     document.getElementById("checkoutQty").innerText = checkoutItem.quantity;
 
-    const total = checkoutItem.quantity * checkoutItem.price;
+    // 💰 PRICE LOGIC
+    const subtotal = checkoutItem.price * checkoutItem.quantity;
 
-    document.getElementById("subtotal").innerText = total;
-    document.getElementById("checkoutTotal").innerText = total;
+    let shippingCharge = 0;
 
-    /* Token */
-
-    function getToken(){
-        return localStorage.getItem("userToken") ||
-               sessionStorage.getItem("userToken");
+    if(checkoutItem.quantity < 3){
+    shippingCharge = 99;
     }
 
-    /* Validation */
+    const finalTotal = subtotal + shippingCharge;
 
+    // UI update
+    document.getElementById("subtotal").innerText = subtotal;
+    document.getElementById("checkoutTotal").innerText = finalTotal;
+
+    document.getElementById("shippingText").innerText =
+    shippingCharge === 0 ? "Free" : "₹" + shippingCharge;
+
+    // VALIDATION
     function validateForm(){
-        const fullName = document.getElementById("fullName").value.trim();
-        const phone = document.getElementById("phone").value.trim();
-        const address = document.getElementById("address").value.trim();
-        const city = document.getElementById("city").value.trim();
-        const pincode = document.getElementById("pincode").value.trim();
+    const fullName = document.getElementById("fullName").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const address = document.getElementById("address").value.trim();
+    const city = document.getElementById("city").value.trim();
+    const pincode = document.getElementById("pincode").value.trim();
 
-        if(!fullName || !phone || !address || !city || !pincode){
-            alert("Please fill all shipping details");
-            return false;
-        }
-
-        if(phone.length < 10){
-            alert("Enter valid phone number");
-            return false;
-        }
-
-        return true;
+    if(!fullName || !phone || !address || !city || !pincode){
+    alert("Fill all details");
+    return false;
     }
 
-    /* Place Order */
+    if(phone.length < 10){
+    alert("Invalid phone");
+    return false;
+    }
 
+    return true;
+    }
+
+    // PLACE ORDER
     async function placeOrder(){
 
     if(!validateForm()) return;
 
     const token = getToken();
 
-    if(!token){
-        alert("Session expired. Please login again.");
-        window.location.href = "user_login.html";
-        return;
-    }
-
     const orderData = {
-        ...checkoutItem,
-        full_name: document.getElementById("fullName").value.trim(),
-        phone: document.getElementById("phone").value.trim(),
-        address: document.getElementById("address").value.trim(),
-        city: document.getElementById("city").value.trim(),
-        pincode: document.getElementById("pincode").value.trim(),
-        payment_mode: document.getElementById("paymentMode").value
+    ...checkoutItem,
+    full_name: document.getElementById("fullName").value.trim(),
+    phone: document.getElementById("phone").value.trim(),
+    address: document.getElementById("address").value.trim(),
+    city: document.getElementById("city").value.trim(),
+    pincode: document.getElementById("pincode").value.trim(),
+    payment_mode: document.getElementById("paymentMode").value,
+
+    // ✅ IMPORTANT
+    shipping_charge: shippingCharge,
+    total_amount: finalTotal
     };
 
-    // 🟢 COD FLOW (simple)
+    // COD
     if(orderData.payment_mode === "COD"){
-        return sendOrderToBackend(orderData, token);
+    return sendOrderToBackend(orderData, token);
     }
 
-    // 🔵 ONLINE PAYMENT FLOW
+    // ONLINE PAYMENT
     try{
-        const paymentRes = await fetch("https://madhut-2.onrender.com/payment/create-order",{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                amount: checkoutItem.price * checkoutItem.quantity
-            })
-        });
+    const paymentRes = await fetch("http://127.0.0.1:5000/payment/create-order",{
+    method:"POST",
+    headers:{
+    "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+    amount: finalTotal
+    })
+    });
 
-        const paymentData = await paymentRes.json();
+    const paymentData = await paymentRes.json();
 
-        const options = {
-            key: paymentData.key,
-            amount: paymentData.amount,
-            currency: "INR",
-            name: "MadHut",
-            description: "T-shirt Purchase",
-            order_id: paymentData.order_id,
+    const options = {
+    key: paymentData.key,
+    amount: paymentData.amount,
+    currency: "INR",
+    name: "MADHUT",
+    order_id: paymentData.order_id,
 
-            handler: async function (response){
+    handler: async function (response){
+    orderData.razorpay_payment_id = response.razorpay_payment_id;
+    await sendOrderToBackend(orderData, token);
+    }
+    };
 
-                // 👇 after payment success
-                orderData.razorpay_payment_id = response.razorpay_payment_id;
-
-                await sendOrderToBackend(orderData, token);
-            },
-
-            prefill: {
-                name: document.getElementById("fullName").value,
-                contact: document.getElementById("phone").value
-            },
-
-            theme: {
-                color: "#0fa36b"
-            }
-        };
-
-        const rzp = new Razorpay(options);
-        rzp.open();
+    const rzp = new Razorpay(options);
+    rzp.open();
 
     }catch(err){
-        console.error(err);
-        alert("Payment failed");
+    alert("Payment failed");
     }
-}
+    }
 
     async function sendOrderToBackend(orderData, token){
-
     try{
-        const res = await fetch("https://madhut-2.onrender.com/order/checkout",{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json",
-                "Authorization":"Bearer " + token
-            },
-            body:JSON.stringify(orderData)
-        });
+    const res = await fetch("http://127.0.0.1:5000/order/checkout",{
+    method:"POST",
+    headers:{
+    "Content-Type":"application/json",
+    "Authorization":"Bearer " + token
+    },
+    body:JSON.stringify(orderData)
+    });
 
-        const data = await res.json();
-
-        if(res.ok){
-            alert("Order placed successfully 🎉");
-            sessionStorage.removeItem("buyNowProduct");
-            window.location.href="index.html";
-        }else{
-            alert(data.message || "Something went wrong");
-        }
+    if(res.ok){
+    alert("Order placed 🎉");
+    sessionStorage.removeItem("buyNowProduct");
+    window.location.href="index.html";
+    }else{
+    alert("Error placing order");
+    }
 
     }catch(err){
-        alert("Server error");
+    alert("Server error");
     }
-}
+    }
 
 </script>
 </body>
 </html>
-

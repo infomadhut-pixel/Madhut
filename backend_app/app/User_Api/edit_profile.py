@@ -15,6 +15,8 @@ class UserEditProfile(MethodView):
     def patch(self):
         data = request.get_json()
         email = get_current_user()
+        if not email:
+            return {"message": "Unauthorized"}, 401
         updated_data = {}
         if 'contact_number' in data:
             updated_data["contact_number"] = data['contact_number']

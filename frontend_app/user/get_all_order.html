@@ -3,81 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MadHut | My Orders</title>
+    <title>MADHUT | My Orders</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
-    <style>
-        .animate-scale {
-            animation: scaleUp 0.2s ease;
-        }
-        @keyframes scaleUp {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-    </style>
 
 </head>
 
 <body class="bg-gray-100">
 
-<!-- NAVBAR -->
-<nav class="bg-white border-b sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 flex justify-between items-center h-16">
-        <a href="index.html" class="text-2xl font-bold">
-            Mad<span class="text-indigo-600">Hut</span>
+<nav class="bg-black sticky top-0 z-50 shadow-sm">
+    <div class="w-full px-4 flex justify-between items-center h-16">
+
+        <a href="user_dashboard.html" class="text-2xl font-bold">
+            <span class="text-yellow-400">Mad</span><span class="text-yellow-400">Hut</span>
         </a>
 
         <button onclick="logout()"
-                class="text-sm bg-red-500 text-white px-3 py-1 rounded">
+            class="text-sm bg-red-500 text-white px-4 py-1.5 rounded-lg shadow hover:bg-red-600 transition">
             Logout
         </button>
+
     </div>
 </nav>
 
-<!-- MAIN -->
 <main class="max-w-5xl mx-auto px-4 py-8">
-    <h1 class="text-3xl font-bold mb-4">Your Orders</h1>
+    <h1 class="text-3xl font-bold mb-6">Your Orders</h1>
     <div id="orders-container" class="space-y-6"></div>
 </main>
 
-<!-- ⭐ REVIEW MODAL -->
-<div id="reviewModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center">
-
-    <div class="bg-white p-6 rounded-xl w-96 shadow-xl animate-scale">
-
-        <h2 class="text-xl font-bold mb-4 text-center">Rate Product</h2>
-
-        <input type="hidden" id="productId">
-        <input type="hidden" id="orderId">
-
-        <!-- ⭐ STAR RATING -->
-        <div class="flex justify-center gap-2 text-3xl mb-4" id="starContainer">
-            <i class="fa-regular fa-star cursor-pointer" onclick="setRating(1)"></i>
-            <i class="fa-regular fa-star cursor-pointer" onclick="setRating(2)"></i>
-            <i class="fa-regular fa-star cursor-pointer" onclick="setRating(3)"></i>
-            <i class="fa-regular fa-star cursor-pointer" onclick="setRating(4)"></i>
-            <i class="fa-regular fa-star cursor-pointer" onclick="setRating(5)"></i>
-        </div>
-
-        <textarea id="comment" placeholder="Write your feedback..."
-                  class="w-full border p-2 rounded mb-4"></textarea>
-
-        <div class="flex justify-between">
-            <button onclick="closeReview()" class="text-gray-500">Cancel</button>
-            <button onclick="submitReview()"
-                    class="bg-indigo-600 text-white px-4 py-1 rounded hover:bg-indigo-700">
-                Submit
-            </button>
-        </div>
-
-    </div>
-</div>
-
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script>
+    const socket = io("http://127.0.0.1:5000");
 
-    const API_URL = 'https://madhut-2.onrender.com/user/fetch/order';
+    const API_URL = 'http://127.0.0.1:5000/user/fetch/order';
 
     function getToken() {
         return localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
@@ -91,7 +50,7 @@
 
     function showLoading() {
         document.getElementById('orders-container').innerHTML =
-            `<div class="text-center py-20">Loading...</div>`;
+            `<div class="text-center py-20 text-gray-500">Loading...</div>`;
     }
 
     function showError(msg) {
@@ -99,160 +58,143 @@
             `<div class="text-center text-red-500 py-10">${msg}</div>`;
     }
 
-    // ⭐ FETCH ORDERS
-    async function fetchAndRenderOrders() {
-        const token = getToken();
-        if (!token) return window.location.href = "user_login.html";
+    async function fetchAndRenderOrders(isRealtime = false) {
 
-        showLoading();
+            const token = getToken();
+            if (!token) return window.location.href = "user_login.html";
 
-        try {
-            const res = await fetch(API_URL, {
-                headers: { "Authorization": `Bearer ${token}` }
-            });
+            // ❌ don't show loading in realtime
+            if (!isRealtime) {
+                showLoading();
+            }
 
-            const orders = await res.json();
-            if (!orders.length) return showError("No orders found");
+            try {
+                const res = await fetch(API_URL, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
 
-            renderOrders(orders);
+                const orders = await res.json();
+                if (!orders.length) return showError("No orders found");
 
-        } catch {
-            showError("Error loading orders");
-        }
+                renderOrders(orders);
+
+            } catch {
+                showError("Error loading orders");
+            }
     }
 
-    // 🎨 RENDER
     function renderOrders(orders) {
         const container = document.getElementById('orders-container');
 
         container.innerHTML = orders.map(order => `
-            <div class="bg-white rounded-xl shadow border">
+            <div class="bg-white rounded-2xl shadow-md hover:shadow-lg transition overflow-hidden border">
 
-                <div class="p-4 bg-gray-50 flex justify-between text-sm">
-                    <div>${new Date(order.created_at).toLocaleDateString()}</div>
-                    <div class="font-bold">₹${order.total_amount}</div>
-                    <div class="capitalize">${order.order_status}</div>
+                <!-- HEADER -->
+                <div class="p-4 bg-gray-50 flex justify-between items-center text-sm border-b">
+                    <div class="text-gray-500">${new Date(order.created_at).toLocaleDateString()}</div>
+                    <div class="font-bold text-lg">₹${order.total_amount}</div>
+                    <div class="capitalize px-3 py-1 rounded-full text-xs font-semibold
+                        ${getStatusColor(order.order_status)}">
+                        ${order.order_status}
+                    </div>
                 </div>
 
-                <div class="p-4 space-y-4">
+                <!-- BODY -->
+                <div class="p-5 space-y-5">
+
+                    <!-- TRACKING -->
+                    ${
+                        order.tracking_id
+                        ? `
+                        <div class="flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 px-4 py-3 rounded-xl shadow-sm">
+
+                            <div class="flex items-center gap-3">
+                                <i class="fa-solid fa-truck text-blue-600"></i>
+                                <div>
+                                    <div class="text-xs text-gray-500">Tracking ID</div>
+                                    <div class="font-semibold text-blue-700">${order.tracking_id}</div>
+                                </div>
+                            </div>
+
+                            <button onclick="copyTracking('${order.tracking_id}')"
+                                class="text-xs bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition">
+                                Copy
+                            </button>
+                        </div>
+                        `
+                        : ""
+                    }
+
+                    <!-- ITEMS -->
                     ${order.items.map(item => `
                         <div class="flex gap-4 border-b pb-4">
 
-                            <img src="${item.image}" class="w-20 h-20 rounded object-cover">
+                            <img src="${item.image}" class="w-20 h-20 rounded-lg object-cover shadow-sm">
 
                             <div class="flex-1">
-                                <h3 class="font-semibold">${item.name}</h3>
+                                <h3 class="font-semibold text-gray-800">${item.name}</h3>
                                 <p class="text-sm text-gray-500">Qty: ${item.quantity}</p>
-                                <p class="font-bold">₹${item.price}</p>
+                                <p class="font-bold text-gray-900">₹${item.price}</p>
 
                                 ${
-                                    order.order_status === "pending"
-                                    ? `
-                                    <button onclick="openReview('${item.product_id}', '${order.order_id}')"
-                                    class="mt-2 inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium
-                                    bg-indigo-600 text-white rounded-full shadow hover:bg-indigo-700 hover:scale-105 transition">
-                                    ⭐ Write Review
-                                    </button>
-                                    `
+                                    order.order_status === "delivered"
+                                    ? (
+                                        order.is_reviewed
+                                        ? `
+                                        <span class="mt-2 inline-block px-3 py-1 text-xs rounded-full bg-green-500 text-white">
+                                            Reviewed
+                                        </span>
+                                        `
+                                        : `
+                                        <button
+                                            onclick="openReview('${item.product_id}', '${order.order_id}', this)"
+                                            class="mt-2 inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium
+                                            bg-indigo-600 text-white rounded-full shadow hover:bg-indigo-700 transition">
+                                            Write Review
+                                        </button>
+                                        `
+                                    )
                                     : `
-                                    <button disabled
-                                    class="mt-2 px-3 py-1 text-xs rounded-full bg-gray-300 text-gray-500 cursor-not-allowed">
-                                    Review after delivery
-                                    </button>
+                                    <span class="mt-2 inline-block px-3 py-1 text-xs rounded-full bg-gray-200 text-gray-500">
+                                        Review after delivery
+                                    </span>
                                     `
                                 }
 
                             </div>
                         </div>
                     `).join('')}
+
                 </div>
             </div>
         `).join('');
     }
 
-    // ⭐ STAR LOGIC
-    let selectedRating = 0;
+    // STATUS COLOR
+    function getStatusColor(status){
+        status = status.toLowerCase();
 
-    function setRating(rating) {
-        selectedRating = rating;
-
-        const stars = document.querySelectorAll("#starContainer i");
-
-        stars.forEach((star, index) => {
-            if (index < rating) {
-                star.classList.remove("fa-regular");
-                star.classList.add("fa-solid", "text-yellow-400");
-            } else {
-                star.classList.remove("fa-solid", "text-yellow-400");
-                star.classList.add("fa-regular");
-            }
-        });
+        if(status === "pending") return "bg-red-100 text-red-600";
+        if(status === "processing") return "bg-yellow-100 text-yellow-600";
+        if(status === "dispatch") return "bg-blue-100 text-blue-600";
+        if(status === "delivered") return "bg-green-100 text-green-600";
+        return "bg-gray-100 text-gray-600";
     }
 
-    // ⭐ OPEN MODAL
-    function openReview(productId, orderId) {
-        document.getElementById("reviewModal").classList.remove("hidden");
-
-        document.getElementById("productId").value = productId;
-        document.getElementById("orderId").value = orderId;
-
-        selectedRating = 0;
-
-        document.querySelectorAll("#starContainer i").forEach(star => {
-            star.classList.remove("fa-solid", "text-yellow-400");
-            star.classList.add("fa-regular");
-        });
-
-        document.getElementById("comment").value = "";
+    // COPY
+    function copyTracking(id){
+        navigator.clipboard.writeText(id);
+        alert("Tracking ID Copied");
     }
 
-    // ❌ CLOSE MODAL
-    function closeReview() {
-        document.getElementById("reviewModal").classList.add("hidden");
-    }
+    socket.on("order_updated", (data) => {
+        console.log("Order updated:", data);
 
-    // 🚀 SUBMIT REVIEW
-    async function submitReview() {
-
-        if (selectedRating === 0) {
-            alert("Please select rating ⭐");
-            return;
-        }
-
-        const token = getToken();
-
-        const data = {
-            product_id: document.getElementById("productId").value,
-            order_id: document.getElementById("orderId").value,
-            rating: selectedRating,
-            comment: document.getElementById("comment").value
-        };
-
-        try {
-            const res = await fetch("https://madhut-2.onrender.com/user/review/add", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(data)
-            });
-
-            const result = await res.json();
-
-            if (res.ok) {
-                alert("Review submitted successfully ✅");
-                closeReview();
-            } else {
-                alert(result.message);
-            }
-
-        } catch {
-            alert("Error submitting review");
-        }
-    }
-
-    window.onload = fetchAndRenderOrders;
+        fetchAndRenderOrders(true);
+    });
+    window.onload = () => {
+        fetchAndRenderOrders(); // ✅ initial load
+    };
 
 </script>
 

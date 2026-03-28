@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Admin | Reviews</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+            background:linear-gradient(135deg,#eef2f7,#f8fafc);
+            padding:25px;
+        }
+
+        /* HEADER */
+        .header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:30px;
+            background:rgba(255,255,255,0.6);
+            backdrop-filter:blur(10px);
+            padding:12px 20px;
+            border-radius:14px;
+            box-shadow:0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .back-btn{
+            background:#111;
+            color:#fff;
+            border:none;
+            padding:8px 14px;
+            border-radius:10px;
+            cursor:pointer;
+        }
+
+        .header h1{
+            font-size:22px;
+        }
+
+        /* GRID */
+        .grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+            gap:22px;
+        }
+
+        /* CARD */
+        .card{
+            background:#fff;
+            border-radius:18px;
+            padding:20px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.08);
+            position:relative;
+            transition:0.2s;
+        }
+
+        .card:hover{
+            transform:translateY(-5px);
+        }
+
+        .name{
+            font-weight:600;
+            margin-bottom:6px;
+        }
+
+        .stars{
+            color:#fbbf24;
+            margin-bottom:10px;
+        }
+
+        .feedback{
+            font-size:14px;
+            margin-bottom:10px;
+        }
+
+        .date{
+            font-size:12px;
+            color:#888;
+        }
+
+        .delete-btn{
+            position:absolute;
+            top:12px;
+            right:12px;
+            background:#fff;
+            border:1px solid #eee;
+            color:#ef4444;
+            padding:6px 10px;
+            border-radius:10px;
+            cursor:pointer;
+            transition:0.2s;
+        }
+
+        .delete-btn:hover{
+            background:#ef4444;
+            color:#fff;
+        }
+
+        /* LOADER */
+        #loader{
+            text-align:center;
+            margin-top:120px;
+            font-size:16px;
+        }
+
+        /* 🔥 PREMIUM TOAST CONTAINER */
+        .toast-container{
+            position:fixed;
+            top:20px;
+            left:50%;
+            transform:translateX(-50%);
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+            z-index:9999;
+        }
+
+        /* TOAST */
+        .toast{
+            min-width:260px;
+            max-width:350px;
+            padding:12px 16px;
+            border-radius:12px;
+            color:#fff;
+            font-size:14px;
+            backdrop-filter:blur(10px);
+            box-shadow:0 10px 25px rgba(0,0,0,0.15);
+            animation:slideDown 0.4s ease;
+        }
+
+        .toast.success{
+            background:linear-gradient(135deg,#10b981,#059669);
+        }
+
+        .toast.error{
+            background:linear-gradient(135deg,#ef4444,#dc2626);
+        }
+
+        @keyframes slideDown{
+            from{
+                opacity:0;
+                transform:translateY(-20px);
+            }
+            to{
+                opacity:1;
+                transform:translateY(0);
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <button onclick="goBack()" class="back-btn">Back</button>
+    <h1>Customer Reviews</h1>
+</div>
+
+<div id="loader">Loading reviews...</div>
+<div class="grid" id="reviewGrid"></div>
+
+<!-- 🔥 TOAST CONTAINER -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script>
+
+    function goBack(){
+        window.history.back();
+    }
+
+    function showToast(message, type="success"){
+        const container = document.getElementById("toastContainer");
+
+        const toast = document.createElement("div");
+        toast.className = "toast " + type;
+        toast.innerText = message;
+
+        container.appendChild(toast);
+
+        setTimeout(()=>{
+            toast.style.opacity = "0";
+            toast.style.transform = "translateY(-10px)";
+            setTimeout(()=> toast.remove(), 300);
+        },3000);
+    }
+
+    function getStars(count){
+        return "★".repeat(count) + "☆".repeat(5-count);
+    }
+
+    function formatDate(dateStr){
+        return new Date(dateStr).toLocaleString();
+    }
+
+    /* LOAD REVIEWS */
+    async function loadReviews(){
+        try{
+            const res = await fetch("http://127.0.0.1:5000/admin/seen/verify/review",{
+                method:"POST"
+            });
+
+            const data = await res.json();
+            renderReviews(data);
+
+        }catch(err){
+            console.error(err);
+            document.getElementById("loader").innerText="Failed to load";
+        }
+
+        document.getElementById("loader").style.display="none";
+    }
+
+    /* RENDER */
+    function renderReviews(reviews){
+        const grid = document.getElementById("reviewGrid");
+
+        if(!reviews.length){
+            grid.innerHTML = "<p>No reviews found</p>";
+            return;
+        }
+
+        grid.innerHTML = reviews.map(r => `
+            <div class="card">
+                <button class="delete-btn" onclick="deleteReview('${r._id}')">🗑</button>
+                <div class="name">${r.name}</div>
+                <div class="stars">${getStars(r.star_rating)}</div>
+                <div class="feedback">${r.feedback}</div>
+                <div class="date">${formatDate(r.created_at)}</div>
+            </div>
+        `).join("");
+    }
+
+    /* DELETE */
+    async function deleteReview(id){
+
+        if(!id){
+            showToast("Invalid ID", "error");
+            return;
+        }
+
+        const confirmDelete = confirm("Delete this review?");
+        if(!confirmDelete) return;
+
+        try{
+            const res = await fetch(`http://127.0.0.1:5000/admin/delete/unfair/review?id=${encodeURIComponent(id)}`,{
+                method:"DELETE"
+            });
+
+            const data = await res.json();
+
+            if(res.ok){
+                showToast("Review deleted successfully", "success");
+            }else{
+                showToast(data.message || "Delete failed", "error");
+            }
+
+            loadReviews();
+
+        }catch(err){
+            console.error(err);
+            showToast("Server error", "error");
+        }
+    }
+
+    loadReviews();
+
+</script>
+
+</body>
+</html>

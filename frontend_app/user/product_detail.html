@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>MadHut | Product Detail</title>
+    <title>MADHUT | Product Detail</title>
     <link rel="icon" type="image/x-icon" href="static/images/mad_hut.jpeg">
     <style>
         *{
@@ -46,12 +46,9 @@
             font-size:20px;
             font-weight:bold;
             cursor:pointer;
+            color:#f1c40f;
         }
-        .logo{
-            font-size:20px;
-            font-weight:bold;
-            cursor:pointer;
-        }
+
 
         .nav-right{
         display:flex;
@@ -294,6 +291,158 @@
         }
 
         }
+        .review-card{
+        border:1px solid #eee;
+        padding:18px;
+        border-radius:12px;
+        margin-bottom:15px;
+        background:#fff;
+        transition:all 0.25s ease;
+}
+
+.review-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+.review-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.review-user{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.review-avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#111;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+.review-name{
+    font-weight:600;
+    font-size:14px;
+}
+
+.review-badge{
+    background:#0fa36b;
+    color:white;
+    padding:4px 10px;
+    border-radius:20px;
+    font-size:12px;
+}
+
+.review-stars{
+    color:#ffa500;
+    margin:8px 0;
+    font-size:14px;
+}
+
+.review-feedback{
+    color:#444;
+    line-height:1.6;
+    font-size:14px;
+}
+
+.review-empty{
+    text-align:center;
+    padding:30px;
+    color:#888;
+}
+        .nav-right span{
+    cursor: pointer;
+    font-weight:600;
+    transition:0.2s;
+}
+
+.nav-right span:hover{
+    color:#0fa36b;
+}
+        .review-time{
+        font-size:12px;
+        color:#888;
+}
+        /* ACCORDION STYLE (PREMIUM) */
+
+.accordion{
+    margin-top:25px;
+    border-top:1px solid #eee;
+}
+
+.accordion-item{
+    border-bottom:1px solid #eee;
+}
+
+.accordion-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:16px 0;
+    cursor:pointer;
+    font-weight:600;
+    font-size:14px;
+}
+
+.accordion-header:hover{
+    color:#0fa36b;
+}
+
+.plus{
+    font-size:18px;
+    transition:0.3s;
+}
+
+.accordion-content{
+    max-height:0;
+    overflow:hidden;
+    font-size:13px;
+    color:#555;
+    line-height:1.6;
+    transition:max-height 0.3s ease;
+}
+
+/* active state */
+
+.accordion-item.active .accordion-content{
+    max-height:120px;
+    margin-bottom:12px;
+}
+
+.accordion-item.active .plus{
+    transform:rotate(45deg); /* + becomes x */
+}
+        /* PRODUCT DESCRIPTION (REAL ECOMMERCE STYLE) */
+
+.product-description{
+    margin-top:15px;
+}
+
+.product-description h4{
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:8px;
+}
+
+.product-description ul{
+    padding-left:18px;
+}
+
+.product-description li{
+    font-size:14px;
+    color:#444;
+    margin-bottom:6px;
+    line-height:1.5;
+}
 
     </style>
 </head>
@@ -303,11 +452,13 @@
 <div class="navbar">
     <div class="nav-left">
         <div class="logo" onclick="goHome()">MADHUT</div>
+
     </div>
 
     <div class="nav-right">
+        <span onclick="goToReviews()">Reviews</span>
         <div class="cart-btn" onclick="goToCart()">
-            🛒 Cart <span class="cart-count" id="cartCount">0</span>
+            Cart<span class="cart-count" id="cartCount">0</span>
         </div>
         <div id="authSection"></div>
     </div>
@@ -328,7 +479,10 @@
 
             <div class="price" id="price"></div>
 
-            <p id="description"></p>
+            <div class="product-description">
+                <h4>Product Details</h4>
+                <ul id="description"></ul>
+            </div>
 
             <h4>Select Size</h4>
             <div id="sizes" class="option-group"></div>
@@ -338,10 +492,42 @@
 
             <h4 style="margin-top:20px;">Quantity</h4>
 
+
             <div class="quantity-box">
                 <button onclick="changeQty(-1)">-</button>
                 <input type="number" id="quantity" value="1" min="1">
                 <button onclick="changeQty(1)">+</button>
+            </div>
+            <!-- POLICY ACCORDION -->
+
+            <div class="accordion">
+
+                <!-- SHIPPING -->
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>All India Shipping</span>
+                        <span class="plus">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        We deliver across India within 3–7 business days.
+                        Orders are processed quickly and securely.
+                        Tracking details will be shared after dispatch.
+                    </div>
+                </div>
+
+                <!-- RETURN -->
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>3-Day Return Policy</span>
+                        <span class="plus">+</span>
+                    </div>
+                    <div class="accordion-content">
+                        You can return the product within 3 days of delivery.
+                        Item must be unused and in original condition.
+                        Refund will be processed after quality check.
+                    </div>
+                </div>
+
             </div>
 
             <div class="action-buttons">
@@ -351,6 +537,19 @@
 
         </div>
 
+    </div>
+    <!-- ================= REVIEWS SECTION ================= -->
+
+    <div class="wrapper" id="reviewSection">
+        <div style="margin-top:40px; background:white; padding:30px; border-radius:12px;">
+
+            <h2 style="margin-bottom:20px;">Customer Reviews</h2>
+
+            <div id="reviewsContainer">
+                <p>Loading reviews...</p>
+            </div>
+
+        </div>
     </div>
 </div>
 
@@ -397,7 +596,7 @@
     function showSkeleton(){
     document.getElementById("productName").innerText="Loading...";
     document.getElementById("price").innerText="Loading...";
-    document.getElementById("description").innerText="Please wait...";
+    document.getElementById("description").innerHTML="<li>Loading...</li>";
     }
 
     function getCacheKey(){
@@ -425,7 +624,7 @@
 
     /* 2. always fetch in background (update fresh data) */
     try{
-        const res=await fetch(`https://madhut-2.onrender.com/user/product/detail/?productId=${productId}`);
+        const res=await fetch(`http://127.0.0.1:5000/user/product/detail/?productId=${productId}`);
 
         const product=await res.json();
 
@@ -442,6 +641,24 @@
     isLoading = false;
 
     }
+    function renderDescription(desc){
+
+    const container = document.getElementById("description");
+
+    if(!desc || desc.trim() === ""){
+        container.innerHTML = "<li>No details available</li>";
+        return;
+    }
+
+    let points = desc.includes("\n")
+        ? desc.split("\n")
+        : desc.split(",");
+
+    container.innerHTML = points
+        .filter(p => p.trim() !== "")
+        .map(p => `<li>${p.trim()}</li>`)
+        .join("");
+}
 
     /* ================= RENDER ================= */
 
@@ -452,7 +669,7 @@
 
     document.getElementById("productName").innerText=product.name;
     document.getElementById("price").innerText="₹"+product.price;
-    document.getElementById("description").innerText=product.description;
+    renderDescription(product.description);
 
     const mainImg = document.getElementById("mainImage");
 
@@ -553,7 +770,7 @@
 
     try{
 
-    await fetch(" https://madhut-2.onrender.com/user/add/item/cart",{
+    await fetch(" http://127.0.0.1:5000/user/add/item/cart",{
     method:"POST",
     headers:{
     "Content-Type":"application/json",
@@ -588,7 +805,7 @@
 
     try{
 
-    const res=await fetch(" https://madhut-2.onrender.com/fetch/total/item/in/cart",{
+    const res=await fetch(" http://127.0.0.1:5000/fetch/total/item/in/cart",{
     headers:{
     "Authorization":"Bearer "+getToken()
     }
@@ -647,14 +864,99 @@
     window.location.href="user_login.html";
     }
 
-    /* ================= INIT ================= */
+    function goToReviews(){
+       document.getElementById("reviewSection").scrollIntoView({behavior:"smooth"});
+    }
+
+   async function loadReviews(){
+
+        const container = document.getElementById("reviewsContainer");
+
+        try{
+
+            const res = await fetch(`http://127.0.0.1:5000/get/all/reviews?product_id=${productId}`,{
+                method:"POST",
+                headers:{
+                    "Authorization":"Bearer " + getToken()
+                }
+            });
+
+            const reviews = await res.json();
+
+            if(!reviews.length){
+                container.innerHTML = `
+                    <div class="review-empty">
+                        No reviews yet  <br>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = reviews.map(r => {
+
+        const firstLetter = r.name ? r.name.trim()[0].toUpperCase() : "U";
+
+        // simple date format
+        const date = r.created_at
+            ? new Date(r.created_at).toLocaleDateString()
+            : "";
+
+        return `
+            <div class="review-card">
+
+                <div class="review-header">
+
+                    <div class="review-user">
+                        <div class="review-avatar">${firstLetter}</div>
+                        <div>
+                            <div class="review-name">${r.name}</div>
+                            <div class="review-time">${date}</div>
+                        </div>
+                    </div>
+
+                    <div class="review-badge">${r.star_rating} ★</div>
+
+                </div>
+
+                <div class="review-stars">
+                    ${"⭐".repeat(r.star_rating)}
+                </div>
+
+                <div class="review-feedback">
+                    ${r.feedback}
+                </div>
+
+            </div>
+        `;
+
+        }).join("");
+
+            }catch{
+                container.innerHTML = `
+                    <div class="review-empty">
+                        Failed to load reviews
+                    </div>
+                `;
+        }
+   }
+   function toggleAccordion(element){
+
+    const item = element.parentElement;
+
+    // close others (optional - looks premium)
+    document.querySelectorAll(".accordion-item").forEach(i=>{
+        if(i !== item) i.classList.remove("active");
+    });
+
+    item.classList.toggle("active");
+}
 
     window.addEventListener("DOMContentLoaded",()=>{
 
     updateAuthUI();
     loadProduct();
     updateCartCount();
-
+    loadReviews();
     });
 </script>
 </body>

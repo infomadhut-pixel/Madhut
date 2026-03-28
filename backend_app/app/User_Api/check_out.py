@@ -17,6 +17,8 @@ class CheckOutOrder(MethodView):
 
     def post(self):
         email = get_current_user()
+        if not email:
+            return {"message": "Unauthorized"}, 401
         data = request.get_json()
         quantity_ = data['quantity']
         product_id = data['product_id']

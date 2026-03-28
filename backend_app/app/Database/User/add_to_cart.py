@@ -14,7 +14,7 @@ class AddToCart:
         self.db = self.client['MadHut']
         self.collection = self.db['add_to_cart']
 
-    def add_to_cart(self, email, product_id, size, color, quantity, price, image):
+    def add_to_cart(self, email, product_id, color, price, quantity, size, image):
 
         try:
             cart = self.collection.find_one({"email": email})

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Product</title>
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+            background:#f4f6f9;
+            padding:30px;
+        }
+
+        /* LOADER */
+        #loader{
+            text-align:center;
+            margin-top:150px;
+            font-size:18px;
+            font-weight:500;
+        }
+
+        .container{
+            max-width:900px;
+            margin:auto;
+            background:#fff;
+            padding:25px;
+            border-radius:16px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.08);
+            display:none; /* hide initially */
+        }
+
+        h2{
+            margin-bottom:20px;
+        }
+
+        .form-group{
+            margin-bottom:15px;
+        }
+
+        label{
+            display:block;
+            margin-bottom:5px;
+            font-size:14px;
+            font-weight:500;
+        }
+
+        input, textarea{
+            width:100%;
+            padding:10px;
+            border:1px solid #ddd;
+            border-radius:8px;
+            font-size:14px;
+        }
+
+        textarea{
+            height:100px;
+        }
+
+        button{
+            margin-top:15px;
+            padding:12px 20px;
+            border:none;
+            border-radius:10px;
+            background:#2d6cdf;
+            color:white;
+            cursor:pointer;
+            font-size:14px;
+        }
+
+        button:hover{
+            background:#1c52c7;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- Loader -->
+<div id="loader">Loading product data...</div>
+
+<div class="container" id="mainContent">
+
+    <h2>Edit Product</h2>
+
+    <div class="form">
+
+        <div class="form-group">
+            <label>Name</label>
+            <input id="name">
+        </div>
+
+        <div class="form-group">
+            <label>Description</label>
+            <textarea id="description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Price</label>
+            <input id="price" type="number">
+        </div>
+
+        <div class="form-group">
+            <label>Old Price</label>
+            <input id="old_price" type="number">
+        </div>
+
+        <div class="form-group">
+            <label>Stock</label>
+            <input id="stock" type="number">
+        </div>
+
+        <div class="form-group">
+            <label>Category</label>
+            <input id="category">
+        </div>
+
+        <div class="form-group">
+            <label>Sizes (comma separated)</label>
+            <input id="sizes">
+        </div>
+
+        <div class="form-group">
+            <label>Colors (comma separated)</label>
+            <input id="colors">
+        </div>
+
+        <div class="form-group">
+            <label>Slugs (comma separated)</label>
+            <input id="slugs">
+        </div>
+
+        <button onclick="updateProduct()">Save Changes</button>
+
+    </div>
+
+</div>
+
+<script>
+
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("id");
+
+    let originalData = {};
+
+    async function loadProduct(){
+
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("mainContent").style.display = "none";
+
+        try{
+            const res = await fetch(`http://127.0.0.1:5000/admin/product/detail?product_id=${productId}`,{
+                method:"POST"
+            });
+
+            const p = await res.json();
+
+            originalData = p;
+
+            document.getElementById("name").value = p.name;
+            document.getElementById("description").value = p.description;
+            document.getElementById("price").value = p.price;
+            document.getElementById("old_price").value = p.old_price;
+            document.getElementById("stock").value = p.stock;
+            document.getElementById("category").value = p.category;
+
+            document.getElementById("sizes").value = p.sizes.join(",");
+            document.getElementById("colors").value = p.colors.join(",");
+            document.getElementById("slugs").value = p.slugs;
+
+        }catch(err){
+            console.error(err);
+            document.getElementById("loader").innerText = "Failed to load product";
+        }
+
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("mainContent").style.display = "block";
+    }
+
+    function getUpdatedFields(){
+
+        let updated = {};
+
+        const name = document.getElementById("name").value;
+        const description = document.getElementById("description").value;
+        const price = parseFloat(document.getElementById("price").value);
+        const old_price = parseFloat(document.getElementById("old_price").value);
+        const stock = parseInt(document.getElementById("stock").value);
+        const category = document.getElementById("category").value;
+
+        const sizes = document.getElementById("sizes").value.split(",");
+        const colors = document.getElementById("colors").value.split(",");
+        const slugs = document.getElementById("slugs").value;
+
+        if(originalData.name !== name) updated.name = name;
+        if(originalData.description !== description) updated.description = description;
+        if(originalData.price !== price) updated.price = price;
+        if(originalData.old_price !== old_price) updated.old_price = old_price;
+        if(originalData.stock !== stock) updated.stock = stock;
+        if(originalData.category !== category) updated.category = category;
+
+        if(JSON.stringify(originalData.sizes) !== JSON.stringify(sizes)) updated.sizes = sizes;
+        if(JSON.stringify(originalData.colors) !== JSON.stringify(colors)) updated.colors = colors;
+        if(JSON.stringify(originalData.slugs) !== JSON.stringify(slugs)) updated.slugs = slugs;
+
+        return updated;
+    }
+
+    async function updateProduct(){
+
+        const updatedFields = getUpdatedFields();
+
+        if(Object.keys(updatedFields).length === 0){
+            alert("No changes made ❗");
+            return;
+        }
+
+        const res = await fetch(`http://127.0.0.1:5000/admin/edit/product/detail?product_id=${productId}`,{
+            method:"PUT",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body: JSON.stringify(updatedFields)
+        });
+
+        await res.json();
+
+        alert("Product Updated");
+
+        window.location.href = `admin_product_detail.html?id=${productId}`;
+    }
+
+    loadProduct();
+
+</script>
+
+</body>
+</html>

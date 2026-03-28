@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 
 from ..Database.T_shirt.t_shirtDb import TshirtDatabase
 from ..Schemas.Admin.tshirt_upload import ProductSchema
+from app.extensions import socketio
 
 product_bp = Blueprint('product', __name__)
 
@@ -82,6 +83,12 @@ class add_product(MethodView):
         tags = data['tags']
         slug = generate_slug(data['name'])
         discount_percent = discount
-        result = self.product_db.insert_data(name, description, price, old_price, images, size, colors, stock, category,
+        product = self.product_db.insert_data(name, description, price, old_price, images, size, colors, stock, category,
                                              tags, slug, discount_percent)
-        return result
+        socketio.emit("new_product", product)
+
+        return {
+            "message": "Product added successfully",
+            "success": True,
+            "product": product
+        }, 201
