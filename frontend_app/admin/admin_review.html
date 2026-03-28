@@ -202,7 +202,7 @@
     /* LOAD REVIEWS */
     async function loadReviews(){
         try{
-            const res = await fetch("http://127.0.0.1:5000/admin/seen/verify/review",{
+            const res = await fetch("https://madhut-2.onrender.com/admin/seen/verify/review",{
                 method:"POST"
             });
 
@@ -249,7 +249,7 @@
         if(!confirmDelete) return;
 
         try{
-            const res = await fetch(`http://127.0.0.1:5000/admin/delete/unfair/review?id=${encodeURIComponent(id)}`,{
+            const res = await fetch(`https://madhut-2.onrender.com/admin/delete/unfair/review?id=${encodeURIComponent(id)}`,{
                 method:"DELETE"
             });
 

@@ -401,7 +401,7 @@
     let isLoading = false;
     let allLoaded = false;
 
-    const socket = io("http://127.0.0.1:5000");
+    const socket = io("https://madhut-2.onrender.com");
 
     socket.on("connect", () => console.log("Connected"));
     socket.on("new_product", (product) => addNewProductToTop(product));
@@ -439,7 +439,7 @@
         if(!token){ cartCount.textContent=0; return; }
 
         try{
-            const res = await fetch("http://127.0.0.1:5000/fetch/total/item/in/cart",{
+            const res = await fetch("https://madhut-2.onrender.com/fetch/total/item/in/cart",{
                 headers:{ "Authorization":"Bearer "+token },
                 cache:"no-store"
             });
@@ -458,7 +458,7 @@
         isLoading = true;
 
         try{
-            const res = await fetch(`http://127.0.0.1:5000/user/tshirts?page=${page}&limit=10`);
+            const res = await fetch(`https://madhut-2.onrender.com/user/tshirts?page=${page}&limit=10`);
             const data = await res.json();
 
             if(!data.products || data.products.length === 0){
