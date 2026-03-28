@@ -293,6 +293,11 @@
                 grid-template-columns:1fr;
             }
         }
+        @keyframes pulse{
+            0%{opacity:0.6;}
+            50%{opacity:1;}
+            100%{opacity:0.6;}
+        }
     </style>
 </head>
 
@@ -540,6 +545,19 @@
             setTimeout(()=>{ card.remove(); },300);
         }
     }
+    function showSkeleton(){
+        container.innerHTML = "";
+
+        for(let i=0;i<8;i++){
+            const skeleton = document.createElement("div");
+            skeleton.style.height = "320px";
+            skeleton.style.borderRadius = "16px";
+            skeleton.style.background = "#eee";
+            skeleton.style.animation = "pulse 1.2s infinite";
+
+            container.appendChild(skeleton);
+        }
+    }
 
     function showLoader(show){
         let loader = document.getElementById("loader");
@@ -573,7 +591,9 @@
     window.onload=()=>{
         updateAuthUI();
         fetchCartCount();
+        showSkeleton();
         loadTshirts();
+
         setInterval(fetchCartCount,15000);
     };
 
