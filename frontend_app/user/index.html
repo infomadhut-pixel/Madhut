@@ -459,143 +459,76 @@
 
     async function loadTshirts(){
 
-        if(isLoading || allLoaded) return;
-        isLoading = true;
+    if(isLoading || allLoaded) return;
+    isLoading = true;
 
-        try{
-            const res = await fetch(`https://madhut-2.onrender.com/user/tshirts?page=${page}&limit=50`);
-            const data = await res.json();
+    // ✅ show loader ONLY for scroll (not first page)
+    if(page > 1){
+        showLoader(true);
+    }
 
-            if(!data.products || data.products.length === 0){
-                allLoaded = true;
-                showLoader(false);
-                return;
-            }
+    try{
+        const res = await fetch(`https://madhut-2.onrender.com/user/tshirts?page=${page}&limit=50`);
+        const data = await res.json();
 
-            showLoader(true);
-            displayProducts(data.products);
-            page++;
-
-        }catch(err){
-            console.log(err);
+        if(!data.products || data.products.length === 0){
+            allLoaded = true;
+            showLoader(false);
+            return;
         }
 
-        isLoading = false;
-        showLoader(false);
+        displayProducts(data.products);
+        page++;
+
+    }catch(err){
+        console.log(err);
     }
 
-    function displayProducts(products){
-        products.forEach(product=>{
-            const card = createCard(product);
-            container.appendChild(card);
-        });
-    }
+    isLoading = false;
+    showLoader(false);
+}
 
-    function createCard(product){
 
-        const card = document.createElement("div");
-        card.className="card";
-        card.dataset.id = product._id;
+// ✅ FIXED displayProducts
+function displayProducts(products){
 
-        card.addEventListener("click", ()=>{
-            window.location.href = `product_detail.html?id=${product._id}`;
-        });
-
-        const imageUrl = product.image || product.images?.[0] || "";
-
-        card.innerHTML=`
-            <img src="${imageUrl}">
-            <div class="overlay"></div>
-            <div class="content">
-                <div>${product.name}</div>
-
-                <div style="font-size:14px;">
-                    ₹${product.price}
-
-                    ${
-                        product.old_price
-                        ? `<span style="text-decoration:line-through;opacity:0.7;margin-left:6px;">
-                            ₹${product.old_price}
-                           </span>`
-                        : ""
-                    }
-
-                    ${
-                        product.discount_percent
-                        ? `<span style="color:#d4af37;font-weight:600;margin-left:6px;">
-                            ${product.discount_percent}% OFF
-                           </span>`
-                        : ""
-                    }
-                </div>
-            </div>
-        `;
-        return card;
-    }
-
-    function addNewProductToTop(product){
-        const card = createCard(product);
-        container.prepend(card);
-    }
-
-    function removeProductFromUI(productId){
-        const card = document.querySelector(`[data-id="${productId}"]`);
-        if(card){
-            card.style.opacity = "0";
-            setTimeout(()=>{ card.remove(); },300);
-        }
-    }
-    function showSkeleton(){
+    // ✅ remove skeleton only first time
+    if(page === 1){
         container.innerHTML = "";
-
-        for(let i=0;i<8;i++){
-            const skeleton = document.createElement("div");
-            skeleton.style.height = "320px";
-            skeleton.style.borderRadius = "16px";
-            skeleton.style.background = "#eee";
-            skeleton.style.animation = "pulse 1.2s infinite";
-
-            container.appendChild(skeleton);
-        }
     }
 
-    function showLoader(show){
-        let loader = document.getElementById("loader");
+    products.forEach(product=>{
+        const card = createCard(product);
+        container.appendChild(card);
+    });
+}
 
-        if(!loader){
-            loader = document.createElement("div");
-            loader.id="loader";
-            loader.style.height = "60px";
-            loader.style.display = "flex";
-            loader.style.alignItems = "center";
-            loader.style.justifyContent = "center";
 
-            loader.innerHTML=`<div class="loader-spinner"></div>`;
-            container.after(loader);
-        }
+// ✅ KEEP skeleton (no change)
+function showSkeleton(){
+    container.innerHTML = "";
 
-        loader.style.visibility = show ? "visible" : "hidden";
+    for(let i=0;i<8;i++){
+        const skeleton = document.createElement("div");
+        skeleton.style.height = "320px";
+        skeleton.style.borderRadius = "16px";
+        skeleton.style.background = "#eee";
+        skeleton.style.animation = "pulse 1.2s infinite";
+
+        container.appendChild(skeleton);
     }
+}
 
-   window.addEventListener("scroll",()=>{
-        if(allLoaded || isLoading) return;
 
-        const scrollPosition = window.innerHeight + window.scrollY;
-        const threshold = document.body.scrollHeight - 100;
+window.onload=()=>{
+    updateAuthUI();
+    fetchCartCount();
 
-        if(scrollPosition >= threshold){
-            loadTshirts();
-        }
-   });
+    showSkeleton();
+    loadTshirts();
 
-    window.onload=()=>{
-        updateAuthUI();
-        fetchCartCount();
-        showSkeleton();
-        loadTshirts();
-
-        setInterval(fetchCartCount,15000);
-    };
+    setInterval(fetchCartCount,15000);
+};
 
 </script>
 
