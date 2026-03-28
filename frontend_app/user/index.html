@@ -386,6 +386,9 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+    // ===== CONFIG =====
+    const BASE_URL = "https://madhut-2.onrender.com";
+
     const firebaseConfig = {
         apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
         authDomain: "MADHUT-97c1e.firebaseapp.com",
@@ -407,56 +410,62 @@
     let allLoaded = false;
     let nextBatch = null;
 
-    const socket = io("https://madhut-2.onrender.com");
+    // ===== SOCKET (OPTIMIZED) =====
+    const socket = io(BASE_URL,{
+        transports:["websocket"],
+        reconnectionAttempts:2
+    });
 
-    socket.on("new_product", (product) => addNewProductToTop(product));
-    socket.on("delete_product", (data) => removeProductFromUI(data._id));
+    socket.on("new_product", addNewProductToTop);
+    socket.on("delete_product", (data)=>removeProductFromUI(data._id));
 
-    function updateAuthUI(){
+    // =====================================
+    // AUTH UI (RUN ONCE)
+    // =====================================
+    onAuthStateChanged(auth, (user) => {
 
-        onAuthStateChanged(auth, (user) => {
+        if(user){
+            authSection.innerHTML = `
+                <span class="nav-btn" id="profileBtn">Account</span>
+                <span class="nav-btn" id="logoutBtn">Logout</span>
+            `;
 
-            if(user){
-                authSection.innerHTML = `
-                    <span class="nav-btn" id="profileBtn">Account</span>
-                    <span class="nav-btn" id="logoutBtn">Logout</span>
-                `;
+            document.getElementById("profileBtn").onclick = ()=>{
+                window.location.href="user_dashboard.html";
+            };
 
-                document.getElementById("profileBtn").onclick = ()=>{
-                    window.location.href="user_dashboard.html";
-                };
+            document.getElementById("logoutBtn").onclick = async ()=>{
+                await signOut(auth);
+                location.reload();
+            };
 
-                document.getElementById("logoutBtn").onclick = async ()=>{
-                    await signOut(auth);
-                    location.reload();
-                };
+            fetchCartCount(); // 🔥 only when user exists
 
-            }else{
-                authSection.innerHTML = `
-                    <span class="nav-btn" id="loginBtn">Login</span>
-                `;
+        }else{
+            authSection.innerHTML = `
+                <span class="nav-btn" id="loginBtn">Login</span>
+            `;
 
-                document.getElementById("loginBtn").onclick = ()=>{
-                    window.location.href="user_login.html";
-                };
-            }
+            document.getElementById("loginBtn").onclick = ()=>{
+                window.location.href="user_login.html";
+            };
 
-        });
-    }
+            cartCount.textContent = 0;
+        }
+    });
 
+    // =====================================
+    // CART COUNT (NO INTERVAL SPAM)
+    // =====================================
     async function fetchCartCount(){
 
         const user = auth.currentUser;
-
-        if(!user){
-            cartCount.textContent = 0;
-            return;
-        }
-
-        const token = await user.getIdToken();
+        if(!user) return;
 
         try{
-            const res = await fetch("https://madhut-2.onrender.com/fetch/total/item/in/cart",{
+            const token = await user.getIdToken();
+
+            const res = await fetch(`${BASE_URL}/fetch/total/item/in/cart`,{
                 headers:{ "Authorization":"Bearer "+token }
             });
 
@@ -468,7 +477,9 @@
         }
     }
 
-
+    // =====================================
+    // MAIN LOAD (FAST)
+    // =====================================
     async function loadTshirts(){
 
         if(isLoading || allLoaded) return;
@@ -480,12 +491,12 @@
 
             let data;
 
-            // 🔥 USE PREFETCHED DATA FIRST
+            // 🔥 use prefetched data
             if(nextBatch){
                 data = nextBatch;
                 nextBatch = null;
             }else{
-                let url = `https://madhut-2.onrender.com/user/tshirts?limit=10`;
+                let url = `${BASE_URL}/user/tshirts?limit=20`;
 
                 if(lastId){
                     url += `&last_id=${lastId}`;
@@ -503,15 +514,13 @@
 
             displayProducts(data.products);
 
-            // 🔥 update last id
             lastId = data.products[data.products.length - 1]._id;
 
-            // 🔥 CHECK END (FIXED)
-            if(data.products.length < 10){
+            if(data.products.length < 20){
                 allLoaded = true;
                 showNoMore();
             }else{
-                prefetchNext();  // 🔥 background fetch
+                prefetchNext();
             }
 
         }catch(err){
@@ -522,10 +531,13 @@
         showLoader(false);
     }
 
+    // =====================================
+    // PREFETCH (BACKGROUND)
+    // =====================================
     async function prefetchNext(){
 
         try{
-            let url = `https://madhut-2.onrender.com/user/tshirts?limit=10&last_id=${lastId}`;
+            let url = `${BASE_URL}/user/tshirts?limit=20&last_id=${lastId}`;
 
             const res = await fetch(url);
             nextBatch = await res.json();
@@ -535,13 +547,15 @@
         }
     }
 
+    // =====================================
+    // UI FUNCTIONS
+    // =====================================
     function displayProducts(products){
         products.forEach(product=>{
             const card = createCard(product);
             container.appendChild(card);
         });
     }
-
 
     function createCard(product){
 
@@ -556,13 +570,11 @@
         const imageUrl = product.image || product.images?.[0] || "";
 
         card.innerHTML=`
-            <img src="${imageUrl}" loading="lazy">
+            <img src="${imageUrl}" loading="lazy" decoding="async">
             <div class="overlay"></div>
             <div class="content">
                 <div>${product.name}</div>
-                <div style="font-size:14px;">
-                    ₹${product.price}
-                </div>
+                <div style="font-size:14px;">₹${product.price}</div>
             </div>
         `;
         return card;
@@ -575,11 +587,12 @@
 
     function removeProductFromUI(productId){
         const card = document.querySelector(`[data-id="${productId}"]`);
-        if(card){
-            card.remove();
-        }
+        if(card) card.remove();
     }
 
+    // =====================================
+    // LOADER
+    // =====================================
     function showLoader(show){
 
         let loader = document.getElementById("loader");
@@ -596,20 +609,21 @@
 
     function showNoMore(){
 
-        let msg = document.getElementById("endMsg");
+        if(document.getElementById("endMsg")) return;
 
-        if(!msg){
-            msg = document.createElement("div");
-            msg.id = "endMsg";
-            msg.style.textAlign = "center";
-            msg.style.padding = "20px";
-            msg.style.fontWeight = "600";
-            msg.innerText = "No more products 🚫";
+        const msg = document.createElement("div");
+        msg.id = "endMsg";
+        msg.style.textAlign = "center";
+        msg.style.padding = "20px";
+        msg.style.fontWeight = "600";
+        msg.innerText = "No more products 🚫";
 
-            container.after(msg);
-        }
+        container.after(msg);
     }
 
+    // =====================================
+    // 🔥 BEST SCROLL (ONLY ONE METHOD)
+    // =====================================
     const trigger = document.createElement("div");
     container.after(trigger);
 
@@ -617,15 +631,15 @@
         if(entries[0].isIntersecting){
             loadTshirts();
         }
-    },{ threshold: 1 });
+    });
 
     observer.observe(trigger);
 
-    window.onload=()=>{
-        updateAuthUI();
-        fetchCartCount();
-        loadTshirts();
-        setInterval(fetchCartCount,15000);
+    // =====================================
+    // INIT (MINIMAL)
+    // =====================================
+    window.onload = ()=>{
+        loadTshirts();   // 🔥 only main call
     };
 
 </script>
