@@ -7,7 +7,7 @@ import random
 class TshirtDatabase:
     def __init__(self):
         self.client = MongoClient(
-            'mongodb+srv://harshkumartiwari034_db_user:AEXLTbDqQwSQ9CQ0@madhut.ej8ujxj.mongodb.net/?appName=MadHut')
+            'mongodb+srv://harshkumartiwari034_db_user:AEXLTbDqQwSQ9CQ0@madhut.ej8ujxj.mongodb.net/?appName=MadHut',tls=True)
         self.db = self.client['MadHut']
         self.collection = self.db['T_shirt']
 
