@@ -99,7 +99,7 @@
 
         .product-grid{
             display:grid;
-            grid-template-columns:repeat(5, 1fr);  /* 🔥 fixed 5 per row */
+            grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
             gap:20px;
         }
 
@@ -272,19 +272,41 @@
         }
 
         /* RESPONSIVE */
-        @media(max-width:900px){
-            .footer-grid{
-                grid-template-columns:1fr 1fr;
+       @media(max-width:768px){
+
+            .header{
+                padding:14px 20px;
             }
-        }
+
+            .container{
+                padding:110px 15px 30px 15px;
+            }
+
+            .horizontal-ad{
+                width:100%;
+                font-size:16px;
+            }
+       }
 
         @media(max-width:500px){
-            .footer{
-                padding:40px 20px;
+            .product-grid{
+                grid-template-columns:repeat(2,1fr);
+                gap:12px;
             }
-            .footer-grid{
-                grid-template-columns:1fr;
+
+            .card{
+                height:250px;
             }
+        }
+        .skeleton{
+            border-radius:14px;
+            background:linear-gradient(90deg,#eeeeee 25%,#dddddd 37%,#eeeeee 63%);
+            background-size:400% 100%;
+            animation:shimmer 1.2s infinite;
+        }
+        @keyframes shimmer{
+            0%{background-position:100% 0;}
+            100%{background-position:-100% 0;}
         }
     </style>
 </head>
@@ -563,12 +585,19 @@
         if (!loader) {
             loader = document.createElement("div");
             loader.id = "loader";
+
             loader.innerHTML = `
-                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
-                    <div style="height:180px;background:#ddd;border-radius:10px;"></div>
-                    <div style="height:180px;background:#ddd;border-radius:10px;"></div>
+                <div style="
+                    display:grid;
+                    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+                    gap:20px;
+                ">
+                    ${Array(6).fill().map(() => `
+                        <div class="skeleton" style="height:260px;"></div>
+                    `).join("")}
                 </div>
             `;
+
             container.after(loader);
         }
 
