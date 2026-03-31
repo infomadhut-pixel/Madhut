@@ -772,7 +772,7 @@ const product = await res.json();
 
     try{
 
-    await fetch(" http://127.0.0.1:5000/user/add/item/cart",{
+    await fetch("https://madhut-2-62yx.onrender.com/user/add/item/cart",{
     method:"POST",
     headers:{
     "Content-Type":"application/json",
@@ -807,7 +807,7 @@ const product = await res.json();
 
     try{
 
-    const res=await fetch(" http://127.0.0.1:5000/fetch/total/item/in/cart",{
+    const res=await fetch("https://madhut-2-62yx.onrender.com/fetch/total/item/in/cart",{
     headers:{
     "Authorization":"Bearer "+getToken()
     }
@@ -876,7 +876,7 @@ const product = await res.json();
 
         try{
 
-            const res = await fetch(`http://127.0.0.1:5000/get/all/reviews?product_id=${productId}`,{
+            const res = await fetch(`https://madhut-2-62yx.onrender.com/get/all/reviews?product_id=${productId}`,{
                 method:"POST",
                 headers:{
                     "Authorization":"Bearer " + getToken()
