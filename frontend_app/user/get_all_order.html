@@ -34,9 +34,9 @@
 
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script>
-    const socket = io("http://127.0.0.1:5000");
+    const socket = io("https://madhut-1nm8.onrender.com");
 
-    const API_URL = 'http://127.0.0.1:5000/user/fetch/order';
+    const API_URL = 'https://madhut-1nm8.onrender.com/user/fetch/order';
 
     function getToken() {
         return localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
