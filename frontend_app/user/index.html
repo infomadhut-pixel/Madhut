@@ -474,7 +474,6 @@
                 }
             }
 
-            // 🔥 API CALL
             let url = `${BASE_URL}/user/tshirts?limit=10`;
 
             if (lastId) {
@@ -484,15 +483,25 @@
             const res = await fetch(url);
             const data = await res.json();
 
+            if (!data.products || data.products.length === 0) {
+                allLoaded = true;
+                observer.disconnect();
+                return;
+            }
+
             displayProducts(data.products);
 
-            // 🔥 SAVE CACHE (ONLY FIRST LOAD)
             if (!lastId) {
                 localStorage.setItem(CACHE_KEY, JSON.stringify(data.products));
                 localStorage.setItem(CURSOR_KEY, data.next_cursor);
             }
 
-            lastId = data.next_cursor;
+            if (!data.next_cursor) {
+                allLoaded = true;
+                observer.disconnect();
+            } else {
+                lastId = data.next_cursor;
+            }
 
         } catch (err) {
             console.log(err);
