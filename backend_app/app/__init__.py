@@ -50,11 +50,9 @@ def create_app():
             r"/*": {
                 "origins": [
                     "https://madhut-kp2y.vercel.app",
-                    # "https://www.shopmadhut.com",
-                    # "https://shopmadhut.com",
-                    # "https://mad-hut.vercel.app",
-                    "http://localhost:63342",
-                    # "https://mad-hut-5pse.vercel.app"
+                    "https://shopmadhut.com",
+                    "https://www.shopmadhut.com",
+                    "http://localhost:3000"
                 ]
             }
         },
