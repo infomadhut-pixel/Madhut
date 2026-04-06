@@ -155,7 +155,7 @@
         document.getElementById("mainContent").style.display = "none";
 
         try{
-            const res = await fetch(`https://madhut-2.onrender.com/admin/product/detail?product_id=${productId}`,{
+            const res = await fetch(`https://madhut-2-62yx.onrender.com/admin/product/detail?product_id=${productId}`,{
                 method:"POST"
             });
 
@@ -221,7 +221,7 @@
             return;
         }
 
-        const res = await fetch(`https://madhut-2.onrender.com/admin/edit/product/detail?product_id=${productId}`,{
+        const res = await fetch(`https://madhut-2-62yx.onrender.com/admin/edit/product/detail?product_id=${productId}`,{
             method:"PUT",
             headers:{
                 "Content-Type":"application/json"

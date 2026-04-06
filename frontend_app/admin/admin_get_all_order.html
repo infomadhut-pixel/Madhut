@@ -110,7 +110,7 @@
 <script>
 
     async function loadOrders(){
-        const res = await fetch("https://madhut-2.onrender.com/admin/seen/all/order?page=1&limit=5",{method:"POST"});
+        const res = await fetch("https://madhut-2-62yx.onrender.com/admin/seen/all/order?page=1&limit=5",{method:"POST"});
         const data = await res.json();
         renderOrders(data);
     }
@@ -188,7 +188,7 @@
                 const order_id = e.target.dataset.id;
                 const status = document.getElementById(`status-${order_id}`).value;
 
-                const res = await fetch("https://madhut-2.onrender.com/admin/update/status/order",{
+                const res = await fetch("https://madhut-2-62yx.onrender.com/admin/update/status/order",{
                     method:"PUT",
                     headers:{"Content-Type":"application/json"},
                     body: JSON.stringify({order_id, status})
@@ -209,7 +209,7 @@
                 const order_id = e.target.dataset.id;
                 const tracking_id = document.getElementById(`track-${order_id}`).value;
 
-                const res = await fetch("https://madhut-2.onrender.com/admin/add/tracking",{
+                const res = await fetch("https://madhut-2-62yx.onrender.com/admin/add/tracking",{
                     method:"PUT",
                     headers:{"Content-Type":"application/json"},
                     body: JSON.stringify({order_id, tracking_id})

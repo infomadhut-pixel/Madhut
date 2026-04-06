@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>About Us | MadHut</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Segoe UI',sans-serif;
+        }
+
+        body{
+            background:#f5f6fa;
+            color:#111;
+        }
+
+        /* HEADER */
+        .header{
+            padding:22px 60px;
+            background:#000;
+            border-bottom:1px solid #222;
+            position:sticky;
+            top:0;
+            z-index:100;
+        }
+
+        .logo{
+            color:#f1c40f;
+            text-decoration:none;
+            font-weight:700;
+            font-size:20px;
+            letter-spacing:1px;
+        }
+
+        .logo:hover{
+            opacity:0.8;
+        }
+
+        /* HERO */
+        .hero{
+            text-align:center;
+            padding:90px 20px 40px;
+        }
+
+        .main-title{
+            font-size:48px;
+            font-weight:800;
+            line-height:1.2;
+            background:linear-gradient(90deg,#000,#666);
+            -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent;
+        }
+
+        .sub-title{
+            margin-top:15px;
+            color:#777;
+            font-size:16px;
+        }
+
+        /* ABOUT BOX */
+        .about-box{
+            max-width:850px;
+            margin:50px auto;
+            background:white;
+            padding:45px;
+            border-radius:22px;
+            box-shadow:0 15px 40px rgba(0,0,0,0.06);
+            text-align:center;
+        }
+
+        .about-box h2{
+            font-size:26px;
+            margin-bottom:20px;
+        }
+
+        .about-box p{
+            color:#555;
+            line-height:1.8;
+            margin-bottom:15px;
+        }
+
+        .quote{
+            margin-top:20px;
+            font-weight:600;
+            font-size:18px;
+        }
+
+        /* SECTION */
+        .section{
+            max-width:1200px;
+            margin:auto;
+            padding:80px 20px;
+        }
+
+        .section-title{
+            text-align:center;
+            font-size:30px;
+            margin-bottom:40px;
+        }
+
+        /* FOUNDERS */
+        .founders{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:40px;
+        }
+
+        /* CARD */
+        .card{
+            background:white;
+            border-radius:22px;
+            padding:30px;
+            box-shadow:0 15px 35px rgba(0,0,0,0.06);
+            transition:0.3s;
+        }
+
+        .card:hover{
+            transform:translateY(-10px);
+        }
+
+        .card img{
+            width:100%;
+            height:280px;
+            object-fit:contain;
+            background:#f2f2f2;
+            border-radius:16px;
+        }
+
+        .card h3{
+            margin-top:20px;
+            font-size:20px;
+        }
+
+        .card p{
+            margin-top:12px;
+            color:#666;
+            font-size:15px;
+            line-height:1.7;
+        }
+
+        .card ul{
+            margin-top:15px;
+            padding-left:18px;
+        }
+
+        .card li{
+            margin-bottom:10px;
+            font-size:14px;
+        }
+
+        /* AGENDA */
+        .agenda{
+            margin-top:40px;
+            background:linear-gradient(135deg,#111,#444);
+            color:white;
+            padding:50px;
+            border-radius:22px;
+            text-align:center;
+            line-height:2;
+            font-size:15px;
+        }
+
+        /* WHY */
+        .why{
+            display:grid;
+            grid-template-columns:repeat(2,1fr);
+            gap:25px;
+        }
+
+        .why-item{
+            background:white;
+            padding:25px;
+            border-radius:18px;
+            box-shadow:0 10px 25px rgba(0,0,0,0.05);
+            text-align:center;
+            font-weight:500;
+        }
+
+        /* MOBILE */
+        @media(max-width:768px){
+
+            .founders{
+                grid-template-columns:1fr;
+            }
+
+            .why{
+                grid-template-columns:1fr;
+            }
+
+            .main-title{
+                font-size:32px;
+            }
+
+            .header{
+                padding:20px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="header">
+    <a href="/" class="logo">MADHUT</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <h1 class="main-title">The dream team of MadHut.</h1>
+    <p class="sub-title">We build style, identity & confidence.</p>
+</div>
+
+<!-- ABOUT -->
+<div class="about-box">
+
+    <h2>About Us</h2>
+
+    <p>
+        Madhut is not just a clothing brand — it’s a vision.
+        A vision where style, comfort, and individuality come together.
+    </p>
+
+    <p>
+        We believe that everyone deserves to express their identity, and Madhut makes that expression simple,
+        affordable, and stylish.
+    </p>
+
+    <div class="quote">
+        “Wear Your Vibe, Wear What You Like.”
+    </div>
+
+</div>
+
+<!-- FOUNDERS -->
+<div class="section">
+    <h2 class="section-title">Our Founders</h2>
+
+    <div class="founders">
+
+        <div class="card">
+            <img src="static/images/parvesh.jpeg">
+            <h3>Parvesh Verma</h3>
+            <p>
+                Parvesh is the creative backbone of Madhut. He focuses on turning clothing into a statement,
+                blending modern street style with youth culture.
+            </p>
+            <ul>
+                <li> Design & Creative Direction</li>
+                <li> Let designs speak without words</li>
+                <li> Trend understanding</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <img src="static/images/pawan.jpeg">
+            <h3>Pawan Verma</h3>
+            <p>
+                Pawan is the strategic force behind Madhut. He builds the brand and ensures growth with strong execution
+                and planning.
+            </p>
+            <ul>
+                <li> Business Strategy</li>
+                <li> Brand growth vision</li>
+                <li> Execution mindset</li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<!-- AGENDA -->
+<div class="section">
+    <h2 class="section-title">Our Agenda</h2>
+
+    <div class="agenda">
+         Provide stylish and affordable clothing<br>
+         Empower youth identity<br>
+         Maintain premium quality<br>
+         Deliver best experience<br><br>
+
+        <b>We don’t just sell clothes — we deliver confidence.</b>
+    </div>
+</div>
+
+<!-- WHY -->
+<div class="section">
+    <h2 class="section-title">Why Choose Us</h2>
+
+    <div class="why">
+        <div class="why-item">Premium quality fabrics</div>
+        <div class="why-item">Unique eye-catching designs</div>
+        <div class="why-item">Affordable pricing</div>
+        <div class="why-item">Made for youth</div>
+    </div>
+</div>
+
+</body>
+</html>

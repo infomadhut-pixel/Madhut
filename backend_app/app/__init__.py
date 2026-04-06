@@ -52,7 +52,7 @@ def create_app():
                     "https://madhut-kp2y.vercel.app",
                     "https://shopmadhut.com",
                     "https://www.shopmadhut.com",
-                    "http://localhost:3000"
+                    "http://localhost:63342"
                 ]
             }
         },

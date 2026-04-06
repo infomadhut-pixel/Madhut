@@ -151,7 +151,7 @@
 <div class="pagination" id="pagination"></div>
 
 <script>
-    const socket = io("https://madhut-2.onrender.com");
+    const socket = io("https://madhut-2-62yx.onrender.com");
 
     let currentPage = 1;
     const limit = 20;
@@ -177,7 +177,7 @@
         document.getElementById("pagination").style.display = "none";
 
         try{
-            const res = await fetch(`https://madhut-2.onrender.com/admin/view/all/product?page=${page}&limit=${limit}&t=${Date.now()}`,{
+            const res = await fetch(`https://madhut-2-62yx.onrender.com/admin/view/all/product?page=${page}&limit=${limit}&t=${Date.now()}`,{
                 method:"POST",
                 headers: {
                     "Cache-Control": "no-cache"

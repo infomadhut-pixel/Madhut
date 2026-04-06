@@ -171,7 +171,8 @@
         .logo{
             color:#f1c40f;
             margin-bottom:18px;
-            font-size:22px;
+            font-size:20px;
+            font-weight:700;
         }
 
         /* LINKS */
@@ -214,6 +215,11 @@
             color:white;
             font-size:16px;
             transition:0.3s;
+        }
+        .social img{
+            width:22px;
+            height:22px;
+            object-fit:contain;
         }
 
         .youtube:hover{
@@ -367,11 +373,20 @@
         <div class="footer-col">
             <h3>CONNECT WITH US</h3>
 
-            <div class="social-row">
-                <a href="https://youtube.com/@madhutofficial?si=k3KXCca5Ci3ju90t" class="social youtube">▶</a>
-                <a href="https://www.facebook.com/share/1CNJNKQuPC/" class="social facebook">f</a>
-                <a href="https://www.instagram.com/madhutofficial?igsh=MXhxbGdqc21pejZ5aw==" class="social insta">⬤</a>
-            </div>
+           <div class="social-row">
+
+                <a href="https://youtube.com/@madhutofficial?si=k3KXCca5Ci3ju90t" class="social youtube">
+                    <img src="static/images/youtube.png" alt="YouTube">
+                </a>
+
+                <a href="https://www.facebook.com/share/1CNJNKQuPC/" class="social facebook">
+                    <img src="static/images/facebook.png" alt="Facebook">
+                </a>
+
+                <a href="https://www.instagram.com/madhutofficial?igsh=MXhxbGdqc21pejZ5aw==" class="social insta">
+                    <img src="static/images/instagram.png" alt="Instagram">
+                </a>
+          </div>
 
             <p class="footer-small">Follow us for latest drops 🔥</p>
         </div>
@@ -400,7 +415,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const BASE_URL = " https://madhut-2-62yx.onrender.com";
+    const BASE_URL = "https://madhut-2-62yx.onrender.com";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
@@ -664,3 +679,9 @@
 </script>
 </body>
 </html>
+
+
+
+
+
+
