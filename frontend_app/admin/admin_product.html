@@ -151,7 +151,7 @@
 <div class="pagination" id="pagination"></div>
 
 <script>
-    const socket = io("http://127.0.0.1:5000");
+    const socket = io("https://madhut-2-62yx.onrender.com");
 
     let nextCursor = null;
     const limit = 20;
@@ -162,7 +162,7 @@
         document.getElementById("productGrid").style.display = "none";
 
         try{
-            const url = `http://127.0.0.1:5000/admin/view/all/product?limit=${limit}&last_id=${nextCursor || ""}&t=${Date.now()}`;
+            const url = `https://madhut-2-62yx.onrender.com?limit=${limit}&last_id=${nextCursor || ""}&t=${Date.now()}`;
 
             const res = await fetch(url, {
                 method: "GET",
