@@ -151,34 +151,21 @@
 <div class="pagination" id="pagination"></div>
 
 <script>
-    const socket = io("https://madhut-2-62yx.onrender.com");
+    const socket = io("http://127.0.0.1:5000");
 
-    let currentPage = 1;
+    let nextCursor = null;
     const limit = 20;
 
-    const params = new URLSearchParams(window.location.search);
-    const deletedId = params.get("deleted");
-
-    if(deletedId){
-        console.log("Deleted from detail page:", deletedId);
-
-        setTimeout(() => {
-            const card = document.querySelector(`[data-id="${deletedId}"]`);
-            if(card){
-                card.remove();
-            }
-        }, 500);
-    }
-
-    async function loadProducts(page = 1){
+    async function loadProducts(){
 
         document.getElementById("loader").style.display = "block";
         document.getElementById("productGrid").style.display = "none";
-        document.getElementById("pagination").style.display = "none";
 
         try{
-            const res = await fetch(`https://madhut-2-62yx.onrender.com/admin/view/all/product?page=${page}&limit=${limit}&t=${Date.now()}`,{
-                method:"POST",
+            const url = `http://127.0.0.1:5000/admin/view/all/product?limit=${limit}&last_id=${nextCursor || ""}&t=${Date.now()}`;
+
+            const res = await fetch(url, {
+                method: "GET",
                 headers: {
                     "Cache-Control": "no-cache"
                 }
@@ -186,8 +173,9 @@
 
             const data = await res.json();
 
-            renderProducts(data.products);
-            renderPagination(data.total_pages, page);
+            nextCursor = data.next_cursor;
+
+            renderProducts(data.products, true);
 
         }catch(err){
             console.error(err);
@@ -196,13 +184,12 @@
 
         document.getElementById("loader").style.display = "none";
         document.getElementById("productGrid").style.display = "grid";
-        document.getElementById("pagination").style.display = "flex";
     }
 
-    function renderProducts(products){
+    function renderProducts(products, append = false){
         const grid = document.getElementById("productGrid");
 
-        grid.innerHTML = products.map(p => `
+        const html = products.map(p => `
             <div class="card" data-id="${p._id}" onclick="openProduct('${p._id}')">
 
                 <img src="${p.images ? p.images[0] : p.image}" alt="">
@@ -219,30 +206,27 @@
 
             </div>
         `).join("");
+
+        if(append){
+            grid.innerHTML += html;
+        }else{
+            grid.innerHTML = html;
+        }
     }
 
     function openProduct(id){
         window.location.href = `admin_product_detail.html?id=${id}`;
     }
 
-    function renderPagination(totalPages,current){
-        const container = document.getElementById("pagination");
-        let buttons = "";
-        for(let i=1;i<=totalPages;i++){
-            buttons += `
-            <button class="page-btn ${i===current?'active':''}" onclick="changePage(${i})">${i}</button>
-            `;
-        }
-        container.innerHTML = buttons;
-    }
-
-    function changePage(page){
-        currentPage = page;
-        loadProducts(page);
-    }
-
     function goBack(){
-       window.location.href = "admin_index.html";
+        window.location.href = "admin_index.html";
+    }
+
+    // 🔥 Load more button
+    function loadMore(){
+        if(nextCursor){
+            loadProducts();
+        }
     }
 
     // 🔥 REAL-TIME DELETE
@@ -253,10 +237,8 @@
         }
     });
 
-    // 🔥🔥 NEW FEATURE (REAL-TIME ADD PRODUCT)
+    // 🔥 REAL-TIME ADD
     socket.on("new_product", function(product){
-        console.log("New product received:", product);
-
         const grid = document.getElementById("productGrid");
 
         const newCard = document.createElement("div");
@@ -278,7 +260,6 @@
             </div>
         `;
 
-        // add new product on top
         grid.prepend(newCard);
     });
 
