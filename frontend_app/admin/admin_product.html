@@ -162,7 +162,9 @@
         document.getElementById("productGrid").style.display = "none";
 
         try{
-            const url = `https://madhut-2-62yx.onrender.com/admin/view/all/product?limit=${limit}&last_id=${nextCursor || ""}&t=${Date.now()}`;
+            const url = const url = nextCursor
+    ? `https://madhut-2-62yx.onrender.com/admin/view/all/product?limit=${limit}&last_id=${nextCursor}&t=${Date.now()}`
+    : `https://madhut-2-62yx.onrender.com/admin/view/all/product?limit=${limit}&t=${Date.now()}`;
 
             const res = await fetch(url, {
                 method: "GET",
@@ -175,7 +177,12 @@
 
             nextCursor = data.next_cursor;
 
-            renderProducts(data.products, true);
+            if (data && data.products && Array.isArray(data.products)) {
+                renderProducts(data.products, true);
+            } else {
+                console.error("Invalid response:", data);
+                document.getElementById("loader").innerText = "No products found";
+            }
 
         }catch(err){
             console.error(err);
