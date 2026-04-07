@@ -162,7 +162,7 @@
         document.getElementById("productGrid").style.display = "none";
 
         try{
-            const url = `https://madhut-2-62yx.onrender.com?limit=${limit}&last_id=${nextCursor || ""}&t=${Date.now()}`;
+            const url = `https://madhut-2-62yx.onrender.com/admin/view/all/product?limit=${limit}&last_id=${nextCursor || ""}&t=${Date.now()}`;
 
             const res = await fetch(url, {
                 method: "GET",

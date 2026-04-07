@@ -12,9 +12,16 @@ class AdminViewAllProduct(MethodView):
     def __init__(self):
         self.product_db = TshirtDatabase()
 
-    @cache.cached(timeout=120, query_string=True)
-    def post(self):
-        page = int(request.args.get('page', 1))
-        limit = int(request.args.get('limit', 20))
-        result = self.product_db.fetch_products(page, limit)
-        return result
+    @cache.cached(timeout=60, query_string=True)
+    def get(self):
+
+        last_id = request.args.get('last_id', None)
+
+        try:
+            limit = int(request.args.get('limit', 20))
+        except:
+            limit = 20
+
+        result = self.product_db.fetch_products(last_id, limit)
+
+        return result, 200

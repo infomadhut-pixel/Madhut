@@ -7,7 +7,8 @@ import random
 class TshirtDatabase:
     def __init__(self):
         self.client = MongoClient(
-            'mongodb+srv://harshkumartiwari034_db_user:AEXLTbDqQwSQ9CQ0@madhut.ej8ujxj.mongodb.net/?appName=MadHut',tls=True)
+            'mongodb+srv://harshkumartiwari034_db_user:AEXLTbDqQwSQ9CQ0@madhut.ej8ujxj.mongodb.net/?appName=MadHut',
+            tls=True)
         self.db = self.client['MadHut']
         self.collection = self.db['T_shirt']
 
@@ -29,7 +30,7 @@ class TshirtDatabase:
     def fetch_products(self, last_id=None, limit=20):
         query = {}
 
-        # safer handling
+        # ✅ handle cursor safely
         if last_id:
             try:
                 query["_id"] = {"$lt": ObjectId(last_id)}
@@ -37,6 +38,7 @@ class TshirtDatabase:
                 return {
                     "products": [],
                     "has_more": False,
+                    "next_cursor": None,
                     "count": 0
                 }
 
@@ -56,11 +58,13 @@ class TshirtDatabase:
         )
 
         products = list(cursor)
+
         has_more = len(products) > limit
 
         if has_more:
             products = products[:limit]
 
+        # ✅ convert ObjectId → string
         for p in products:
             p["_id"] = str(p["_id"])
 
