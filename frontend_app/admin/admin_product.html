@@ -150,31 +150,31 @@
 
 <div class="pagination" id="pagination"></div>
 
-<script>
-    const socket = io("https://madhut-2-62yx.onrender.com");
+<script type="text/javascript">
+    var socket = io("https://madhut-2-62yx.onrender.com");
 
-    let nextCursor = null;
-    const limit = 20;
+    var nextCursor = null;
+    var limit = 20;
 
-    async function loadProducts(){
+    function loadProducts() {
 
         document.getElementById("loader").style.display = "block";
         document.getElementById("productGrid").style.display = "none";
 
-        try{
-            const url = const url = nextCursor
-    ? `https://madhut-2-62yx.onrender.com/admin/view/all/product?limit=${limit}&last_id=${nextCursor}&t=${Date.now()}`
-    : `https://madhut-2-62yx.onrender.com/admin/view/all/product?limit=${limit}&t=${Date.now()}`;
+        var url = nextCursor
+            ? "https://madhut-2-62yx.onrender.com/admin/view/all/product?limit=" + limit + "&last_id=" + nextCursor + "&t=" + Date.now()
+            : "https://madhut-2-62yx.onrender.com/admin/view/all/product?limit=" + limit + "&t=" + Date.now();
 
-            const res = await fetch(url, {
-                method: "GET",
-                headers: {
-                    "Cache-Control": "no-cache"
-                }
-            });
-
-            const data = await res.json();
-
+        fetch(url, {
+            method: "GET",
+            headers: {
+                "Cache-Control": "no-cache"
+            }
+        })
+        .then(function(res) {
+            return res.json();
+        })
+        .then(function(data) {
             nextCursor = data.next_cursor;
 
             if (data && data.products && Array.isArray(data.products)) {
@@ -184,88 +184,81 @@
                 document.getElementById("loader").innerText = "No products found";
             }
 
-        }catch(err){
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("productGrid").style.display = "grid";
+        })
+        .catch(function(err) {
             console.error(err);
             document.getElementById("loader").innerText = "Failed to load products";
-        }
-
-        document.getElementById("loader").style.display = "none";
-        document.getElementById("productGrid").style.display = "grid";
+            document.getElementById("loader").style.display = "block";
+        });
     }
 
-    function renderProducts(products, append = false){
-        const grid = document.getElementById("productGrid");
+    function renderProducts(products, append) {
+        var grid = document.getElementById("productGrid");
 
-        const html = products.map(p => `
-            <div class="card" data-id="${p._id}" onclick="openProduct('${p._id}')">
+        var html = "";
+        for (var i = 0; i < products.length; i++) {
+            var p = products[i];
+            var imgSrc = (p.images && p.images.length > 0) ? p.images[0] : p.image;
+            html += '<div class="card" data-id="' + p._id + '" onclick="openProduct(\'' + p._id + '\')">'
+                  + '<img src="' + imgSrc + '" alt="">'
+                  + '<div class="overlay"></div>'
+                  + '<div class="content">'
+                  + '<div class="title">' + p.name + '</div>'
+                  + '<div class="price">&#8377;' + p.price
+                  + '<span class="old-price">&#8377;' + p.old_price + '</span>'
+                  + '</div>'
+                  + '</div>'
+                  + '</div>';
+        }
 
-                <img src="${p.images ? p.images[0] : p.image}" alt="">
-
-                <div class="overlay"></div>
-
-                <div class="content">
-                    <div class="title">${p.name}</div>
-                    <div class="price">
-                        ₹${p.price}
-                        <span class="old-price">₹${p.old_price}</span>
-                    </div>
-                </div>
-
-            </div>
-        `).join("");
-
-        if(append){
+        if (append) {
             grid.innerHTML += html;
-        }else{
+        } else {
             grid.innerHTML = html;
         }
     }
 
-    function openProduct(id){
-        window.location.href = `admin_product_detail.html?id=${id}`;
+    function openProduct(id) {
+        window.location.href = "admin_product_detail.html?id=" + id;
     }
 
-    function goBack(){
+    function goBack() {
         window.location.href = "admin_index.html";
     }
 
-    // 🔥 Load more button
-    function loadMore(){
-        if(nextCursor){
+    function loadMore() {
+        if (nextCursor) {
             loadProducts();
         }
     }
 
-    // 🔥 REAL-TIME DELETE
-    socket.on("delete_product", function(data){
-        const card = document.querySelector(`[data-id="${data.product_id}"]`);
-        if(card){
+    // REAL-TIME DELETE
+    socket.on("delete_product", function(data) {
+        var card = document.querySelector('[data-id="' + data.product_id + '"]');
+        if (card) {
             card.remove();
         }
     });
 
-    // 🔥 REAL-TIME ADD
-    socket.on("new_product", function(product){
-        const grid = document.getElementById("productGrid");
+    // REAL-TIME ADD
+    socket.on("new_product", function(product) {
+        var grid = document.getElementById("productGrid");
 
-        const newCard = document.createElement("div");
+        var newCard = document.createElement("div");
         newCard.className = "card";
         newCard.setAttribute("data-id", product._id);
-        newCard.onclick = () => openProduct(product._id);
+        newCard.onclick = function() { openProduct(product._id); };
 
-        newCard.innerHTML = `
-            <img src="${product.image}" alt="">
-
-            <div class="overlay"></div>
-
-            <div class="content">
-                <div class="title">${product.name}</div>
-                <div class="price">
-                    ₹${product.price}
-                    <span class="old-price">₹${product.old_price}</span>
-                </div>
-            </div>
-        `;
+        newCard.innerHTML = '<img src="' + product.image + '" alt="">'
+                          + '<div class="overlay"></div>'
+                          + '<div class="content">'
+                          + '<div class="title">' + product.name + '</div>'
+                          + '<div class="price">&#8377;' + product.price
+                          + '<span class="old-price">&#8377;' + product.old_price + '</span>'
+                          + '</div>'
+                          + '</div>';
 
         grid.prepend(newCard);
     });
