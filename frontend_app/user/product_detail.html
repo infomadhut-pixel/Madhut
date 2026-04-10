@@ -16,6 +16,42 @@
         background:#f5f7fa;
         }
 
+        /* ===== FULL-PAGE LOADER ===== */
+        #pageLoader{
+            position:fixed;
+            inset:0;
+            background:#f5f7fa;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            z-index:9999;
+        }
+
+        .loader-logo{
+            font-size:24px;
+            font-weight:700;
+            color:#f1c40f;
+            margin-bottom:24px;
+            letter-spacing:2px;
+        }
+
+        .loader-ring{
+            width:44px;
+            height:44px;
+            border:4px solid #ddd;
+            border-top:4px solid #111;
+            border-radius:50%;
+            animation:spin 0.8s linear infinite;
+        }
+
+        @keyframes spin{to{transform:rotate(360deg);}}
+
+        /* page content hidden until data is ready */
+        #pageContent{
+            display:none;
+        }
+
         /* NAVBAR */
 
         .navbar{
@@ -48,7 +84,6 @@
             cursor:pointer;
             color:#f1c40f;
         }
-
 
         .nav-right{
         display:flex;
@@ -128,9 +163,11 @@
         border-radius:8px;
         cursor:pointer;
         border:2px solid transparent;
+        transition:border-color 0.2s;
         }
 
-        .thumbnail-row img:hover{
+        .thumbnail-row img:hover,
+        .thumbnail-row img.active-thumb{
         border:2px solid #0fa36b;
         }
 
@@ -234,8 +271,6 @@
 
         /* ================= RESPONSIVE ================= */
 
-        /* Tablet */
-
         @media (max-width:1000px){
 
         .container{
@@ -248,8 +283,6 @@
         }
 
         }
-
-        /* Mobile */
 
         @media (max-width:600px){
 
@@ -291,6 +324,7 @@
         }
 
         }
+
         .review-card{
         border:1px solid #eee;
         padding:18px;
@@ -298,260 +332,265 @@
         margin-bottom:15px;
         background:#fff;
         transition:all 0.25s ease;
-}
+        }
 
-.review-card:hover{
-    transform:translateY(-4px);
-    box-shadow:0 6px 18px rgba(0,0,0,0.08);
-}
+        .review-card:hover{
+            transform:translateY(-4px);
+            box-shadow:0 6px 18px rgba(0,0,0,0.08);
+        }
 
-.review-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
+        .review-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
 
-.review-user{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
+        .review-user{
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
 
-.review-avatar{
-    width:38px;
-    height:38px;
-    border-radius:50%;
-    background:#111;
-    color:white;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-weight:bold;
-}
+        .review-avatar{
+            width:38px;
+            height:38px;
+            border-radius:50%;
+            background:#111;
+            color:white;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:bold;
+        }
 
-.review-name{
-    font-weight:600;
-    font-size:14px;
-}
+        .review-name{
+            font-weight:600;
+            font-size:14px;
+        }
 
-.review-badge{
-    background:#0fa36b;
-    color:white;
-    padding:4px 10px;
-    border-radius:20px;
-    font-size:12px;
-}
+        .review-badge{
+            background:#0fa36b;
+            color:white;
+            padding:4px 10px;
+            border-radius:20px;
+            font-size:12px;
+        }
 
-.review-stars{
-    color:#ffa500;
-    margin:8px 0;
-    font-size:14px;
-}
+        .review-stars{
+            color:#ffa500;
+            margin:8px 0;
+            font-size:14px;
+        }
 
-.review-feedback{
-    color:#444;
-    line-height:1.6;
-    font-size:14px;
-}
+        .review-feedback{
+            color:#444;
+            line-height:1.6;
+            font-size:14px;
+        }
 
-.review-empty{
-    text-align:center;
-    padding:30px;
-    color:#888;
-}
+        .review-empty{
+            text-align:center;
+            padding:30px;
+            color:#888;
+        }
+
         .nav-right span{
-    cursor: pointer;
-    font-weight:600;
-    transition:0.2s;
-}
+            cursor: pointer;
+            font-weight:600;
+            transition:0.2s;
+        }
 
-.nav-right span:hover{
-    color:#0fa36b;
-}
+        .nav-right span:hover{
+            color:#0fa36b;
+        }
+
         .review-time{
-        font-size:12px;
-        color:#888;
-}
+            font-size:12px;
+            color:#888;
+        }
+
         /* ACCORDION STYLE (PREMIUM) */
 
-.accordion{
-    margin-top:25px;
-    border-top:1px solid #eee;
-}
+        .accordion{
+            margin-top:25px;
+            border-top:1px solid #eee;
+        }
 
-.accordion-item{
-    border-bottom:1px solid #eee;
-}
+        .accordion-item{
+            border-bottom:1px solid #eee;
+        }
 
-.accordion-header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding:16px 0;
-    cursor:pointer;
-    font-weight:600;
-    font-size:14px;
-}
+        .accordion-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:16px 0;
+            cursor:pointer;
+            font-weight:600;
+            font-size:14px;
+        }
 
-.accordion-header:hover{
-    color:#0fa36b;
-}
+        .accordion-header:hover{
+            color:#0fa36b;
+        }
 
-.plus{
-    font-size:18px;
-    transition:0.3s;
-}
+        .plus{
+            font-size:18px;
+            transition:0.3s;
+        }
 
-.accordion-content{
-    max-height:0;
-    overflow:hidden;
-    font-size:13px;
-    color:#555;
-    line-height:1.6;
-    transition:max-height 0.3s ease;
-}
+        .accordion-content{
+            max-height:0;
+            overflow:hidden;
+            font-size:13px;
+            color:#555;
+            line-height:1.6;
+            transition:max-height 0.3s ease;
+        }
 
-/* active state */
+        .accordion-item.active .accordion-content{
+            max-height:120px;
+            margin-bottom:12px;
+        }
 
-.accordion-item.active .accordion-content{
-    max-height:120px;
-    margin-bottom:12px;
-}
+        .accordion-item.active .plus{
+            transform:rotate(45deg);
+        }
 
-.accordion-item.active .plus{
-    transform:rotate(45deg); /* + becomes x */
-}
-        /* PRODUCT DESCRIPTION (REAL ECOMMERCE STYLE) */
+        /* PRODUCT DESCRIPTION */
 
-.product-description{
-    margin-top:15px;
-}
+        .product-description{
+            margin-top:15px;
+        }
 
-.product-description h4{
-    font-size:15px;
-    font-weight:600;
-    margin-bottom:8px;
-}
+        .product-description h4{
+            font-size:15px;
+            font-weight:600;
+            margin-bottom:8px;
+        }
 
-.product-description ul{
-    padding-left:18px;
-}
+        .product-description ul{
+            padding-left:18px;
+        }
 
-.product-description li{
-    font-size:14px;
-    color:#444;
-    margin-bottom:6px;
-    line-height:1.5;
-}
+        .product-description li{
+            font-size:14px;
+            color:#444;
+            margin-bottom:6px;
+            line-height:1.5;
+        }
 
     </style>
 </head>
 
 <body>
 
-<div class="navbar">
-    <div class="nav-left">
-        <div class="logo" onclick="goHome()">MADHUT</div>
-
-    </div>
-
-    <div class="nav-right">
-        <span onclick="goToReviews()">Reviews</span>
-        <div class="cart-btn" onclick="goToCart()">
-            Cart<span class="cart-count" id="cartCount">0</span>
-        </div>
-        <div id="authSection"></div>
-    </div>
+<!-- ===== FULL-PAGE LOADER (shown until data is ready) ===== -->
+<div id="pageLoader">
+    <div class="loader-logo">MADHUT</div>
+    <div class="loader-ring"></div>
 </div>
 
-<div class="wrapper">
-    <div class="container">
+<!-- ===== PAGE CONTENT (hidden until data is ready) ===== -->
+<div id="pageContent">
 
-        <div>
-            <img id="mainImage" class="main-image">
-
-            <div id="thumbnailRow" class="thumbnail-row"></div>
+    <div class="navbar">
+        <div class="nav-left">
+            <div class="logo" onclick="goHome()">MADHUT</div>
         </div>
 
-        <div class="details">
+        <div class="nav-right">
+            <span onclick="goToReviews()">Reviews</span>
+            <div class="cart-btn" onclick="goToCart()">
+                Cart<span class="cart-count" id="cartCount">0</span>
+            </div>
+            <div id="authSection"></div>
+        </div>
+    </div>
 
-            <h2 id="productName"></h2>
+    <div class="wrapper">
+        <div class="container">
 
-            <div class="price" id="price"></div>
-
-            <div class="product-description">
-                <h4>Product Details</h4>
-                <ul id="description"></ul>
+            <div>
+                <img id="mainImage" class="main-image">
+                <div id="thumbnailRow" class="thumbnail-row"></div>
             </div>
 
-            <h4>Select Size</h4>
-            <div id="sizes" class="option-group"></div>
+            <div class="details">
 
-            <h4 style="margin-top:20px;">Select Color</h4>
-            <div id="colors" class="option-group"></div>
+                <h2 id="productName"></h2>
 
-            <h4 style="margin-top:20px;">Quantity</h4>
+                <div class="price" id="price"></div>
 
-
-            <div class="quantity-box">
-                <button onclick="changeQty(-1)">-</button>
-                <input type="number" id="quantity" value="1" min="1">
-                <button onclick="changeQty(1)">+</button>
-            </div>
-            <!-- POLICY ACCORDION -->
-
-            <div class="accordion">
-
-                <!-- SHIPPING -->
-                <div class="accordion-item">
-                    <div class="accordion-header" onclick="toggleAccordion(this)">
-                        <span>All India Shipping</span>
-                        <span class="plus">+</span>
-                    </div>
-                    <div class="accordion-content">
-                        We deliver across India within 3–7 business days.
-                        Orders are processed quickly and securely.
-                        Tracking details will be shared after dispatch.
-                    </div>
+                <div class="product-description">
+                    <h4>Product Details</h4>
+                    <ul id="description"></ul>
                 </div>
 
-                <!-- RETURN -->
-                <div class="accordion-item">
-                    <div class="accordion-header" onclick="toggleAccordion(this)">
-                        <span>3-Day Return Policy</span>
-                        <span class="plus">+</span>
+                <h4>Select Size</h4>
+                <div id="sizes" class="option-group"></div>
+
+                <h4 style="margin-top:20px;">Select Color</h4>
+                <div id="colors" class="option-group"></div>
+
+                <h4 style="margin-top:20px;">Quantity</h4>
+
+                <div class="quantity-box">
+                    <button onclick="changeQty(-1)">-</button>
+                    <input type="number" id="quantity" value="1" min="1">
+                    <button onclick="changeQty(1)">+</button>
+                </div>
+
+                <!-- POLICY ACCORDION -->
+                <div class="accordion">
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>All India Shipping</span>
+                            <span class="plus">+</span>
+                        </div>
+                        <div class="accordion-content">
+                            We deliver across India within 3–7 business days.
+                            Orders are processed quickly and securely.
+                            Tracking details will be shared after dispatch.
+                        </div>
                     </div>
-                    <div class="accordion-content">
-                        You can return the product within 3 days of delivery.
-                        Item must be unused and in original condition.
-                        Refund will be processed after quality check.
+
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span>3-Day Return Policy</span>
+                            <span class="plus">+</span>
+                        </div>
+                        <div class="accordion-content">
+                            You can return the product within 3 days of delivery.
+                            Item must be unused and in original condition.
+                            Refund will be processed after quality check.
+                        </div>
                     </div>
+
+                </div>
+
+                <div class="action-buttons">
+                    <button class="add-btn" onclick="addToCart()">Add To Cart</button>
+                    <button class="buy-btn" onclick="buyNow()">Buy Now</button>
                 </div>
 
             </div>
+        </div>
 
-            <div class="action-buttons">
-                <button class="add-btn" onclick="addToCart()">Add To Cart</button>
-                <button class="buy-btn" onclick="buyNow()">Buy Now</button>
+        <!-- REVIEWS SECTION -->
+        <div class="wrapper" id="reviewSection">
+            <div style="margin-top:40px; background:white; padding:30px; border-radius:12px;">
+                <h2 style="margin-bottom:20px;">Customer Reviews</h2>
+                <div id="reviewsContainer">
+                    <p>Loading reviews...</p>
+                </div>
             </div>
-
         </div>
 
     </div>
-    <!-- ================= REVIEWS SECTION ================= -->
 
-    <div class="wrapper" id="reviewSection">
-        <div style="margin-top:40px; background:white; padding:30px; border-radius:12px;">
-
-            <h2 style="margin-bottom:20px;">Customer Reviews</h2>
-
-            <div id="reviewsContainer">
-                <p>Loading reviews...</p>
-            </div>
-
-        </div>
-    </div>
-</div>
+</div><!-- /#pageContent -->
 
 <script>
 
@@ -563,403 +602,339 @@
     let currentProductImage = null;
     let isLoading = false;
 
-    /* ================= SPEED BOOST (NEW) ================= */
+    /* ================= HELPERS ================= */
 
-    // instant load from previous page
-    const quickData = sessionStorage.getItem("quickProduct");
-    if(quickData){
-        try{
-            const product = JSON.parse(quickData);
-            renderProduct(product); // instant UI
-        }catch{}
+    function showPage(){
+        document.getElementById("pageLoader").style.display = "none";
+        document.getElementById("pageContent").style.display = "block";
     }
 
     /* ================= AUTH ================= */
 
     function getToken(){
-    return localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
+        return localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
     }
 
     function isLoggedIn(){
-    return !!getToken();
+        return !!getToken();
     }
 
     function updateAuthUI(){
-    const authSection=document.getElementById("authSection");
-    authSection.innerHTML=isLoggedIn()
-    ? `<div class="auth-btn" onclick="logout()">Logout</div>`
-    : `<div class="auth-btn" onclick="goToLogin()">Login</div>`;
-    }
-
-    /* ================= SKELETON ================= */
-
-    function showSkeleton(){
-    document.getElementById("productName").innerText="Loading...";
-    document.getElementById("price").innerText="Loading...";
-    document.getElementById("description").innerHTML="<li>Loading...</li>";
+        const authSection = document.getElementById("authSection");
+        authSection.innerHTML = isLoggedIn()
+            ? `<div class="auth-btn" onclick="logout()">Logout</div>`
+            : `<div class="auth-btn" onclick="goToLogin()">Login</div>`;
     }
 
     function getCacheKey(){
-    return `product_detail_${productId}`;
+        return `product_detail_${productId}`;
     }
 
-    /* ================= FAST LOAD ================= */
+    /* ================= LOAD ================= */
 
     async function loadProduct(){
 
-    if(isLoading) return;
-    isLoading = true;
+        if(isLoading) return;
+        isLoading = true;
 
-    const cacheKey = getCacheKey();
-    const cachedData = sessionStorage.getItem(cacheKey);
+        const cacheKey = getCacheKey();
+        const cachedData = sessionStorage.getItem(cacheKey);
 
-    /* 1. instant render if cached */
-    if(cachedData){
-        try{
-            renderProduct(JSON.parse(cachedData));
-        }catch{}
-    }else{
-        showSkeleton();
-    }
-
-    /* 2. always fetch in background (update fresh data) */
-    try{
-        const res = await fetch(`https://madhut-2-62yx.onrender.com/user/product/detail/?productId=${productId}`, {
-    cache: "force-cache"
-});
-
-const product = await res.json();
-
-        sessionStorage.setItem(cacheKey, JSON.stringify(product));
-
-        renderProduct(product);
-
-    }catch{
-        if(!cachedData){
-            document.getElementById("productName").innerText="Failed to load product";
+        /* try cache first for instant display */
+        if(cachedData){
+            try{
+                renderProduct(JSON.parse(cachedData));
+                showPage();         // ← reveal page immediately from cache
+            }catch{}
         }
+
+        /* always fetch fresh data in background */
+        try{
+            const res = await fetch(
+                `https://madhut-2-62yx.onrender.com/user/product/detail/?productId=${productId}`,
+                { cache: "force-cache" }
+            );
+            const product = await res.json();
+            sessionStorage.setItem(cacheKey, JSON.stringify(product));
+            renderProduct(product);
+            showPage();             // ← reveal page after fresh fetch (covers no-cache case)
+        }catch{
+            if(cachedData){
+                showPage();         // ← still show cached content even if refresh fails
+            } else {
+                /* nothing to show — display error but still reveal page */
+                document.getElementById("productName").innerText = "Failed to load product";
+                showPage();
+            }
+        }
+
+        isLoading = false;
     }
 
-    isLoading = false;
-
-    }
     function renderDescription(desc){
-
-    const container = document.getElementById("description");
-
-    if(!desc || desc.trim() === ""){
-        container.innerHTML = "<li>No details available</li>";
-        return;
+        const container = document.getElementById("description");
+        if(!desc || desc.trim() === ""){
+            container.innerHTML = "<li>No details available</li>";
+            return;
+        }
+        let points = desc.includes("\n") ? desc.split("\n") : desc.split(",");
+        container.innerHTML = points
+            .filter(p => p.trim() !== "")
+            .map(p => `<li>${p.trim()}</li>`)
+            .join("");
     }
-
-    let points = desc.includes("\n")
-        ? desc.split("\n")
-        : desc.split(",");
-
-    container.innerHTML = points
-        .filter(p => p.trim() !== "")
-        .map(p => `<li>${p.trim()}</li>`)
-        .join("");
-}
 
     /* ================= RENDER ================= */
 
     function renderProduct(product){
 
-    currentProductPrice = product.price;
-    currentProductImage = product.images?.[0];
+        currentProductPrice = product.price;
+        currentProductImage = product.images?.[0];
 
-    document.getElementById("productName").innerText=product.name;
-    document.getElementById("price").innerText="₹"+product.price;
-    renderDescription(product.description);
+        document.getElementById("productName").innerText = product.name;
+        document.getElementById("price").innerText = "₹" + product.price;
+        renderDescription(product.description);
 
-    const mainImg = document.getElementById("mainImage");
+        const mainImg = document.getElementById("mainImage");
+        mainImg.src = currentProductImage;
+        mainImg.loading = "eager";
+        mainImg.decoding = "async";
 
-    /* faster image render */
-    mainImg.src=currentProductImage;
-    mainImg.loading="eager";
-    mainImg.decoding="async";
+        const thumbRow = document.getElementById("thumbnailRow");
+        thumbRow.innerHTML = "";
 
-    const thumbRow = document.getElementById("thumbnailRow");
-    thumbRow.innerHTML="";
+        const fragment = document.createDocumentFragment();
 
-    /* faster DOM rendering */
-    const fragment = document.createDocumentFragment();
+        product.images.forEach((img, index) => {
 
-    product.images.forEach(img=>{
+            const image = document.createElement("img");
+            image.src = img;
+            image.loading = "lazy";
+            image.decoding = "async";
 
-        const image=document.createElement("img");
+            /* mark first thumb as active */
+            if(index === 0) image.classList.add("active-thumb");
 
-        image.src=img;
-        image.loading="lazy";
-        image.decoding="async";
+            /* ── hover: instantly preview image ── */
+            image.addEventListener("mouseenter", () => {
+                mainImg.src = img;
+                currentProductImage = img;
+                /* update active highlight */
+                thumbRow.querySelectorAll("img").forEach(t => t.classList.remove("active-thumb"));
+                image.classList.add("active-thumb");
+            });
 
-        image.onclick=()=>{
-            mainImg.src=img;
-            currentProductImage = img;
-            window.scrollTo({top:0, behavior:"smooth"});
-        };
+            /* ── click: same as hover + scroll to top ── */
+            image.addEventListener("click", () => {
+                mainImg.src = img;
+                currentProductImage = img;
+                thumbRow.querySelectorAll("img").forEach(t => t.classList.remove("active-thumb"));
+                image.classList.add("active-thumb");
+                window.scrollTo({top: 0, behavior: "smooth"});
+            });
 
-        fragment.appendChild(image);
-    });
+            fragment.appendChild(image);
+        });
 
-    thumbRow.appendChild(fragment);
+        thumbRow.appendChild(fragment);
 
-    createOptions("sizes",product.sizes,"size");
-    createOptions("colors",product.colors,"color");
-
+        createOptions("sizes", product.sizes, "size");
+        createOptions("colors", product.colors, "color");
     }
 
     /* ================= OPTIONS ================= */
 
-    function createOptions(id,data,type){
-
-    const div=document.getElementById(id);
-    div.innerHTML="";
-
-    data.forEach(item=>{
-
-        const span=document.createElement("span");
-        span.innerText=item;
-
-        span.onclick=()=>{
-            document.querySelectorAll("#"+id+" span").forEach(s=>s.classList.remove("active"));
-            span.classList.add("active");
-
-            if(type==="size") selectedSize=item;
-            if(type==="color") selectedColor=item;
-        };
-
-        div.appendChild(span);
-    });
-
+    function createOptions(id, data, type){
+        const div = document.getElementById(id);
+        div.innerHTML = "";
+        data.forEach(item => {
+            const span = document.createElement("span");
+            span.innerText = item;
+            span.onclick = () => {
+                document.querySelectorAll("#" + id + " span").forEach(s => s.classList.remove("active"));
+                span.classList.add("active");
+                if(type === "size") selectedSize = item;
+                if(type === "color") selectedColor = item;
+            };
+            div.appendChild(span);
+        });
     }
 
     /* ================= QUANTITY ================= */
 
     function changeQty(val){
-    const qty=document.getElementById("quantity");
-    qty.value=Math.max(1,parseInt(qty.value)+val);
+        const qty = document.getElementById("quantity");
+        qty.value = Math.max(1, parseInt(qty.value) + val);
     }
 
     /* ================= CART ================= */
 
     async function addToCart(){
+        if(!selectedSize || !selectedColor){
+            alert("Please select size and color");
+            return;
+        }
+        if(!isLoggedIn()){
+            goToLogin();
+            return;
+        }
 
-    if(!selectedSize || !selectedColor){
-    alert("Please select size and color");
-    return;
-    }
+        const btn = document.querySelector(".add-btn");
+        btn.innerHTML = "Adding...";
+        btn.disabled = true;
 
-    if(!isLoggedIn()){
-    goToLogin();
-    return;
-    }
+        const payload = {
+            product_id: productId,
+            size: selectedSize,
+            color: selectedColor,
+            quantity: parseInt(document.getElementById("quantity").value),
+            price: currentProductPrice,
+            image: currentProductImage
+        };
 
-    const btn = document.querySelector(".add-btn");
+        try{
+            await fetch("https://madhut-2-62yx.onrender.com/user/add/item/cart", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + getToken()
+                },
+                body: JSON.stringify(payload)
+            });
 
-    btn.innerHTML = "Adding...";
-    btn.disabled = true;
+            btn.innerHTML = "✔ Added";
+            updateCartCount();
 
-    const payload={
-    product_id:productId,
-    size:selectedSize,
-    color:selectedColor,
-    quantity:parseInt(document.getElementById("quantity").value),
-    price: currentProductPrice,
-    image: currentProductImage
-    };
+            setTimeout(() => {
+                btn.innerHTML = "Add To Cart";
+                btn.disabled = false;
+            }, 1200);
 
-    try{
-
-    await fetch("https://madhut-2-62yx.onrender.com/user/add/item/cart",{
-    method:"POST",
-    headers:{
-    "Content-Type":"application/json",
-    "Authorization":"Bearer "+getToken()
-    },
-    body:JSON.stringify(payload)
-    });
-
-    btn.innerHTML = "✔ Added";
-    updateCartCount();
-
-    setTimeout(()=>{
-    btn.innerHTML="Add To Cart";
-    btn.disabled=false;
-    },1200);
-
-    }catch{
-    btn.innerHTML="Add To Cart";
-    btn.disabled=false;
-    }
-
+        }catch{
+            btn.innerHTML = "Add To Cart";
+            btn.disabled = false;
+        }
     }
 
     /* ================= CART COUNT ================= */
 
     async function updateCartCount(){
-
-    if(!isLoggedIn()){
-    document.getElementById("cartCount").innerText=0;
-    return;
-    }
-
-    try{
-
-    const res=await fetch("https://madhut-2-62yx.onrender.com/fetch/total/item/in/cart",{
-    headers:{
-    "Authorization":"Bearer "+getToken()
-    }
-    });
-
-    const data=await res.json();
-
-    document.getElementById("cartCount").innerText=data.count || 0;
-
-    }catch{
-    document.getElementById("cartCount").innerText=0;
-    }
-
+        if(!isLoggedIn()){
+            document.getElementById("cartCount").innerText = 0;
+            return;
+        }
+        try{
+            const res = await fetch("https://madhut-2-62yx.onrender.com/fetch/total/item/in/cart", {
+                headers:{ "Authorization": "Bearer " + getToken() }
+            });
+            const data = await res.json();
+            document.getElementById("cartCount").innerText = data.count || 0;
+        }catch{
+            document.getElementById("cartCount").innerText = 0;
+        }
     }
 
     /* ================= BUY ================= */
 
     function buyNow(){
-
-    if(!selectedSize || !selectedColor){
-    alert("Please select size and color");
-    return;
-    }
-
-    if(!isLoggedIn()){
-    goToLogin();
-    return;
-    }
-
-    const productData = {
-    product_id: productId,
-    name: document.getElementById("productName").innerText,
-    price: currentProductPrice,
-    image: currentProductImage,
-    size: selectedSize,
-    color: selectedColor,
-    quantity: parseInt(document.getElementById("quantity").value)
-    };
-
-    sessionStorage.setItem("buyNowProduct", JSON.stringify(productData));
-    window.location.href = "check_out.html";
-
+        if(!selectedSize || !selectedColor){
+            alert("Please select size and color");
+            return;
+        }
+        if(!isLoggedIn()){
+            goToLogin();
+            return;
+        }
+        const productData = {
+            product_id: productId,
+            name: document.getElementById("productName").innerText,
+            price: currentProductPrice,
+            image: currentProductImage,
+            size: selectedSize,
+            color: selectedColor,
+            quantity: parseInt(document.getElementById("quantity").value)
+        };
+        sessionStorage.setItem("buyNowProduct", JSON.stringify(productData));
+        window.location.href = "check_out.html";
     }
 
     /* ================= NAV ================= */
 
-    function goHome(){
-       window.history.back();   // goes to previous page
-    }
-    function goToCart(){window.location.href="fetch_add_item_in_cart.html";}
-    function goToLogin(){window.location.href="user_login.html";}
+    function goHome(){ window.history.back(); }
+    function goToCart(){ window.location.href = "fetch_add_item_in_cart.html"; }
+    function goToLogin(){ window.location.href = "user_login.html"; }
 
     function logout(){
-    localStorage.removeItem("userToken");
-    sessionStorage.removeItem("userToken");
-    window.location.href="user_login.html";
+        localStorage.removeItem("userToken");
+        sessionStorage.removeItem("userToken");
+        window.location.href = "user_login.html";
     }
 
     function goToReviews(){
-       document.getElementById("reviewSection").scrollIntoView({behavior:"smooth"});
+        document.getElementById("reviewSection").scrollIntoView({behavior: "smooth"});
     }
 
-   async function loadReviews(){
+    /* ================= REVIEWS ================= */
 
+    async function loadReviews(){
         const container = document.getElementById("reviewsContainer");
-
         try{
-
-            const res = await fetch(`https://madhut-2-62yx.onrender.com/get/all/reviews?product_id=${productId}`,{
-                method:"POST",
-                headers:{
-                    "Authorization":"Bearer " + getToken()
-                }
-            });
-
+            const res = await fetch(
+                `https://madhut-2-62yx.onrender.com/get/all/reviews?product_id=${productId}`,
+                { method: "POST", headers:{ "Authorization": "Bearer " + getToken() } }
+            );
             const reviews = await res.json();
 
             if(!reviews.length){
-                container.innerHTML = `
-                    <div class="review-empty">
-                        No reviews yet  <br>
-                    </div>
-                `;
+                container.innerHTML = `<div class="review-empty">No reviews yet</div>`;
                 return;
             }
 
             container.innerHTML = reviews.map(r => {
-
-        const firstLetter = r.name ? r.name.trim()[0].toUpperCase() : "U";
-
-        // simple date format
-        const date = r.created_at
-            ? new Date(r.created_at).toLocaleDateString()
-            : "";
-
-        return `
-            <div class="review-card">
-
-                <div class="review-header">
-
-                    <div class="review-user">
-                        <div class="review-avatar">${firstLetter}</div>
-                        <div>
-                            <div class="review-name">${r.name}</div>
-                            <div class="review-time">${date}</div>
+                const firstLetter = r.name ? r.name.trim()[0].toUpperCase() : "U";
+                const date = r.created_at ? new Date(r.created_at).toLocaleDateString() : "";
+                return `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-user">
+                                <div class="review-avatar">${firstLetter}</div>
+                                <div>
+                                    <div class="review-name">${r.name}</div>
+                                    <div class="review-time">${date}</div>
+                                </div>
+                            </div>
+                            <div class="review-badge">${r.star_rating} ★</div>
                         </div>
-                    </div>
-
-                    <div class="review-badge">${r.star_rating} ★</div>
-
-                </div>
-
-                <div class="review-stars">
-                    ${"⭐".repeat(r.star_rating)}
-                </div>
-
-                <div class="review-feedback">
-                    ${r.feedback}
-                </div>
-
-            </div>
-        `;
-
-        }).join("");
-
-            }catch{
-                container.innerHTML = `
-                    <div class="review-empty">
-                        Failed to load reviews
+                        <div class="review-stars">${"⭐".repeat(r.star_rating)}</div>
+                        <div class="review-feedback">${r.feedback}</div>
                     </div>
                 `;
+            }).join("");
+
+        }catch{
+            container.innerHTML = `<div class="review-empty">Failed to load reviews</div>`;
         }
-   }
-   function toggleAccordion(element){
+    }
 
-    const item = element.parentElement;
+    /* ================= ACCORDION ================= */
 
-    // close others (optional - looks premium)
-    document.querySelectorAll(".accordion-item").forEach(i=>{
-        if(i !== item) i.classList.remove("active");
+    function toggleAccordion(element){
+        const item = element.parentElement;
+        document.querySelectorAll(".accordion-item").forEach(i => {
+            if(i !== item) i.classList.remove("active");
+        });
+        item.classList.toggle("active");
+    }
+
+    /* ================= INIT ================= */
+
+    window.addEventListener("DOMContentLoaded", () => {
+        updateAuthUI();
+        loadProduct();      // showPage() is called inside after data is ready
+        updateCartCount();
+        loadReviews();
     });
 
-    item.classList.toggle("active");
-}
-
-    window.addEventListener("DOMContentLoaded",()=>{
-
-    updateAuthUI();
-    loadProduct();
-    updateCartCount();
-    loadReviews();
-    });
 </script>
 </body>
 </html>
