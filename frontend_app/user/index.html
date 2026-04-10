@@ -89,6 +89,7 @@
         /* ===== PRODUCT GRID ===== */
         .product-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
 
+        /* ===== CARD — desktop ===== */
         .card{
             position:relative;border-radius:18px;overflow:hidden;height:260px;
             cursor:pointer;background:#fff;box-shadow:0 10px 25px rgba(0,0,0,0.1);
@@ -97,17 +98,43 @@
         }
         @keyframes fadeIn{to{opacity:1;transform:translateY(0);}}
         .card:hover{transform:translateY(-6px);}
-        .card img{width:100%;height:100%;object-fit:contain;background:#fff;}
-        .overlay{position:absolute;bottom:0;width:100%;height:100%;background:linear-gradient(to top,rgba(0,0,0,0.7),transparent 60%);}
-        .content{position:absolute;bottom:0;padding:14px;color:#fff;}
 
+        .card img{
+            width:100%;height:100%;
+            object-fit:contain;
+            background:#fff;
+            transition:transform 0.4s ease;
+        }
+        .card:hover img{transform:scale(1.04);}
+
+        /* gradient covers only bottom portion */
+        .overlay{
+            position:absolute;bottom:0;width:100%;
+            height:55%;
+            background:linear-gradient(to top,rgba(0,0,0,0.82) 0%,rgba(0,0,0,0.4) 60%,transparent 100%);
+        }
+
+        .content{position:absolute;bottom:0;padding:12px 14px;color:#fff;width:100%;}
+
+        .card-name{
+            font-size:12px;line-height:1.3;
+            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+            text-shadow:0 1px 3px rgba(0,0,0,0.6);
+        }
+        .card-price{margin-top:5px;display:flex;align-items:center;gap:6px;}
+        .card-price .price{font-weight:700;font-size:15px;}
+        .card-price .badge{
+            font-size:11px;font-weight:600;
+            background:#0fa36b;color:#fff;
+            padding:2px 7px;border-radius:20px;
+        }
+
+        /* ===== LOADER / SKELETON ===== */
         .loader-spinner{
             width:35px;height:35px;border:4px solid #ddd;
             border-top:4px solid #111;border-radius:50%;
             animation:spin 0.8s linear infinite;margin:20px auto;
         }
-
-        /* ===== SKELETON ===== */
         .skeleton{
             border-radius:14px;
             background:linear-gradient(90deg,#eeeeee 25%,#dddddd 37%,#eeeeee 63%);
@@ -117,32 +144,23 @@
 
         /* ===== END MESSAGE ===== */
         .end-message{text-align:center;padding:40px 20px;animation:fadeIn 0.6s ease forwards;}
-        .end-message-line{
-            display:flex;align-items:center;gap:14px;
-            max-width:340px;margin:20px auto 0;
-        }
+        .end-message-line{display:flex;align-items:center;gap:14px;max-width:340px;margin:20px auto 0;}
         .end-message-line::before,.end-message-line::after{content:"";flex:1;height:1px;background:#ddd;}
         .end-message-dot{width:8px;height:8px;border-radius:50%;background:#0fa36b;display:inline-block;}
         .end-message-sub{font-size:14px;color:#888;}
 
         /* ===== FOOTER ===== */
         .footer{background:#0b0b0b;color:white;padding:60px 80px 25px;}
-
         .footer-grid{
             max-width:1200px;margin:0 auto;
             display:grid;grid-template-columns:repeat(4,1fr);gap:50px;
         }
-
         .footer-col h3{color:#f1c40f;margin-bottom:18px;font-size:15px;letter-spacing:1px;}
         .footer-col .logo{color:#f1c40f;margin-bottom:18px;font-size:20px;font-weight:700;}
-
         .footer-tagline{font-size:13px;color:#aaa;line-height:1.7;margin-top:4px;}
-
         .footer-link{font-size:14px;margin-bottom:12px;cursor:pointer;transition:0.3s;color:#ddd;}
         .footer-link:hover{color:#0fa36b;padding-left:5px;}
-
         .footer-small{font-size:13px;margin-top:12px;opacity:0.7;}
-
         .social-row{display:flex;gap:14px;margin-bottom:12px;flex-wrap:wrap;}
         .social{
             width:42px;height:42px;border-radius:50%;
@@ -156,7 +174,6 @@
             background:linear-gradient(45deg,#feda75,#d62976,#962fbf);
             box-shadow:0 0 12px #d62976;transform:translateY(-4px);
         }
-
         .subscribe-box{display:flex;margin-top:10px;}
         .subscribe-box input{
             flex:1;padding:12px;border:none;outline:none;
@@ -166,7 +183,6 @@
             background:#f1c40f;border:none;padding:12px 18px;
             cursor:pointer;font-weight:bold;white-space:nowrap;
         }
-
         .footer-line{margin:40px auto 20px;max-width:1200px;border:0.5px solid #333;}
         .footer-bottom{text-align:center;font-size:13px;opacity:0.7;}
 
@@ -176,36 +192,50 @@
         }
 
         @media(max-width:768px){
-            /* header */
             .header{padding:14px 20px;}
             .header nav{display:none;}
             .header-right{display:none;}
             .hamburger{display:flex;}
 
-            /* container */
             .container{padding:90px 12px 30px 12px;}
             .horizontal-ad{width:100%;font-size:15px;}
 
-            /* grid */
             .product-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
-            .card{height:220px;}
 
-            /* footer */
-            .footer{padding:40px 24px 20px;}
-            .footer-grid{
-                grid-template-columns:1fr 1fr;
-                gap:32px;
+            /* ── CARD MOBILE FIX ── */
+            .card{height:260px;border-radius:14px;}
+            /* cover so no white bars around image */
+            .card img{object-fit:cover;}
+            .overlay{
+                height:50%;
+                background:linear-gradient(to top,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.5) 55%,transparent 100%);
             }
+            .content{padding:10px 12px;}
+            .card-name{font-size:12px;}
+            .card-price .price{font-size:14px;}
+            .card-price .badge{font-size:11px;}
+
+            .footer{padding:40px 24px 20px;}
+            .footer-grid{grid-template-columns:1fr 1fr;gap:32px;}
         }
 
         @media(max-width:500px){
             .product-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
-            .card{height:200px;}
 
-            /* footer single column */
+            /* ── CARD SMALL PHONE FIX ── */
+            .card{height:220px;border-radius:12px;}
+            .card img{object-fit:cover;}
+            .overlay{
+                height:48%;
+                background:linear-gradient(to top,rgba(0,0,0,0.9) 0%,rgba(0,0,0,0.5) 55%,transparent 100%);
+            }
+            .content{padding:8px 10px;}
+            .card-name{font-size:11px;}
+            .card-price .price{font-size:13px;}
+            .card-price .badge{font-size:10px;padding:2px 6px;}
+
             .footer{padding:36px 20px 16px;}
             .footer-grid{grid-template-columns:1fr;gap:28px;}
-
             .subscribe-box input{font-size:12px;}
         }
     </style>
@@ -215,11 +245,9 @@
 
 <div class="main-content">
 
-    <!-- ===== HEADER ===== -->
     <header class="header">
         <div class="logo">MADHUT</div>
 
-        <!-- desktop nav -->
         <nav>
             <a href="customised_as_you_want.html">Customize</a>
             <a href="recent_product.html">New Arrivals</a>
@@ -229,13 +257,11 @@
             <div id="authSection"></div>
         </div>
 
-        <!-- hamburger (mobile only) -->
         <button class="hamburger" id="hamburger" aria-label="Menu">
             <span></span><span></span><span></span>
         </button>
     </header>
 
-    <!-- ===== MOBILE DRAWER ===== -->
     <div class="mobile-menu" id="mobileMenu">
         <a href="customised_as_you_want.html" onclick="closeMenu()">Customize</a>
         <a href="recent_product.html" onclick="closeMenu()">New Arrivals</a>
@@ -253,17 +279,14 @@
 
 </div>
 
-<!-- ===== FOOTER ===== -->
 <footer class="footer">
     <div class="footer-grid">
 
-        <!-- BRAND -->
         <div class="footer-col">
             <div class="logo">MADHUT</div>
             <p class="footer-tagline">Premium tees,<br>crafted for the bold.</p>
         </div>
 
-        <!-- QUICK LINKS -->
         <div class="footer-col">
             <h3>QUICK LINKS</h3>
             <div class="footer-link" onclick="location.href='about_us.html'">About</div>
@@ -272,7 +295,6 @@
             <div class="footer-link" onclick="location.href='user_dashboard.html'">My Account</div>
         </div>
 
-        <!-- CONNECT -->
         <div class="footer-col">
             <h3>CONNECT WITH US</h3>
             <div class="social-row">
@@ -289,7 +311,6 @@
             <p class="footer-small">Follow us for latest drops 🔥</p>
         </div>
 
-        <!-- SUBSCRIBE -->
         <div class="footer-col">
             <h3>KEEP UP TO DATE</h3>
             <div class="subscribe-box">
@@ -310,7 +331,6 @@
     <p class="footer-bottom">© 2026 MadHut • All Rights Reserved</p>
 </footer>
 
-<!-- ===== HAMBURGER SCRIPT ===== -->
 <script>
     const hamburger = document.getElementById("hamburger");
     const mobileMenu = document.getElementById("mobileMenu");
@@ -328,7 +348,6 @@
     }
 </script>
 
-<!-- ===== MAIN SCRIPT ===== -->
 <script type="module">
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -361,10 +380,8 @@
     socket.on("new_product", addNewProductToTop);
     socket.on("delete_product", (data) => removeProductFromUI(data._id));
 
-    // ===== AUTH =====
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            // desktop
             authSection.innerHTML = `
                 <span class="nav-btn" id="profileBtn">Account</span>
                 <span class="nav-btn" id="logoutBtn">Logout</span>
@@ -372,7 +389,6 @@
             document.getElementById("profileBtn").onclick = () => { window.location.href = "user_dashboard.html"; };
             document.getElementById("logoutBtn").onclick = async () => { await signOut(auth); location.reload(); };
 
-            // mobile
             mobileAuth.innerHTML = `
                 <span class="nav-btn" id="mProfileBtn">Account</span>
                 <span class="nav-btn" id="mLogoutBtn">Logout</span>
@@ -389,7 +405,6 @@
         }
     });
 
-    // ===== LOAD =====
     async function loadTshirts() {
         if (isLoading || allLoaded) return;
         isLoading = true;
@@ -457,17 +472,20 @@
         card.dataset.id = product._id;
         card.onclick = () => { window.location.href = `product_detail.html?id=${product._id}`; };
 
-        const imageUrl = (product.images?.[0] || "") + "?f_auto,q_auto,w=250";
+        // bumped to w=400 for sharper image on mobile retina screens
+        const imageUrl = (product.images?.[0] || "") + "?f_auto,q_auto,w=400";
         const shortName = product.name.length > 40 ? product.name.substring(0, 40) + "..." : product.name;
 
         card.innerHTML = `
-            <img src="${imageUrl}" loading="lazy">
+            <img src="${imageUrl}" loading="lazy" alt="${shortName}">
             <div class="overlay"></div>
             <div class="content">
-                <div style="font-size:12px;line-height:1.2;">${shortName}</div>
-                <div style="margin-top:4px;">
-                    <span style="font-weight:bold;font-size:14px;">₹${product.price}</span>
-                    ${product.discount_percent ? `<span style="color:wheat;font-size:15px;margin-left:4px;">${product.discount_percent}% OFF</span>` : ""}
+                <div class="card-name">${shortName}</div>
+                <div class="card-price">
+                    <span class="price">₹${product.price}</span>
+                    ${product.discount_percent
+                        ? `<span class="badge">${product.discount_percent}% OFF</span>`
+                        : ""}
                 </div>
             </div>
         `;
@@ -506,7 +524,7 @@
         msg.className = "end-message";
         msg.innerHTML = `
             <div class="end-message-line"><span class="end-message-dot"></span></div>
-            <div class="end-message-sub">You've explored our entire collection. Check back soon for new available.</div>`;
+            <div class="end-message-sub">You've explored our entire collection. Check back soon for new drops.</div>`;
         const loader = document.getElementById("loader");
         if (loader) loader.after(msg); else container.after(msg);
     }
