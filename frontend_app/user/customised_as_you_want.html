@@ -19,8 +19,6 @@
         window.location.replace("user_login.html");
         }
 
-        if (!getToken()) redirectToLogin();
-
         function goBack(){
         document.referrer ? window.history.back() : window.location.href="index.html";
         }
@@ -501,21 +499,20 @@
     /* ORDER */
 
     async function placeOrder(){
+        const token=getToken();
 
-    if(isSubmitting) return;
+        if(!token){
+            redirectToLogin();
+            return;
+        }
 
-    const err=validateForm();
+        if(isSubmitting) return;
 
-    if(err){
-    alert(err);
-    return;
-    }
+        const err=validateForm();
 
-    const token=getToken();
-
-    if(!token){
-    redirectToLogin();
-    return;
+        if(err){
+        alert(err);
+        return;
     }
 
     isSubmitting=true;
@@ -542,7 +539,7 @@
 
     try{
 
-    const res=await fetch(" https://madhut-2-62yx.onrender.com/user/order/customised/product",{
+    const res=await fetch(" http://127.0.0.1:5000/user/order/customised/product",{
 
     method:"POST",
     headers:{

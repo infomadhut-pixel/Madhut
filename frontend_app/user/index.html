@@ -16,28 +16,98 @@
 
         /* ===== HEADER ===== */
         .header{
-            display:flex;justify-content:space-between;align-items:center;
-            padding:18px 60px;background:#111;color:white;
-            position:fixed;top:0;left:0;width:100%;z-index:1000;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:14px 50px;
+            background:rgba(17,17,17,0.95);
+            backdrop-filter:blur(10px);
+            border-bottom:1px solid #222;
+            position:fixed;
+            top:0;
+            width:100%;
+            z-index:1000;
         }
 
-        .logo{color:#f1c40f;font-size:20px;font-weight:700;text-decoration:none;}
+
+        .logo{
+            display:flex;
+            align-items:center;
+            gap:8px;
+            cursor:pointer;
+        }
+
+        .logo-icon{
+            width:34px;
+            height:34px;
+            border-radius:8px;
+            background:linear-gradient(135deg,#f1c40f,#d4af37);
+            color:#000;
+            font-weight:900;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:18px;
+            box-shadow:0 4px 12px rgba(241,196,15,0.4);
+        }
+
+        .logo-text{
+            font-size:18px;
+            font-weight:800;
+            letter-spacing:1px;
+            color:#f1c40f;
+        }
 
         .header nav{display:flex;align-items:center;}
         .header nav a{
-            color:white;text-decoration:none;margin-left:25px;
-            font-size:14px;transition:0.3s;
+            position:relative;
+            color:#ddd;
+            text-decoration:none;
+            margin-left:25px;
+            font-size:14px;
+            font-weight:500;
+            transition:0.3s;
         }
-        .header nav a:hover{color:#0fa36b;}
+
+        /* HOVER LINE EFFECT */
+        .header nav a::after{
+            content:"";
+            position:absolute;
+            left:0;
+            bottom:-4px;
+            width:0%;
+            height:2px;
+            background:#f1c40f;
+            transition:0.3s;
+        }
+
+        .header nav a:hover{
+            color:#fff;
+        }
+
+        .header nav a:hover::after{
+            width:100%;
+        }
 
         .header-right{display:flex;align-items:center;gap:12px;}
 
-        .nav-btn{
-            padding:6px 14px;border-radius:20px;font-size:13px;
-            cursor:pointer;border:1px solid #444;transition:0.3s;color:white;
-            background:transparent;
-        }
-        .nav-btn:hover{background:#0fa36b;border-color:#0fa36b;}
+      .nav-btn{
+            padding:7px 16px;
+            border-radius:20px;
+            font-size:13px;
+            cursor:pointer;
+            border:1px solid #333;
+            transition:0.3s;
+            color:#fff;
+            background:rgba(255,255,255,0.05);
+            backdrop-filter:blur(5px);
+      }
+
+      .nav-btn:hover{
+            background:#0fa36b;
+            border-color:#0fa36b;
+            color:#fff;
+      }
 
         /* ===== HAMBURGER ===== */
         .hamburger{
@@ -238,6 +308,28 @@
             .footer-grid{grid-template-columns:1fr;gap:28px;}
             .subscribe-box input{font-size:12px;}
         }
+        .card-loading{
+            position:absolute;
+            inset:0;
+            background:rgba(0,0,0,0.6);
+            display:none;
+            align-items:center;
+            justify-content:center;
+            z-index:5;
+        }
+
+        .spinner{
+            width:30px;
+            height:30px;
+            border:3px solid #fff;
+            border-top:3px solid transparent;
+            border-radius:50%;
+            animation:spin 1s linear infinite;
+        }
+
+        @keyframes spin{
+            to{ transform:rotate(360deg); }
+        }
     </style>
 </head>
 
@@ -246,11 +338,15 @@
 <div class="main-content">
 
     <header class="header">
-        <div class="logo">MADHUT</div>
+        <div class="logo">
+            <span class="logo-icon">M</span>
+            <span class="logo-text">MADHUT</span>
+        </div>
 
         <nav>
             <a href="customised_as_you_want.html">Customize</a>
             <a href="recent_product.html">New Arrivals</a>
+            <a href="variety.html">Variety</a>
         </nav>
 
         <div class="header-right">
@@ -265,6 +361,7 @@
     <div class="mobile-menu" id="mobileMenu">
         <a href="customised_as_you_want.html" onclick="closeMenu()">Customize</a>
         <a href="recent_product.html" onclick="closeMenu()">New Arrivals</a>
+        <a href="variety.html" onclick="closeMenu()">Variety</a>
         <div class="mobile-auth" id="mobileAuth"></div>
     </div>
 
@@ -349,11 +446,20 @@
 </script>
 
 <script type="module">
+    window.addEventListener("pageshow", () => {
+        document.querySelectorAll(".card-loading").forEach(el => {
+            el.style.display = "none";
+        });
+
+        document.querySelectorAll(".card").forEach(card => {
+            card.style.pointerEvents = "auto";
+        });
+    });
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-    const BASE_URL = "https://madhut-2-62yx.onrender.com";
+    const BASE_URL = "http://127.0.0.1:5000";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
@@ -381,34 +487,71 @@
     socket.on("delete_product", (data) => removeProductFromUI(data._id));
 
     onAuthStateChanged(auth, (user) => {
+
         if (user) {
+
             authSection.innerHTML = `
                 <span class="nav-btn" id="profileBtn">Account</span>
                 <span class="nav-btn" id="logoutBtn">Logout</span>
             `;
-            document.getElementById("profileBtn").onclick = () => { window.location.href = "user_dashboard.html"; };
-            document.getElementById("logoutBtn").onclick = async () => { await signOut(auth); location.reload(); };
+
+            document.getElementById("profileBtn").onclick = () => {
+                window.location.href = "user_dashboard.html";
+            };
+
+            document.getElementById("logoutBtn").onclick = async () => {
+                await signOut(auth);
+
+                localStorage.removeItem(CACHE_KEY);
+                localStorage.removeItem(CURSOR_KEY);
+
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 200);
+            };
 
             mobileAuth.innerHTML = `
                 <span class="nav-btn" id="mProfileBtn">Account</span>
                 <span class="nav-btn" id="mLogoutBtn">Logout</span>
             `;
-            document.getElementById("mProfileBtn").onclick = () => { window.location.href = "user_dashboard.html"; };
-            document.getElementById("mLogoutBtn").onclick = async () => { await signOut(auth); location.reload(); };
+
+            document.getElementById("mProfileBtn").onclick = () => {
+                window.location.href = "user_dashboard.html";
+            };
+
+            document.getElementById("mLogoutBtn").onclick = async () => {
+                await signOut(auth);
+
+                localStorage.removeItem(CACHE_KEY);
+                localStorage.removeItem(CURSOR_KEY);
+
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 200);
+            };
 
         } else {
+
             authSection.innerHTML = `<span class="nav-btn" id="loginBtn">Login</span>`;
-            document.getElementById("loginBtn").onclick = () => { window.location.href = "user_login.html"; };
+            document.getElementById("loginBtn").onclick = () => {
+                window.location.href = "user_login.html";
+            };
 
             mobileAuth.innerHTML = `<span class="nav-btn" id="mLoginBtn">Login</span>`;
-            document.getElementById("mLoginBtn").onclick = () => { window.location.href = "user_login.html"; };
+            document.getElementById("mLoginBtn").onclick = () => {
+                window.location.href = "user_login.html";
+            };
         }
+
+        // ✅ IMPORTANT: load products AFTER auth resolved
+        loadTshirts();
     });
 
     async function loadTshirts() {
         if (isLoading || allLoaded) return;
+
         isLoading = true;
-        if (!allLoaded) showLoader(true);
+        showLoader(true);
 
         try {
             if (!lastId) {
@@ -453,12 +596,15 @@
                 lastId = data.next_cursor;
             }
 
-        } catch (err) { console.log(err); }
+        } catch (err) {
+            console.log(err);
+        }
 
         isLoading = false;
         showLoader(false);
     }
 
+    // 👇 rest same (no change)
     function displayProducts(products) {
         products.forEach(product => {
             if (document.querySelector(`[data-id="${product._id}"]`)) return;
@@ -467,29 +613,48 @@
     }
 
     function createCard(product) {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.dataset.id = product._id;
-        card.onclick = () => { window.location.href = `product_detail.html?id=${product._id}`; };
+            const card = document.createElement("div");
+            card.className = "card";
+            card.dataset.id = product._id;
 
-        // bumped to w=400 for sharper image on mobile retina screens
-        const imageUrl = (product.images?.[0] || "") + "?f_auto,q_auto,w=400";
-        const shortName = product.name.length > 40 ? product.name.substring(0, 40) + "..." : product.name;
+            const imageUrl = (product.images?.[0] || "") + "?f_auto,q_auto,w=400";
+            const shortName = product.name.length > 40
+                ? product.name.substring(0, 40) + "..."
+                : product.name;
 
-        card.innerHTML = `
-            <img src="${imageUrl}" loading="lazy" alt="${shortName}">
-            <div class="overlay"></div>
-            <div class="content">
-                <div class="card-name">${shortName}</div>
-                <div class="card-price">
-                    <span class="price">₹${product.price}</span>
-                    ${product.discount_percent
-                        ? `<span class="badge">${product.discount_percent}% OFF</span>`
-                        : ""}
+            card.innerHTML = `
+                <img src="${imageUrl}" loading="lazy" alt="${shortName}">
+                <div class="overlay"></div>
+
+                <div class="content">
+                    <div class="card-name">${shortName}</div>
+                    <div class="card-price">
+                        <span class="price">₹${product.price}</span>
+                        ${product.discount_percent
+                            ? `<span class="badge">${product.discount_percent}% OFF</span>`
+                            : ""}
+                    </div>
                 </div>
-            </div>
-        `;
-        return card;
+
+                <!-- 🔥 CARD LOADER -->
+                <div class="card-loading">
+                    <div class="spinner"></div>
+                </div>
+            `;
+
+            /* 🔥 CLICK HANDLER */
+            card.onclick = () => {
+                const loader = card.querySelector(".card-loading");
+                loader.style.display = "flex";
+
+                card.style.pointerEvents = "none";
+
+                setTimeout(() => {
+                    window.location.href = `product_detail.html?id=${product._id}`;
+                }, 400);
+            };
+
+            return card;
     }
 
     function addNewProductToTop(product) {
@@ -514,7 +679,7 @@
                 </div>`;
             container.after(loader);
         }
-        loader.style.display = (show && !allLoaded) ? "block" : "none";
+        loader.style.display = show ? "block" : "none";
     }
 
     function showEndMessage() {
@@ -524,9 +689,8 @@
         msg.className = "end-message";
         msg.innerHTML = `
             <div class="end-message-line"><span class="end-message-dot"></span></div>
-            <div class="end-message-sub">You've explored our entire collection. Check back soon for new drops.</div>`;
-        const loader = document.getElementById("loader");
-        if (loader) loader.after(msg); else container.after(msg);
+            <div class="end-message-sub">You've explored our entire collection.</div>`;
+        container.after(msg);
     }
 
     const trigger = document.createElement("div");
@@ -535,9 +699,8 @@
     const observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) loadTshirts();
     });
-    observer.observe(trigger);
 
-    window.onload = () => { loadTshirts(); };
+    observer.observe(trigger);
 
 </script>
 </body>

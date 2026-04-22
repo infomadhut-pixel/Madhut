@@ -15,7 +15,8 @@ class TshirtDatabase:
     def insert_data(self, name, description, price, old_price, images, sizes, colors, stock, category, tags, slug,
                     discount_percent):
         product_data = {'name': name, 'description': description, 'price': price, 'old_price': old_price,
-                        'images': images, 'sizes': sizes, 'colors': colors, 'stock': stock, 'category': category,
+                        'images': images, 'sizes': sizes, 'colors': colors, 'stock': stock,
+                        'category': category.lower().strip(),
                         'tags': tags,
                         'slugs': slug, 'discount_percent': discount_percent, 'is_active': True, 'is_featured': False,
                         'created_at': datetime.utcnow(),
@@ -29,8 +30,6 @@ class TshirtDatabase:
 
     def fetch_products(self, last_id=None, limit=20):
         query = {}
-
-        # ✅ handle cursor safely
         if last_id:
             try:
                 query["_id"] = {"$lt": ObjectId(last_id)}
@@ -64,7 +63,6 @@ class TshirtDatabase:
         if has_more:
             products = products[:limit]
 
-        # ✅ convert ObjectId → string
         for p in products:
             p["_id"] = str(p["_id"])
 
@@ -116,3 +114,21 @@ class TshirtDatabase:
             },
             {"$inc": {'stock': -quantity}}
         )
+
+    def tshirt_variety_get_tshirt(self, variety, skip, limit):
+        query = {}
+        if variety:
+            query["category"] = variety
+        projection = {
+            "name": 1,
+            "price": 1,
+            "old_price": 1,
+            "discount_percent": 1,
+            "images": {"$slice": 1}
+        }
+        tshirt_variety_list = []
+        cursor = self.collection.find(query, projection).sort("_id", -1).skip(skip).limit(limit)
+        for tshirt in cursor:
+            tshirt['_id'] = str(tshirt.get("_id"))
+            tshirt_variety_list.append(tshirt)
+        return tshirt_variety_list

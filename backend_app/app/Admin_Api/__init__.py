@@ -8,6 +8,8 @@ from .delete_review import blp as DeleteReviewBlueprint
 from .get_all_order import blp as GetAllOrderBlueprint
 from .admin_update_order_status import blp as UpdateOrderStatusBlueprint
 from .update_tracking_id import blp as UpdateTrackingIdBlueprint
+from .all_user import blp as AdminSeenAllUserBlueprint
+from .update_user_status import blp as UserStatusUpdateBlueprint
 
 
 def register_admin_blueprint(app_api):
@@ -21,3 +23,5 @@ def register_admin_blueprint(app_api):
     app_api.register_blueprint(GetAllOrderBlueprint)
     app_api.register_blueprint(UpdateOrderStatusBlueprint)
     app_api.register_blueprint(UpdateTrackingIdBlueprint)
+    app_api.register_blueprint(AdminSeenAllUserBlueprint)
+    app_api.register_blueprint(UserStatusUpdateBlueprint)

@@ -14,7 +14,7 @@ from .fetch_order import blp as FetchAllOrder
 from .get_recent_product import blp as GetRecentProductBlueprint
 from .give_review import blp as GiveReviewsBlueprint
 from .all_reviews import blp as AllReviewBlueprint
-
+from .fetch_variety_tshirt import blp as FetchTshirtVarietyBlueprint
 
 def register_user_blueprint(app_api):
     app_api.register_blueprint(UserLoginBlueprint)
@@ -33,3 +33,4 @@ def register_user_blueprint(app_api):
     app_api.register_blueprint(GetRecentProductBlueprint)
     app_api.register_blueprint(GiveReviewsBlueprint)
     app_api.register_blueprint(AllReviewBlueprint)
+    app_api.register_blueprint(FetchTshirtVarietyBlueprint)

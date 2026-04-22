@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import uuid
 from datetime import datetime
+from bson import ObjectId
 
 from app.extensions import bcrypt
 
@@ -29,7 +30,8 @@ class UserDatabase:
             'pin_code': pin_code,
             'country': country,
             'created_at': datetime.utcnow(),
-            'role': 'user'
+            'role': 'user',
+            'is_active': True
         }
         result = self.collection.insert_one(user_data)
 
@@ -53,3 +55,27 @@ class UserDatabase:
             {'$set': updated_data}
         )
         return {"status": 'Success', "message": 'User profile updated successfully...'}, 200
+
+    def get_all_user(self, skip, limit):
+        all_user = self.collection.find().skip(skip).limit(limit)
+        all_user_list = []
+        for user in all_user:
+            user['_id'] = str(user.get("_id"))
+            all_user_list.append(user)
+        total = self.collection.count_documents({})
+        return all_user_list, total
+
+    def update_user_status(self, _id, status):
+        if status == 0:
+            self.collection.update_one({"_id": ObjectId(_id)}, {"$set": {"is_active": False}})
+            return {"status": 'Success', "message": 'User status updated successfully...'}, 200
+        else:
+            self.collection.update_one({"_id": ObjectId(_id)}, {"$set": {"is_active": True}})
+            return {"status": 'Success', "message": 'User status updated successfully...'}, 200
+
+    def delete_user_account(self, _id):
+        result = self.collection.delete_one({"_id": ObjectId(_id)})
+        if result.deleted_count == 1:
+            return {"success": True, "message": "User deleted"}, 200
+        else:
+            return {"success": False, "message": "Unknown error occurred"}, 500

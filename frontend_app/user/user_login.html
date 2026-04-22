@@ -8,92 +8,72 @@
     <link rel="icon" type="image/x-icon" href="static/images/mad_hut.jpeg">
 
     <style>
-        *{
-        margin:0;
-        padding:0;
-        box-sizing:border-box;
-        font-family:Arial;
-        }
+        *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
 
         body{
-        min-height:100vh;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        background:linear-gradient(120deg,#c7e6f2,#d6e8ff,#bff3e3);
-        padding:20px;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:linear-gradient(120deg,#c7e6f2,#d6e8ff,#bff3e3);
         }
 
         .login-container{
-        width:480px;
-        max-width:100%;
-        padding:50px;
-        border-radius:15px;
-        background:white;
-        box-shadow:0 8px 20px rgba(0,0,0,0.2);
-        text-align:center;
+            width:480px;
+            padding:50px;
+            border-radius:15px;
+            background:white;
+            box-shadow:0 8px 20px rgba(0,0,0,0.2);
+            text-align:center;
         }
 
-        .login-container h2{
-        margin-bottom:30px;
-        font-size:26px;
-        }
+        h2{margin-bottom:30px;}
 
-        .input-group{
-        margin-bottom:20px;
-        }
+        .input-group{margin-bottom:20px;}
 
         .input-group input{
-        width:100%;
-        padding:12px;
-        border:none;
-        border-bottom:2px solid #333;
-        outline:none;
-        font-size:15px;
-        background:transparent;
+            width:100%;
+            padding:12px;
+            border:none;
+            border-bottom:2px solid #333;
+            outline:none;
         }
 
         .btn-login{
-        width:100%;
-        padding:12px;
-        background:#2d5c88;
-        border:none;
-        color:white;
-        cursor:pointer;
-        border-radius:5px;
-        margin-bottom:10px;
-        font-size:15px;
+            width:100%;
+            padding:12px;
+            background:#2d5c88;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
         }
 
         .btn-signup{
-        width:100%;
-        padding:12px;
-        background:#2ecc71;
-        border:none;
-        color:white;
-        cursor:pointer;
-        border-radius:5px;
-        font-size:15px;
+            width:100%;
+            padding:12px;
+            background:#2ecc71;
+            color:white;
+            border:none;
+            border-radius:5px;
+            margin-top:10px;
         }
 
-        .error-msg{
-        color:red;
-        margin-bottom:10px;
-        font-size:14px;
-        }
+        .msg{margin-bottom:10px;font-size:14px;}
+        .error{color:red;}
+        .success{color:#2ecc71;}
     </style>
 </head>
 
 <body>
 
 <div class="login-container">
-
     <h2>User Login</h2>
 
-    <div id="error" class="error-msg"></div>
+    <div id="msg" class="msg"></div>
 
     <div class="input-group">
-        <input type="email" id="email" placeholder="Email ID">
+        <input type="email" id="email" placeholder="Email">
     </div>
 
     <div class="input-group">
@@ -107,15 +87,13 @@
     <br><br>
 
     <button class="btn-login" id="loginBtn">LOGIN</button>
-
     <button class="btn-signup" onclick="goToSignup()">SIGN UP</button>
-
 </div>
 
 <script type="module">
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
@@ -127,37 +105,49 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    const API_URL = "https://madhut-2-62yx.onrender.com/user/login";
+    const API_URL = "http://127.0.0.1:5000/user/login";
+
+    const msgDiv = document.getElementById("msg");
+
+    // ✅ ONLY redirect if Firebase session is stable
+    let checked = false;
+
+    onAuthStateChanged(auth, (user) => {
+
+        if (!checked) {
+            checked = true;
+
+            // only redirect if user REALLY logged in
+            if (user) {
+                window.location.href = "index.html";
+            }
+        }
+    });
 
     async function loginUser(){
 
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
         const remember = document.getElementById("remember").checked;
-        const errorDiv = document.getElementById("error");
 
-        errorDiv.innerText="";
+        msgDiv.innerText = "";
+        msgDiv.className = "msg";
 
         if(!email || !password){
-            errorDiv.innerText="Please fill all fields";
+            msgDiv.innerText = "Fill all fields";
+            msgDiv.classList.add("error");
             return;
         }
 
         try{
 
+            // clear any previous session
+            await signOut(auth);
+
             const userCredential = await signInWithEmailAndPassword(auth,email,password);
             const user = userCredential.user;
 
-            await user.reload();
-
-            if(!user.emailVerified){
-                errorDiv.innerText="Please verify your email first!";
-                return;
-            }
-
             const token = await user.getIdToken();
-
-            const signupData = JSON.parse(localStorage.getItem("signupData") || "{}");
 
             const response = await fetch(API_URL,{
                 method:"POST",
@@ -165,84 +155,60 @@
                     "Authorization":"Bearer "+token,
                     "Content-Type":"application/json"
                 },
-                body:JSON.stringify({
-                    email:user.email,
-                    username:signupData.username,
-                    phone:signupData.phone,
-                    street:signupData.street,
-                    pin_code:signupData.pin_code,
-                    country:signupData.country
-                })
+                body:JSON.stringify({ email:user.email })
             });
 
             const data = await response.json();
 
-            if(response.ok){
-                if(remember){
-                    localStorage.setItem("userToken",token);
-                }else{
-                    sessionStorage.setItem("userToken",token);
-                }
+            if(data.status === false){
 
-                localStorage.removeItem("signupData");
+                await signOut(auth);
 
-                const redirectUrl = sessionStorage.getItem("redirectAfterLogin");
-
-                if(redirectUrl){
-                    sessionStorage.removeItem("redirectAfterLogin");
-                    window.location.href = redirectUrl;
-                }else{
-                    window.location.href = "index.html";
-                }
-
-            }else{
-                errorDiv.innerText=data.message || "Login failed!";
+                msgDiv.innerText = data.message;
+                msgDiv.classList.add("error");
+                return;
             }
+
+            msgDiv.innerText = "Login successful!";
+            msgDiv.classList.add("success");
+
+            if(remember){
+                localStorage.setItem("userToken",token);
+            }else{
+                sessionStorage.setItem("userToken",token);
+            }
+
+            setTimeout(()=>{
+                window.location.href = "index.html";
+            },1000);
 
         }catch(error){
 
-            console.error("Firebase Error:",error);
+            msgDiv.classList.add("error");
 
             switch(error.code){
-                case "auth/invalid-email":
-                    errorDiv.innerText="Invalid email address.";
-                    break;
                 case "auth/user-not-found":
-                    errorDiv.innerText="No account found.";
+                    msgDiv.innerText="User not found";
                     break;
                 case "auth/wrong-password":
-                    errorDiv.innerText="Incorrect password.";
+                    msgDiv.innerText="Wrong password";
                     break;
                 default:
-                    errorDiv.innerText="Login failed. Try again.";
+                    msgDiv.innerText="Login failed";
             }
         }
     }
 
     document.getElementById("loginBtn").addEventListener("click",loginUser);
 
-    document.addEventListener("keydown",function(e){
-        if(e.key==="Enter"){
-            loginUser();
-        }
+    document.addEventListener("keydown",(e)=>{
+        if(e.key==="Enter") loginUser();
     });
 
-    window.onload = function(){
-        const token = localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
-        if(token){
-            const redirectUrl = sessionStorage.getItem("redirectAfterLogin");
-
-            if(redirectUrl){
-                sessionStorage.removeItem("redirectAfterLogin");
-                window.location.href = redirectUrl;
-            }else{
-                window.location.href = "index.html";
-            }
-        }
-    };
     window.goToSignup=function(){
         window.location.href="user_signup.html";
-    }
+    };
+
 </script>
 
 </body>

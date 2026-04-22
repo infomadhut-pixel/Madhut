@@ -174,7 +174,7 @@
         document.getElementById("mainContent").style.display = "none";
 
         try{
-            const res = await fetch(`https://madhut-2-62yx.onrender.com/admin/product/detail?product_id=${productId}`,{
+            const res = await fetch(`http://127.0.0.1:5000/admin/product/detail?product_id=${productId}`,{
                 method:"POST"
             });
 
@@ -263,7 +263,7 @@
         if(!confirm("Delete this product?")) return;
 
         try{
-            const res = await fetch(`https://madhut-2-62yx.onrender.com/admin/delete/product?product_id=${productId}`,{
+            const res = await fetch(`http://127.0.0.1:5000/admin/delete/product?product_id=${productId}`,{
                 method:"DELETE"
             });
 

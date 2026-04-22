@@ -447,7 +447,7 @@
 
     try{
 
-    const response = await fetch("https://madhut-2-62yx.onrender.com/user/fetch/item/detail/in/cart",{
+    const response = await fetch("http://127.0.0.1:5000/user/fetch/item/detail/in/cart",{
     headers:{
     "Authorization":"Bearer "+token
     }
@@ -566,7 +566,7 @@
 
     function removeItem(cartId){
 
-    fetch(`https://madhut-2-62yx.onrender.com/remove/item/from/cart?cart_id=${cartId}`,{
+    fetch(`http://127.0.0.1:5000/remove/item/from/cart?cart_id=${cartId}`,{
         method:"DELETE",
         headers:{
         "Authorization":"Bearer "+token

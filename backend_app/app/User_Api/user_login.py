@@ -28,8 +28,14 @@ class UserLogin(MethodView):
         uid = decoded_token.get("uid")
 
         user = self.user_db.find_user(email)
-
-        if not user:
+        if user:
+            if user.get("is_active") is False:
+                return {
+                    "message": "Your account is deactivated.",
+                    "status": False,
+                    "blocked":True
+                },200
+        else:
             data = request.get_json()
             self.user_db.register_user(
                 data.get("username"),

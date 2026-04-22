@@ -260,7 +260,7 @@
 
     // ONLINE PAYMENT
     try{
-    const paymentRes = await fetch("https://madhut-2-62yx.onrender.com/payment/create-order",{
+    const paymentRes = await fetch("http://127.0.0.1:5000/payment/create-order",{
     method:"POST",
     headers:{
     "Content-Type":"application/json"
@@ -295,7 +295,7 @@
 
     async function sendOrderToBackend(orderData, token){
     try{
-    const res = await fetch("https://madhut-2-62yx.onrender.com/order/checkout",{
+    const res = await fetch("http://127.0.0.1:5000/order/checkout",{
     method:"POST",
     headers:{
     "Content-Type":"application/json",

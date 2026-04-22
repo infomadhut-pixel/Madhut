@@ -15,3 +15,4 @@ class SpecificProductDetail(MethodView):
         id_ = request.args.get('productId')
         result = self.product_db.fetch_single_product_detail(id_)
         return result
+

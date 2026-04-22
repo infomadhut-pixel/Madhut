@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+
+<style>
+:root {
+  --bg: #0d1117;
+  --card: #161b22;
+  --border: #2a2f3a;
+  --accent: #3b82f6;
+  --danger: #ef4444;
+  --success: #22c55e;
+  --text: #e6edf3;
+  --muted: #8b949e;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.main {
+  padding: 30px;
+}
+
+.header h1 {
+  margin: 0 0 20px 0;
+}
+
+/* CARDS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.card h2 {
+  margin-top: 5px;
+}
+
+/* SEARCH */
+.search input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  margin-bottom: 15px;
+}
+
+/* TABLE */
+.table-box {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  font-size: 12px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  border-bottom: 1px solid var(--border);
+}
+
+tr:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+/* BADGE */
+.badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.active {
+  background: rgba(34,197,94,0.2);
+  color: var(--success);
+}
+
+.inactive {
+  background: rgba(239,68,68,0.2);
+  color: var(--danger);
+}
+
+/* ACTION BUTTONS */
+.action-btn {
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.deactivate {
+  background: rgba(239,68,68,0.15);
+  color: var(--danger);
+}
+
+.delete {
+  background: rgba(239,68,68,0.25);
+  color: var(--danger);
+}
+
+/* PAGINATION */
+.pagination {
+  padding: 10px;
+  text-align: center;
+}
+
+.pagination button {
+  margin: 3px;
+  background: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.pagination .active {
+  background: var(--accent);
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="main">
+
+  <div class="header">
+    <h1>All Users</h1>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <p>Total Users</p>
+      <h2 id="total">0</h2>
+    </div>
+    <div class="card">
+      <p>Countries</p>
+      <h2 id="countries">0</h2>
+    </div>
+  </div>
+
+  <div class="search">
+    <input type="text" placeholder="Search users..." id="search">
+  </div>
+
+  <div class="table-box">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Contact</th>
+          <th>Country</th>
+          <th>Status</th>
+          <th>Joined</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+
+    <div class="pagination" id="pagination"></div>
+  </div>
+
+</div>
+
+<script>
+const API = "http://127.0.0.1:5000/get/all/user";
+const DELETE_API = "http://127.0.0.1:5000/delete/user";
+const TOGGLE_API = "http://127.0.0.1:5000/admin/update/user/status";
+
+let data = [];
+let page = 1;
+let perPage = 5;
+let totalPages = 1;
+
+// LOAD USERS
+async function loadUsers() {
+  const res = await fetch(API, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ page, limit: perPage })
+  });
+
+  const result = await res.json();
+
+  data = result.data || [];
+  totalPages = result.total_pages || 1;
+
+  data = data.map(u => ({
+    _id: u._id,
+    username: u.username || '',
+    email: u.email || '',
+    contact: u.contact_number || '',
+    country: u.country || '',
+    created_at: u.created_at || '',
+    is_active: u.is_active === true
+  }));
+
+  updateStats(result.total);
+  render();
+}
+
+// STATS
+function updateStats(total) {
+  document.getElementById("total").textContent = total;
+  document.getElementById("countries").textContent =
+    new Set(data.map(u => u.country)).size;
+}
+
+// DATE
+function formatDate(d) {
+  if (!d) return "-";
+  return new Date(d).toLocaleDateString();
+}
+
+// DELETE USER
+async function deleteUser(id, btn) {
+  if (!confirm("Delete user?")) return;
+
+  btn.disabled = true;
+  btn.innerText = "Deleting...";
+
+  await fetch(DELETE_API, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ user_id: id })
+  });
+
+  loadUsers();
+}
+
+// TOGGLE STATUS
+async function toggleStatus(id, currentStatus, btn) {
+  if (!btn) return;
+
+  btn.disabled = true;
+  btn.innerText = "Updating...";
+
+  const newStatus = currentStatus ? 0 : 1;
+
+  await fetch(TOGGLE_API, {
+    method: "PUT",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      user_id: id,
+      status: newStatus
+    })
+  });
+
+  loadUsers();
+}
+
+// RENDER
+function render() {
+  document.getElementById("tbody").innerHTML = data.map(u => `
+    <tr>
+      <td>${u.username}</td>
+      <td>${u.email}</td>
+      <td>${u.contact}</td>
+      <td>${u.country}</td>
+      <td>
+        <span class="badge ${u.is_active ? 'active' : 'inactive'}">
+          ${u.is_active ? 'Active' : 'Inactive'}
+        </span>
+      </td>
+      <td>${formatDate(u.created_at)}</td>
+      <td>
+        <button class="action-btn deactivate"
+          onclick="toggleStatus('${u._id}', ${u.is_active}, this)">
+          ${u.is_active ? 'Deactivate' : 'Activate'}
+        </button>
+
+        <button class="action-btn delete"
+          onclick="deleteUser('${u._id}', this)">
+          Delete
+        </button>
+      </td>
+    </tr>
+  `).join("");
+
+  renderPagination();
+}
+
+// PAGINATION
+function renderPagination() {
+  let html = "";
+
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class="${i===page?'active':''}" onclick="goPage(${i})">${i}</button>`;
+  }
+
+  document.getElementById("pagination").innerHTML = html;
+}
+
+function goPage(p) {
+  page = p;
+  loadUsers();
+}
+
+// INIT
+loadUsers();
+</script>
+
+</body>
+</html>
