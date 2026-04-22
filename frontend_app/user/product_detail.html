@@ -719,7 +719,7 @@
             page.style.display = "none";     // hide page
 
             const res = await fetch(
-                `http://127.0.0.1:5000/user/product/detail/?productId=${productId}`
+                `https://madhut-qeqj.onrender.com/user/product/detail/?productId=${productId}`
             );
 
             const product = await res.json();
@@ -860,7 +860,7 @@
         };
 
         try{
-            await fetch("http://127.0.0.1:5000/user/add/item/cart", {
+            await fetch("https://madhut-qeqj.onrender.com/user/add/item/cart", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -891,7 +891,7 @@
             return;
         }
         try{
-            const res = await fetch("http://127.0.0.1:5000/fetch/total/item/in/cart", {
+            const res = await fetch("https://madhut-qeqj.onrender.com/fetch/total/item/in/cart", {
                 headers:{ "Authorization": "Bearer " + getToken() }
             });
             const data = await res.json();
@@ -981,7 +981,7 @@
         const container = document.getElementById("reviewsContainer");
         try{
             const res = await fetch(
-                `http://127.0.0.1:5000/get/all/reviews?product_id=${productId}`,
+                `https://madhut-qeqj.onrender.com/get/all/reviews?product_id=${productId}`,
                 { method: "POST", headers:{ "Authorization": "Bearer " + getToken() } }
             );
             const reviews = await res.json();
