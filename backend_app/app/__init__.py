@@ -51,6 +51,7 @@ def create_app():
                 "origins": [
                     "https://madhut.in",
                     "https://www.madhut.in",
+                    "https://admin.madhut.in"
 
                 ]
             }
