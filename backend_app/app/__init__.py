@@ -50,7 +50,7 @@ def create_app():
             r"/*": {
                 "origins": [
                     "https://madhut.in",
-                    # "https://www.madhut.in",
+                    "https://www.madhut.in",
                     "https://madhut-bay.vercel.app",  # ✅ NEW (important)
                     "http://localhost:63342"
                 ]
