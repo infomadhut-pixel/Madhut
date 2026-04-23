@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+    <url>
+        <loc>https://madhut.in/</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <url>
+        <loc>https://madhut.in/recent_product.html</loc>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <url>
+        <loc>https://madhut.in/customised_as_you_want.html</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Variety pages -->
+    <url>
+        <loc>https://madhut.in/variety_product_details.html?type=regular</loc>
+    </url>
+
+    <url>
+        <loc>https://madhut.in/variety_product_details.html?type=polo</loc>
+    </url>
+
+    <url>
+        <loc>https://madhut.in/variety_product_details.html?type=oversize</loc>
+    </url>
+
+    <url>
+        <loc>https://madhut.in/variety_product_details.html?type=fullsleeve</loc>
+    </url>
+
+</urlset>
