@@ -8,6 +8,34 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
+    <!-- 🔥 FIREBASE AUTH -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
+            authDomain: "MADHUT-97c1e.firebaseapp.com",
+            projectId: "MADHUT-97c1e",
+            appId: "1:443781397252:web:64f178cd71d0993cc0ae51"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        window.auth = auth;
+        window.signOutUser = signOut;
+
+        // 🔒 PROTECT PAGE
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.href = "user_login.html";
+            } else {
+                fetchAndRenderOrders(); // only after login confirmed
+            }
+        });
+    </script>
+
 </head>
 
 <body class="bg-gray-100">
@@ -20,7 +48,7 @@
         </a>
 
         <button onclick="logout()"
-            class="text-sm bg-red-500 text-white px-4 py-1.5 rounded-lg shadow hover:bg-red-600 transition">
+                class="text-sm bg-red-500 text-white px-4 py-1.5 rounded-lg shadow hover:bg-red-600 transition">
             Logout
         </button>
 
@@ -38,13 +66,9 @@
 
     const API_URL = 'https://madhut-qeqj.onrender.com/user/fetch/order';
 
-    function getToken() {
-        return localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
-    }
-
-    function logout() {
-        localStorage.clear();
-        sessionStorage.clear();
+    // 🔥 UPDATED LOGOUT
+    async function logout() {
+        await window.signOutUser(window.auth);
         window.location.href = "user_login.html";
     }
 
@@ -60,27 +84,28 @@
 
     async function fetchAndRenderOrders(isRealtime = false) {
 
-            const token = getToken();
-            if (!token) return window.location.href = "user_login.html";
+        const user = window.auth.currentUser;
+        if (!user) return;
 
-            // ❌ don't show loading in realtime
-            if (!isRealtime) {
-                showLoading();
-            }
+        const idToken = await user.getIdToken();
 
-            try {
-                const res = await fetch(API_URL, {
-                    headers: { "Authorization": `Bearer ${token}` }
-                });
+        if (!isRealtime) {
+            showLoading();
+        }
 
-                const orders = await res.json();
-                if (!orders.length) return showError("No orders found");
+        try {
+            const res = await fetch(API_URL, {
+                headers: { "Authorization": `Bearer ${idToken}` }
+            });
 
-                renderOrders(orders);
+            const orders = await res.json();
+            if (!orders.length) return showError("No orders found");
 
-            } catch {
-                showError("Error loading orders");
-            }
+            renderOrders(orders);
+
+        } catch {
+            showError("Error loading orders");
+        }
     }
 
     function renderOrders(orders) {
@@ -89,7 +114,6 @@
         container.innerHTML = orders.map(order => `
             <div class="bg-white rounded-2xl shadow-md hover:shadow-lg transition overflow-hidden border">
 
-                <!-- HEADER -->
                 <div class="p-4 bg-gray-50 flex justify-between items-center text-sm border-b">
                     <div class="text-gray-500">${new Date(order.created_at).toLocaleDateString()}</div>
                     <div class="font-bold text-lg">₹${order.total_amount}</div>
@@ -99,10 +123,8 @@
                     </div>
                 </div>
 
-                <!-- BODY -->
                 <div class="p-5 space-y-5">
 
-                    <!-- TRACKING -->
                     ${
                         order.tracking_id
                         ? `
@@ -125,7 +147,6 @@
                         : ""
                     }
 
-                    <!-- ITEMS -->
                     ${order.items.map(item => `
                         <div class="flex gap-4 border-b pb-4">
 
@@ -170,7 +191,6 @@
         `).join('');
     }
 
-    // STATUS COLOR
     function getStatusColor(status){
         status = status.toLowerCase();
 
@@ -181,20 +201,14 @@
         return "bg-gray-100 text-gray-600";
     }
 
-    // COPY
     function copyTracking(id){
         navigator.clipboard.writeText(id);
         alert("Tracking ID Copied");
     }
 
-    socket.on("order_updated", (data) => {
-        console.log("Order updated:", data);
-
+    socket.on("order_updated", () => {
         fetchAndRenderOrders(true);
     });
-    window.onload = () => {
-        fetchAndRenderOrders(); // ✅ initial load
-    };
 
 </script>
 

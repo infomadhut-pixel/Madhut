@@ -7,21 +7,29 @@
     <link rel="icon" type="image/x-icon" href="static/images/mad_hut.jpeg">
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    <script>
-        function getToken(){
-            return localStorage.getItem("userToken") ||
-                   sessionStorage.getItem("userToken");
-        }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-        function redirectToLogin(){
-            localStorage.removeItem("userToken");
-            sessionStorage.removeItem("userToken");
-            window.location.replace("user_login.html");
-        }
+        const firebaseConfig = {
+            apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
+            authDomain: "MADHUT-97c1e.firebaseapp.com",
+            projectId: "MADHUT-97c1e",
+            appId: "1:443781397252:web:64f178cd71d0993cc0ae51"
+        };
 
-        if (!getToken()) {
-            redirectToLogin();
-        }
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // 🔒 PROTECT CHECKOUT PAGE
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                window.location.replace("user_login.html");
+            }
+        });
+
+        // Make auth global
+        window.auth = auth;
     </script>
 
     <style>
@@ -193,7 +201,6 @@
     document.getElementById("checkoutColor").innerText = checkoutItem.color;
     document.getElementById("checkoutQty").innerText = checkoutItem.quantity;
 
-    // 💰 PRICE LOGIC
     const subtotal = checkoutItem.price * checkoutItem.quantity;
 
     let shippingCharge = 0;
@@ -235,41 +242,70 @@
     // PLACE ORDER
     async function placeOrder(){
 
-    if(!validateForm()) return;
+        if(!validateForm()) return;
 
-    const token = getToken();
+        const user = window.auth.currentUser;
 
-    const orderData = {
-    ...checkoutItem,
-    full_name: document.getElementById("fullName").value.trim(),
-    phone: document.getElementById("phone").value.trim(),
-    address: document.getElementById("address").value.trim(),
-    city: document.getElementById("city").value.trim(),
-    pincode: document.getElementById("pincode").value.trim(),
-    payment_mode: document.getElementById("paymentMode").value,
+        if(!user){
+            alert("Login required");
+            window.location.href = "user_login.html";
+            return;
+        }
 
-    // ✅ IMPORTANT
-    shipping_charge: shippingCharge,
-    total_amount: finalTotal
-    };
+        // 🔥 GET FIREBASE TOKEN
+        const idToken = await user.getIdToken();
 
-    // COD
-    if(orderData.payment_mode === "COD"){
-    return sendOrderToBackend(orderData, token);
+        const orderData = {
+            ...checkoutItem,
+            full_name: document.getElementById("fullName").value.trim(),
+            phone: document.getElementById("phone").value.trim(),
+            address: document.getElementById("address").value.trim(),
+            city: document.getElementById("city").value.trim(),
+            pincode: document.getElementById("pincode").value.trim(),
+            payment_mode: document.getElementById("paymentMode").value,
+            shipping_charge: shippingCharge,
+            total_amount: finalTotal
+        };
+
+        // COD
+        if(orderData.payment_mode === "COD"){
+            return sendOrderToBackend(orderData, idToken);
+        }
+
+        // ONLINE PAYMENT
+        try{
+            const paymentRes = await fetch("https://madhut-qeqj.onrender.com/payment/create-order",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    amount: finalTotal
+                })
+            });
+
+            const paymentData = await paymentRes.json();
+
+            const options = {
+                key: paymentData.key,
+                amount: paymentData.amount,
+                currency: "INR",
+                name: "MADHUT",
+                order_id: paymentData.order_id,
+
+                handler: async function (response){
+                    orderData.razorpay_payment_id = response.razorpay_payment_id;
+                    await sendOrderToBackend(orderData, idToken);
+                }
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.open();
+
+        }catch(err){
+            alert("Payment failed");
+        }
     }
-
-    // ONLINE PAYMENT
-    try{
-    const paymentRes = await fetch("https://madhut-qeqj.onrender.com/payment/create-order",{
-    method:"POST",
-    headers:{
-    "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-    amount: finalTotal
-    })
-    });
-
     const paymentData = await paymentRes.json();
 
     const options = {

@@ -489,61 +489,49 @@
     onAuthStateChanged(auth, (user) => {
 
         if (user) {
-
             authSection.innerHTML = `
                 <span class="nav-btn" id="profileBtn">Account</span>
                 <span class="nav-btn" id="logoutBtn">Logout</span>
             `;
-
-            document.getElementById("profileBtn").onclick = () => {
-                window.location.href = "user_dashboard.html";
-            };
-
-            document.getElementById("logoutBtn").onclick = async () => {
-                await signOut(auth);
-
-                localStorage.removeItem(CACHE_KEY);
-                localStorage.removeItem(CURSOR_KEY);
-
-                setTimeout(() => {
-                    window.location.href = "index.html";
-                }, 200);
-            };
 
             mobileAuth.innerHTML = `
                 <span class="nav-btn" id="mProfileBtn">Account</span>
                 <span class="nav-btn" id="mLogoutBtn">Logout</span>
             `;
 
+            document.getElementById("profileBtn").onclick = () => {
+                window.location.href = "user_dashboard.html";
+            };
+
+            document.getElementById("logoutBtn").onclick = logoutUser;
+
             document.getElementById("mProfileBtn").onclick = () => {
                 window.location.href = "user_dashboard.html";
             };
 
-            document.getElementById("mLogoutBtn").onclick = async () => {
-                await signOut(auth);
-
-                localStorage.removeItem(CACHE_KEY);
-                localStorage.removeItem(CURSOR_KEY);
-
-                setTimeout(() => {
-                    window.location.href = "index.html";
-                }, 200);
-            };
+            document.getElementById("mLogoutBtn").onclick = logoutUser;
 
         } else {
+            authSection.innerHTML = `
+                <span class="nav-btn" id="loginBtn">Login</span>
+            `;
 
-            authSection.innerHTML = `<span class="nav-btn" id="loginBtn">Login</span>`;
+            mobileAuth.innerHTML = `
+                <span class="nav-btn" id="mLoginBtn">Login</span>
+            `;
+
             document.getElementById("loginBtn").onclick = () => {
                 window.location.href = "user_login.html";
             };
 
-            mobileAuth.innerHTML = `<span class="nav-btn" id="mLoginBtn">Login</span>`;
             document.getElementById("mLoginBtn").onclick = () => {
                 window.location.href = "user_login.html";
             };
         }
 
-        // ✅ IMPORTANT: load products AFTER auth resolved
+        authSection.style.visibility = "visible";
+        mobileAuth.style.visibility = "visible";
+
         loadTshirts();
     });
 
@@ -604,7 +592,6 @@
         showLoader(false);
     }
 
-    // 👇 rest same (no change)
     function displayProducts(products) {
         products.forEach(product => {
             if (document.querySelector(`[data-id="${product._id}"]`)) return;
@@ -636,13 +623,11 @@
                     </div>
                 </div>
 
-                <!-- 🔥 CARD LOADER -->
                 <div class="card-loading">
                     <div class="spinner"></div>
                 </div>
             `;
 
-            /* 🔥 CLICK HANDLER */
             card.onclick = () => {
                 const loader = card.querySelector(".card-loading");
                 loader.style.display = "flex";
@@ -701,6 +686,14 @@
     });
 
     observer.observe(trigger);
+    async function logoutUser() {
+        await signOut(auth);
+
+        localStorage.removeItem(CACHE_KEY);
+        localStorage.removeItem(CURSOR_KEY);
+
+        window.location.href = "index.html";
+    }
 
 </script>
 </body>
