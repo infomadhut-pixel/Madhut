@@ -337,6 +337,7 @@
 
 <div class="main-content">
 
+
     <header class="header">
         <div class="logo">
             <span class="logo-icon">MH</span>
@@ -486,9 +487,18 @@
     socket.on("new_product", addNewProductToTop);
     socket.on("delete_product", (data) => removeProductFromUI(data._id));
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
 
         if (user) {
+            try {
+                await user.getIdToken(true); // force refresh
+            } catch (e) {
+                user = null;
+            }
+        }
+
+        if (user) {
+
             authSection.innerHTML = `
                 <span class="nav-btn" id="profileBtn">Account</span>
                 <span class="nav-btn" id="logoutBtn">Logout</span>
@@ -500,18 +510,27 @@
             `;
 
             document.getElementById("profileBtn").onclick = () => {
+                if (!auth.currentUser) {
+                    window.location.href = "user_login.html";
+                    return;
+                }
                 window.location.href = "user_dashboard.html";
             };
 
             document.getElementById("logoutBtn").onclick = logoutUser;
 
             document.getElementById("mProfileBtn").onclick = () => {
+                if (!auth.currentUser) {
+                    window.location.href = "user_login.html";
+                    return;
+                }
                 window.location.href = "user_dashboard.html";
             };
 
             document.getElementById("mLogoutBtn").onclick = logoutUser;
 
         } else {
+
             authSection.innerHTML = `
                 <span class="nav-btn" id="loginBtn">Login</span>
             `;
