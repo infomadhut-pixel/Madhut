@@ -95,7 +95,7 @@
 <script type="module">
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
 
     const firebaseConfig = {
         apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
@@ -111,7 +111,6 @@
 
     const msgDiv = document.getElementById("msg");
 
-    // ✅ ONLY redirect if Firebase session is stable
     let checked = false;
 
     onAuthStateChanged(auth, (user) => {
