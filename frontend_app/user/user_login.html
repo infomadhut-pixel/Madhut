@@ -88,10 +88,12 @@
 
     <button class="btn-login" id="loginBtn">LOGIN</button>
     <button class="btn-signup" onclick="goToSignup()">SIGN UP</button>
-</div>
+    <button style="margin-top:10px;background:#f39c12;color:white;padding:10px;border:none;border-radius:5px;cursor:pointer;"
+    onclick="forgotPassword()">Forgot Password</button>
+    </div>
 
 <script type="module">
-
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
@@ -208,6 +210,42 @@
     window.goToSignup=function(){
         window.location.href="user_signup.html";
     };
+    window.forgotPassword = async function(){
+
+        const email = document.getElementById("email").value;
+
+        msgDiv.innerText = "";
+        msgDiv.className = "msg";
+
+        if(!email){
+            msgDiv.innerText = "Enter your email first";
+            msgDiv.classList.add("error");
+            return;
+        }
+
+        try{
+
+            await sendPasswordResetEmail(auth, email);
+
+            msgDiv.innerText = "Password reset link sent to your email";
+            msgDiv.classList.add("success");
+
+        }catch(error){
+
+            msgDiv.classList.add("error");
+
+            switch(error.code){
+                case "auth/user-not-found":
+                    msgDiv.innerText = "No user found with this email";
+                    break;
+                case "auth/invalid-email":
+                    msgDiv.innerText = "Invalid email format";
+                    break;
+                default:
+                    msgDiv.innerText = "Failed to send reset email";
+            }
+        }
+    }
 
 </script>
 
