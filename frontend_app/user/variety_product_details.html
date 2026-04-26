@@ -133,6 +133,57 @@
             text-align:center;
             margin-top:50px;
         }
+
+        @media (max-width: 768px){
+
+            .header{
+                padding:12px 20px;
+                text-align:center;
+            }
+
+            .logo{
+                font-size:18px;
+            }
+
+            .products{
+                grid-template-columns:1fr; /* 1 column */
+                padding:20px;
+                gap:20px;
+            }
+
+            .card{
+                height:200px;
+                border-radius:15px;
+            }
+
+            .name{
+                font-size:12px;
+            }
+
+            .price{
+                font-size:13px;
+            }
+        }
+
+        @media (max-width: 480px){
+
+            .products{
+                padding:15px;
+            }
+
+            .card{
+                height:180px;
+            }
+
+            .name{
+                font-size:11px;
+            }
+
+            .discount{
+                font-size:10px;
+                padding:2px 6px;
+            }
+        }
     </style>
 </head>
 
@@ -150,7 +201,6 @@
     const container = document.getElementById("products");
     const loader = document.getElementById("loader");
 
-    /* 🔥 FIX: RESET UI WHEN BACK */
     window.addEventListener("pageshow", () => {
         document.querySelectorAll(".card-loading").forEach(el => {
             el.style.display = "none";
