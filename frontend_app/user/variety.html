@@ -95,6 +95,45 @@
             font-size:20px;
             display:none;
         }
+
+        /* ✅ Coming Soon UI */
+        .coming-soon{
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,0.9);
+            display:none;
+            justify-content:center;
+            align-items:center;
+            flex-direction:column;
+            text-align:center;
+            z-index:999;
+        }
+
+        .coming-box{
+            background:#111;
+            padding:40px;
+            border-radius:15px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .coming-box h2{
+            color:#f1c40f;
+            margin-bottom:10px;
+        }
+
+        .coming-box p{
+            color:#ccc;
+            margin-bottom:20px;
+        }
+
+        .coming-box button{
+            padding:10px 20px;
+            border:none;
+            background:#f1c40f;
+            color:#000;
+            cursor:pointer;
+            border-radius:8px;
+        }
     </style>
 
 </head>
@@ -137,9 +176,27 @@
 
 <div class="loading" id="loading">Loading...</div>
 
+
+<div class="coming-soon" id="comingSoon">
+    <div class="coming-box">
+        <h2>Coming Soon 🚀</h2>
+        <p>This category is not available yet</p>
+        <button onclick="closeComing()">OK</button>
+    </div>
+</div>
+
 <script>
     const BASE_URL = "https://madhut-qeqj.onrender.com";
     const loading = document.getElementById("loading");
+    const comingSoon = document.getElementById("comingSoon");
+
+    function showComing(){
+        comingSoon.style.display = "flex";
+    }
+
+    function closeComing(){
+        comingSoon.style.display = "none";
+    }
 
     document.querySelectorAll(".card").forEach(card => {
 
@@ -150,16 +207,16 @@
             try{
                 loading.style.display = "flex";
 
-                const res = await fetch(
-                    `${BASE_URL}/tshirt/variety?type=${type}`,
-                    {
-                        method: "GET"
-                    }
-                );
+                const res = await fetch(`${BASE_URL}/tshirt/variety?type=${type}`);
 
                 if(!res.ok) throw new Error("API error");
 
                 const data = await res.json();
+
+                if(!data || data.length === 0){
+                    showComing();
+                    return;
+                }
 
                 sessionStorage.setItem("products", JSON.stringify(data));
 
