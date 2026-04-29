@@ -104,10 +104,10 @@
         </span>
     </div>
 </div>
+
 <script type="module">
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 
     const firebaseConfig = {
         apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
@@ -130,7 +130,6 @@
         if (!checked) {
             checked = true;
 
-            // only redirect if user REALLY logged in
             if (user) {
                 window.location.href = "index.html";
             }
@@ -141,7 +140,6 @@
 
         const email = document.getElementById("email").value;
         const password = document.getElementById("password").value;
-        const remember = document.getElementById("remember").checked;
 
         msgDiv.innerText = "";
         msgDiv.className = "msg";
@@ -153,9 +151,6 @@
         }
 
         try{
-
-            // clear any previous session
-            await signOut(auth);
 
             const userCredential = await signInWithEmailAndPassword(auth,email,password);
             const user = userCredential.user;
@@ -185,17 +180,15 @@
             msgDiv.innerText = "Login successful!";
             msgDiv.classList.add("success");
 
-            if(remember){
-                localStorage.setItem("userToken",token);
-            }else{
-                sessionStorage.setItem("userToken",token);
-            }
+            sessionStorage.setItem("userToken",token);
 
             setTimeout(()=>{
                 window.location.href = "index.html";
             },1000);
 
         }catch(error){
+
+            console.log(error); // debug
 
             msgDiv.classList.add("error");
 
@@ -221,6 +214,7 @@
     window.goToSignup=function(){
         window.location.href="user_signup.html";
     };
+
     window.forgotPassword = async function(){
 
         const email = document.getElementById("email").value;
