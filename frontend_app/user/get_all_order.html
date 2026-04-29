@@ -9,7 +9,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
-    <!-- 🔥 FIREBASE AUTH -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -27,7 +26,6 @@
         window.auth = auth;
         window.signOutUser = signOut;
 
-        // 🔒 PROTECT PAGE
         onAuthStateChanged(auth, (user) => {
             if (!user) {
                 window.location.href = "user_login.html";
@@ -67,7 +65,6 @@
 
     const API_URL = 'https://madhut-qeqj.onrender.com/user/fetch/order';
 
-    // 🔥 UPDATED LOGOUT
     async function logout() {
         await window.signOutUser(window.auth);
         window.location.href = "user_login.html";
