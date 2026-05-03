@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>MADHUT | Product Detail</title>
+    <meta name="description" id="metaDesc" content="Buy premium t-shirts online at MadHut">
     <link rel="icon" type="image/x-icon" href="static/images/mad_hut.jpeg">
+    <link rel="canonical" id="canonicalUrl">
+    <script type="application/ld+json" id="productSchema"></script>
     <style>
         *{
         margin:0;
@@ -543,6 +546,7 @@
 </head>
 
 <body>
+<h1 id="seoTitle" style="display:none;"></h1>
 <div id="loader" class="loader">
     <div class="spinner"></div>
 </div>
@@ -755,59 +759,101 @@
 
     function renderProduct(product){
 
-        currentProductPrice = product.price;
-        currentProductImage = product.images?.[0];
+    // ✅ Dynamic title
+    document.title = product.name + " | Buy Online at MadHut";
 
-        document.getElementById("productName").innerText = product.name;
-        document.getElementById("price").innerText = "₹" + product.price;
-        renderDescription(product.description);
+    currentProductPrice = product.price;
+    currentProductImage = product.images?.[0];
 
-        const mainImg = document.getElementById("mainImage");
-        mainImg.src = currentProductImage;
-        mainImg.loading = "eager";
-        mainImg.decoding = "async";
+    document.getElementById("productName").innerText = product.name;
+    document.getElementById("price").innerText = "₹" + product.price;
+    renderDescription(product.description);
 
-        const thumbRow = document.getElementById("thumbnailRow");
-        thumbRow.innerHTML = "";
 
-        const fragment = document.createDocumentFragment();
+    const seoTitle = document.getElementById("seoTitle");
+    if(seoTitle){
+        seoTitle.innerText = product.name;
+    }
 
-        product.images.forEach((img, index) => {
+    const metaDesc = document.getElementById("metaDesc");
+    if(metaDesc){
+        metaDesc.setAttribute(
+            "content",
+            product.name + " at best price ₹" + product.price + ". Buy now from MadHut."
+        );
+    }
 
-            const image = document.createElement("img");
-            image.src = img;
-            image.loading = "lazy";
-            image.decoding = "async";
+    const canonical = document.getElementById("canonicalUrl");
+    if(canonical){
+        canonical.href = window.location.href;
+    }
 
-            /* mark first thumb as active */
-            if(index === 0) image.classList.add("active-thumb");
+    const mainImg = document.getElementById("mainImage");
+    mainImg.src = currentProductImage;
+    mainImg.loading = "eager";
+    mainImg.decoding = "async";
 
-            /* ── hover: instantly preview image ── */
-            image.addEventListener("mouseenter", () => {
-                mainImg.src = img;
-                currentProductImage = img;
-                /* update active highlight */
-                thumbRow.querySelectorAll("img").forEach(t => t.classList.remove("active-thumb"));
-                image.classList.add("active-thumb");
-            });
+    const thumbRow = document.getElementById("thumbnailRow");
+    thumbRow.innerHTML = "";
 
-            /* ── click: same as hover + scroll to top ── */
-            image.addEventListener("click", () => {
-                mainImg.src = img;
-                currentProductImage = img;
-                thumbRow.querySelectorAll("img").forEach(t => t.classList.remove("active-thumb"));
-                image.classList.add("active-thumb");
-                window.scrollTo({top: 0, behavior: "smooth"});
-            });
+    const fragment = document.createDocumentFragment();
 
-            fragment.appendChild(image);
+    product.images.forEach((img, index) => {
+
+        const image = document.createElement("img");
+        image.src = img;
+        image.loading = "lazy";
+        image.decoding = "async";
+
+        image.alt = product.name;
+
+        if(index === 0) image.classList.add("active-thumb");
+
+        image.addEventListener("mouseenter", () => {
+            mainImg.src = img;
+            currentProductImage = img;
+            thumbRow.querySelectorAll("img").forEach(t => t.classList.remove("active-thumb"));
+            image.classList.add("active-thumb");
         });
 
-        thumbRow.appendChild(fragment);
+        image.addEventListener("click", () => {
+            mainImg.src = img;
+            currentProductImage = img;
+            thumbRow.querySelectorAll("img").forEach(t => t.classList.remove("active-thumb"));
+            image.classList.add("active-thumb");
+            window.scrollTo({top: 0, behavior: "smooth"});
+        });
 
-        createOptions("sizes", product.sizes, "size");
-        createOptions("colors", product.colors, "color");
+        fragment.appendChild(image);
+    });
+
+    thumbRow.appendChild(fragment);
+
+    createOptions("sizes", product.sizes, "size");
+    createOptions("colors", product.colors, "color");
+
+    const schema = document.getElementById("productSchema");
+    if(schema){
+        schema.textContent = JSON.stringify({
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            "name": product.name,
+            "image": product.images,
+            "description": product.description,
+            "brand": {
+                "@type": "Brand",
+                "name": "MadHut"
+            },
+            "offers": {
+                "@type": "Offer",
+                "priceCurrency": "INR",
+                "price": product.price,
+                "availability": "https://schema.org/InStock",
+                "url": window.location.href
+            }
+        });
     }
+}
 
     /* ================= OPTIONS ================= */
 
