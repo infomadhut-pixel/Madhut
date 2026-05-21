@@ -17,7 +17,7 @@ class UserLogin(MethodView):
 
     # @limiter.limit("2 per minute")
     def post(self):
-        logger.info("User login API called")
+
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):
             return {"message": "Invalid token format"}, 401
@@ -29,6 +29,7 @@ class UserLogin(MethodView):
         email = decoded_token.get("email")
         logger.info(f"Firebase verified for {email}")
         uid = decoded_token.get("uid")
+        logger.info(f"Existing user login: {email}")
 
         user = self.user_db.find_user(email)
         if user:
