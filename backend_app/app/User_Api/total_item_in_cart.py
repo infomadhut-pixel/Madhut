@@ -1,4 +1,3 @@
-from flask import jsonify
 from flask_smorest import Blueprint
 from flask.views import MethodView
 from ..Database.User.add_to_cart import AddToCart
