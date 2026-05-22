@@ -41,6 +41,7 @@ class UserLogin(MethodView):
             response = requests.get(f"http://ip-api.com/json/{ip_address}",timeout=5)
             print(response)
             location = response.json()
+            print(location)
         user_agent = request.user_agent.string
 
         login_time = datetime.utcnow()
