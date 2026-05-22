@@ -37,12 +37,10 @@ class UserLogin(MethodView):
             if ip_address != "127.0.0.1":
                 response = requests.get(f"http://ip-api.com/json/{ip_address}", timeout=5)
                 location = response.json()
-                if response.status_code == 200:
-                    user_agent = request.user_agent.string
-        except requests.exceptions.Timeout:
+        except Exception as error:
             pass
-        except Exception as e:
-            pass
+
+        user_agent = request.user_agent.string
 
         login_time = datetime.utcnow()
         uid = decoded_token.get("uid")
