@@ -3,7 +3,9 @@ from flask_smorest import Blueprint
 from flask import request
 from firebase_admin import auth as firebase_auth
 from ..Database.User.user_data import UserDatabase
+from ..Database.User_Log_Details.user_logs import SaveUserActivity
 import logging
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +16,7 @@ blp = Blueprint('user login', __name__, description='firebase login')
 class UserLogin(MethodView):
     def __init__(self):
         self.user_db = UserDatabase()
+        self.user_activity = SaveUserActivity()
 
     # @limiter.limit("2 per minute")
     def post(self):
@@ -28,8 +31,21 @@ class UserLogin(MethodView):
 
         email = decoded_token.get("email")
         logger.info(f"Firebase verified for {email}")
+        ip_address = request.remote_addr
+
+        user_agent = request.user_agent.string
+
+        login_time = datetime.utcnow()
         uid = decoded_token.get("uid")
-        logger.info(f"Existing user login: {email}")
+        activity_data = {
+            "email": email,
+            "uid": uid,
+            "ip_address": ip_address,
+            "device": user_agent,
+            "login_time": login_time,
+            "action": "login"
+        }
+        self.user_activity.save_user_activity(activity_data)
 
         user = self.user_db.find_user(email)
         if user:
