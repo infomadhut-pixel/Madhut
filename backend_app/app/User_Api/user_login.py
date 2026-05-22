@@ -38,10 +38,8 @@ class UserLogin(MethodView):
         ).split(",")[0]
         location = {}
         if ip_address != "127.0.0.1":
-            response = requests.get(f"http://ip-api.com/json/{ip_address}",timeout=5)
-            print(response)
+            response = requests.get(f"http://ip-api.com/json/{ip_address}", timeout=5)
             location = response.json()
-            print(location)
         user_agent = request.user_agent.string
 
         login_time = datetime.utcnow()
@@ -50,9 +48,13 @@ class UserLogin(MethodView):
             "email": email,
             "uid": uid,
             "ip_address": ip_address,
-            "country": location.get("country_name"),
+            "country": location.get("country"),
             "city": location.get("city"),
             "region": location.get("region"),
+            "regionName": location.get("regionName"),
+            "regionName": location.get("zip"),
+            "latitude":location.get("lat"),
+            "longitude":location.get("lon"),
             "device": user_agent,
             "login_time": login_time,
             "action": "login"
