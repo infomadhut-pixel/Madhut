@@ -306,29 +306,6 @@
             alert("Payment failed");
         }
     }
-    const paymentData = await paymentRes.json();
-
-    const options = {
-    key: paymentData.key,
-    amount: paymentData.amount,
-    currency: "INR",
-    name: "MADHUT",
-    order_id: paymentData.order_id,
-
-    handler: async function (response){
-    orderData.razorpay_payment_id = response.razorpay_payment_id;
-    await sendOrderToBackend(orderData, token);
-    }
-    };
-
-    const rzp = new Razorpay(options);
-    rzp.open();
-
-    }catch(err){
-    alert("Payment failed");
-    }
-    }
-
     async function sendOrderToBackend(orderData, token){
     try{
     const res = await fetch("https://madhut-qeqj.onrender.com/order/checkout",{
