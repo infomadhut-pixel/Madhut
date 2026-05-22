@@ -51,7 +51,10 @@ def create_app():
                 "origins": [
                     "https://madhut.in",
                     "https://www.madhut.in",
-                    "https://admin.madhut.in"
+                    "https://admin.madhut.in",
+                    "http://127.0.0.1:5000",
+                    "http://localhost:5000",
+                    "http://localhost:63342"
 
                 ]
             }

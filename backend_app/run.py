@@ -35,4 +35,5 @@ app = create_app()
 socketio.init_app(app)
 
 if __name__ == "__main__":
-    socketio.run(app)
+    print("Server Starting...")
+    socketio.run(app,debug=True)

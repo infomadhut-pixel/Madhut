@@ -35,10 +35,11 @@ class UserLogin(MethodView):
         ip_address = request.headers.get(
             "X-Forwarded-For",
             request.remote_addr
-        )
-        response = requests.get(f"https://ipapi.co/{ip_address}/json/")
-        location = response.json()
-
+        ).split(",")[0]
+        location = {}
+        if ip_address != "127.0.0.1":
+            response = requests.get(f"https://ipapi.co/{ip_address}/json/")
+            location = response.json()
         user_agent = request.user_agent.string
 
         login_time = datetime.utcnow()
