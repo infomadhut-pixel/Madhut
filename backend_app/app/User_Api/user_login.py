@@ -52,7 +52,7 @@ class UserLogin(MethodView):
             "city": location.get("city"),
             "region": location.get("region"),
             "regionName": location.get("regionName"),
-            "regionName": location.get("zip"),
+            "postal_code": location.get("zip"),
             "latitude":location.get("lat"),
             "longitude":location.get("lon"),
             "device": user_agent,
