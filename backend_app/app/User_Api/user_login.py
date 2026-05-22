@@ -7,7 +7,6 @@ from ..Database.User_Log_Details.user_activity_logs import SaveUserActivity
 from datetime import datetime
 import requests
 
-
 blp = Blueprint('user login', __name__, description='firebase login')
 
 
@@ -34,10 +33,16 @@ class UserLogin(MethodView):
             request.remote_addr
         ).split(",")[0]
         location = {}
-        if ip_address != "127.0.0.1":
-            response = requests.get(f"http://ip-api.com/json/{ip_address}", timeout=5)
-            location = response.json()
-        user_agent = request.user_agent.string
+        try:
+            if ip_address != "127.0.0.1":
+                response = requests.get(f"http://ip-api.com/json/{ip_address}", timeout=5)
+                location = response.json()
+                if response.status_code == 200:
+                    user_agent = request.user_agent.string
+        except requests.exceptions.Timeout:
+            pass
+        except Exception as e:
+            pass
 
         login_time = datetime.utcnow()
         uid = decoded_token.get("uid")
@@ -50,8 +55,8 @@ class UserLogin(MethodView):
             "region": location.get("region"),
             "regionName": location.get("regionName"),
             "postal_code": location.get("zip"),
-            "latitude":location.get("lat"),
-            "longitude":location.get("lon"),
+            "latitude": location.get("lat"),
+            "longitude": location.get("lon"),
             "device": user_agent,
             "login_time": login_time,
             "action": "login"
