@@ -38,7 +38,7 @@ class UserLogin(MethodView):
         ).split(",")[0]
         location = {}
         if ip_address != "127.0.0.1":
-            response = requests.get(f"https://ipapi.co/{ip_address}/json/")
+            response = requests.get(f"http://ip-api.com/json/{ip_address}",timeout=5)
             location = response.json()
         user_agent = request.user_agent.string
 
