@@ -25,7 +25,7 @@ class CheckOutOrder(MethodView):
             return {"message": "Unauthorized"}, 401
         data = request.get_json()
         product_id = data['product_id']
-        ip_address = request.headers.get("X-FORWARDED-FOR", request.remote_addr)
+        ip_address = request.headers.get("X-FORWARDED-FOR", request.remote_addr).split(",")[0]
         user_agent = request.user_agent.string
         activity_response = {
             "action": "CHECKOUT_STATRTED",
