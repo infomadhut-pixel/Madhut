@@ -5,7 +5,6 @@ from firebase_admin import auth as firebase_auth
 from ..Database.User.user_data import UserDatabase
 from ..Database.User_Log_Details.user_activity_logs import SaveUserActivity
 from datetime import datetime
-import requests
 
 blp = Blueprint('user login', __name__, description='firebase login')
 
@@ -32,13 +31,6 @@ class UserLogin(MethodView):
             "X-Forwarded-For",
             request.remote_addr
         ).split(",")[0]
-        location = {}
-        try:
-            if ip_address != "127.0.0.1":
-                response = requests.get(f"http://ip-api.com/json/{ip_address}", timeout=5)
-                location = response.json()
-        except Exception as error:
-            pass
 
         user_agent = request.user_agent.string
 
@@ -48,13 +40,6 @@ class UserLogin(MethodView):
             "email": email,
             "uid": uid,
             "ip_address": ip_address,
-            "country": location.get("country"),
-            "city": location.get("city"),
-            "region": location.get("region"),
-            "regionName": location.get("regionName"),
-            "postal_code": location.get("zip"),
-            "latitude": location.get("lat"),
-            "longitude": location.get("lon"),
             "device": user_agent,
             "login_time": login_time,
             "action": "login"
