@@ -6,6 +6,7 @@ from ..Database.User.user_data import UserDatabase
 from ..Database.User_Log_Details.user_logs import SaveUserActivity
 import logging
 from datetime import datetime
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -35,6 +36,8 @@ class UserLogin(MethodView):
             "X-Forwarded-For",
             request.remote_addr
         )
+        response = requests.get(f"https://ipapi.co/{ip_address}/json/")
+        location = response.json()
 
         user_agent = request.user_agent.string
 
@@ -44,6 +47,9 @@ class UserLogin(MethodView):
             "email": email,
             "uid": uid,
             "ip_address": ip_address,
+            "country": location.get("country_name"),
+            "city": location.get("city"),
+            "region": location.get("region"),
             "device": user_agent,
             "login_time": login_time,
             "action": "login"
