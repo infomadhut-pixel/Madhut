@@ -31,7 +31,10 @@ class UserLogin(MethodView):
 
         email = decoded_token.get("email")
         logger.info(f"Firebase verified for {email}")
-        ip_address = request.remote_addr
+        ip_address = request.headers.get(
+            "X-Forwarded-For",
+            request.remote_addr
+        )
 
         user_agent = request.user_agent.string
 
