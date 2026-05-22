@@ -3,12 +3,10 @@ from flask_smorest import Blueprint
 from flask import request
 from firebase_admin import auth as firebase_auth
 from ..Database.User.user_data import UserDatabase
-from ..Database.User_Log_Details.user_logs import SaveUserActivity
-import logging
+from ..Database.User_Log_Details.user_activity_logs import SaveUserActivity
 from datetime import datetime
 import requests
 
-logger = logging.getLogger(__name__)
 
 blp = Blueprint('user login', __name__, description='firebase login')
 
@@ -31,7 +29,6 @@ class UserLogin(MethodView):
         decoded_token = firebase_auth.verify_id_token(token)
 
         email = decoded_token.get("email")
-        logger.info(f"Firebase verified for {email}")
         ip_address = request.headers.get(
             "X-Forwarded-For",
             request.remote_addr
@@ -64,7 +61,6 @@ class UserLogin(MethodView):
         user = self.user_db.find_user(email)
         if user:
             if user.get("is_active") is False:
-                logger.warning(f"Blocked user tried login: {email}")
                 return {
                     "message": "Your account is deactivated.",
                     "status": False,

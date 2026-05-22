@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from datetime import datetime
 import random
+import logging
 
 
 def generate_id():

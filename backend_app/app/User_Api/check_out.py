@@ -20,6 +20,7 @@ class CheckOutOrder(MethodView):
         if not email:
             return {"message": "Unauthorized"}, 401
         data = request.get_json()
+        print(data)
         quantity_ = data['quantity']
         product_id = data['product_id']
         result = self.order_db.create_order(email, data)
