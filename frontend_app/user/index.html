@@ -522,6 +522,7 @@
 
         if (user) {
 
+            // ✅ User IS logged in — show Account + Logout
             authSection.innerHTML = `
                 <span class="nav-btn" id="profileBtn">Account</span>
                 <span class="nav-btn" id="logoutBtn">Logout</span>
@@ -532,21 +533,14 @@
                 <span class="nav-btn" id="mLogoutBtn">Logout</span>
             `;
 
+            // No extra auth.currentUser check needed — we are already confirmed logged in here
             document.getElementById("profileBtn").onclick = () => {
-                if (!auth.currentUser) {
-                    window.location.href = "user_login.html";
-                    return;
-                }
                 window.location.href = "user_dashboard.html";
             };
 
             document.getElementById("logoutBtn").onclick = logoutUser;
 
             document.getElementById("mProfileBtn").onclick = () => {
-                if (!auth.currentUser) {
-                    window.location.href = "user_login.html";
-                    return;
-                }
                 window.location.href = "user_dashboard.html";
             };
 
@@ -554,6 +548,7 @@
 
         } else {
 
+            // ✅ User is NOT logged in — show only Login
             authSection.innerHTML = `
                 <span class="nav-btn" id="loginBtn">Login</span>
             `;
