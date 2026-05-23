@@ -510,19 +510,15 @@
     socket.on("new_product", addNewProductToTop);
     socket.on("delete_product", (data) => removeProductFromUI(data._id));
 
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(auth, (user) => {
 
-        if (user) {
-            try {
-                await user.getIdToken(true); // force refresh
-            } catch (e) {
-                user = null;
-            }
-        }
+        // Clear old UI first
+        authSection.innerHTML = "";
+        mobileAuth.innerHTML = "";
 
         if (user) {
 
-            // ✅ User IS logged in — show Account + Logout
+            // ✅ User logged in
             authSection.innerHTML = `
                 <span class="nav-btn" id="profileBtn">Account</span>
                 <span class="nav-btn" id="logoutBtn">Logout</span>
@@ -533,22 +529,20 @@
                 <span class="nav-btn" id="mLogoutBtn">Logout</span>
             `;
 
-            // No extra auth.currentUser check needed — we are already confirmed logged in here
             document.getElementById("profileBtn").onclick = () => {
                 window.location.href = "user_dashboard.html";
             };
-
-            document.getElementById("logoutBtn").onclick = logoutUser;
 
             document.getElementById("mProfileBtn").onclick = () => {
                 window.location.href = "user_dashboard.html";
             };
 
+            document.getElementById("logoutBtn").onclick = logoutUser;
             document.getElementById("mLogoutBtn").onclick = logoutUser;
 
         } else {
 
-            // ✅ User is NOT logged in — show only Login
+            // ✅ User not logged in
             authSection.innerHTML = `
                 <span class="nav-btn" id="loginBtn">Login</span>
             `;
@@ -566,10 +560,11 @@
             };
         }
 
-        authSection.style.visibility = "visible";
-        mobileAuth.style.visibility = "visible";
-
-        loadTshirts();
+        // Load products only once
+        if (!window.productsLoaded) {
+            window.productsLoaded = true;
+            loadTshirts();
+        }
     });
 
     async function loadTshirts() {
