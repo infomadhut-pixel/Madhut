@@ -23,7 +23,7 @@
     </script>
     <link rel="canonical" href="https://madhut.in/">
 
-    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;}
         html{scroll-behavior:smooth;}
@@ -339,6 +339,17 @@
             .footer-grid{grid-template-columns:1fr;gap:28px;}
         }
 
+        @media(max-width:500px){
+            .product-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+            .card{height:250px;border-radius:12px;}
+            .content{padding:10px;}
+            .card-name{font-size:11px;}
+            .card-price .price{font-size:13px;}
+            .card-price .badge{font-size:9px;padding:2px 6px;}
+
+            .footer-grid{grid-template-columns:1fr;gap:28px;}
+        }
+
         @keyframes spin{
             to{ transform:rotate(360deg); }
         }
@@ -497,9 +508,15 @@
     let isLoading = false;
     let allLoaded = false;
 
-    const socket = io(BASE_URL, { transports: ["websocket"], reconnectionAttempts: 2 });
-    socket.on("new_product", addNewProductToTop);
-    socket.on("delete_product", (data) => removeProductFromUI(data._id));
+    // Fixed: Wrapped with safety check to make script execution crash-proof
+    let socket = null;
+    if (typeof io !== 'undefined') {
+        socket = io(BASE_URL, { transports: ["websocket"], reconnectionAttempts: 2 });
+        socket.on("new_product", addNewProductToTop);
+        socket.on("delete_product", (data) => removeProductFromUI(data._id));
+    } else {
+        console.warn("Socket.io library failed to load. Real-time updates disabled gracefully.");
+    }
 
     onAuthStateChanged(auth, (user) => {
         authSection.innerHTML = "";
