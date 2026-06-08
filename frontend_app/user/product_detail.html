@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>MADHUT | Product Detail</title>
@@ -19,9 +19,7 @@
         background:#f5f7fa;
         }
 
-
         /* NAVBAR */
-
         .navbar{
         position:sticky;
         top:0;
@@ -81,7 +79,6 @@
         }
 
         /* WRAPPER */
-
         .wrapper{
         max-width:1200px;
         margin:40px auto;
@@ -89,7 +86,6 @@
         }
 
         /* PRODUCT CONTAINER */
-
         .container{
         display:grid;
         grid-template-columns:1fr 1fr;
@@ -101,7 +97,6 @@
         }
 
         /* IMAGE */
-
         .main-image{
         width:100%;
         max-height:600px;
@@ -116,7 +111,6 @@
         }
 
         /* THUMBNAILS */
-
         .thumbnail-row{
         display:flex;
         gap:12px;
@@ -140,7 +134,6 @@
         }
 
         /* DETAILS */
-
         .details h2{
         font-size:30px;
         margin-bottom:15px;
@@ -160,7 +153,6 @@
         }
 
         /* OPTIONS */
-
         .option-group{
         display:flex;
         flex-wrap:wrap;
@@ -183,7 +175,6 @@
         }
 
         /* QUANTITY */
-
         .quantity-box{
         display:flex;
         align-items:center;
@@ -210,7 +201,6 @@
         }
 
         /* BUTTONS */
-
         .action-buttons{
         margin-top:30px;
         display:flex;
@@ -238,59 +228,45 @@
         }
 
         /* ================= RESPONSIVE ================= */
-
         @media (max-width:1000px){
-
         .container{
         grid-template-columns:1fr;
         gap:30px;
         }
-
         .main-image{
         max-height:400px;
         }
-
         }
 
         @media (max-width:600px){
-
         .navbar{
         padding:15px 20px;
         }
-
         .logo{
         font-size:18px;
         }
-
         .wrapper{
         margin:20px auto;
         }
-
         .container{
         padding:20px;
         }
-
         .details h2{
         font-size:24px;
         }
-
         .price{
         font-size:22px;
         }
-
         .thumbnail-row img{
         width:60px;
         height:60px;
         }
-
         .action-buttons{
         flex-direction:column;
         }
-
         .add-btn,.buy-btn{
         width:100%;
         }
-
         }
 
         .review-card{
@@ -378,7 +354,6 @@
         }
 
         /* ACCORDION STYLE (PREMIUM) */
-
         .accordion{
             margin-top:25px;
             border-top:1px solid #eee;
@@ -426,7 +401,6 @@
         }
 
         /* PRODUCT DESCRIPTION */
-
         .product-description{
             margin-top:15px;
         }
@@ -447,11 +421,12 @@
             margin-bottom:6px;
             line-height:1.5;
         }
+
         /* FULL SCREEN LOADER */
         .loader{
             position:fixed;
             inset:0;
-            background:white;
+            background:rgba(255, 255, 255, 0.85); /* Smooth matching background overlay */
             display:flex;
             justify-content:center;
             align-items:center;
@@ -474,7 +449,7 @@
 
         /* HIDE PAGE INITIALLY */
         #pageContent{
-            display:none;
+            display:block; /* Keep structure visible to populate cache instant view */
         }
 
         .share-section{
@@ -499,24 +474,19 @@
             display:flex;
             gap:14px;
             margin-top:12px;
-
-            /* hidden by default */
             max-height:0;
             overflow:hidden;
             transition:all 0.3s ease;
         }
 
-        /* ACTIVE OPEN */
         .share-section.active .share-icons{
             max-height:100px;
         }
 
-        /* PLUS ROTATE */
         .share-section.active .plus{
             transform:rotate(45deg);
         }
 
-        /* BUTTON STYLE (keep same) */
         .share-btn{
             width:42px;
             height:42px;
@@ -600,9 +570,7 @@
                     <button onclick="changeQty(1)">+</button>
                 </div>
 
-                <!-- POLICY ACCORDION -->
                 <div class="accordion">
-
                     <div class="accordion-item">
                         <div class="accordion-header" onclick="toggleAccordion(this)">
                             <span>All India Shipping</span>
@@ -626,37 +594,28 @@
                             Refund will be processed after quality check.
                         </div>
                     </div>
-
                 </div>
-                <!-- ADD THIS HTML inside .details (just ABOVE buttons) -->
 
                 <div class="share-section">
-
                     <div class="share-header" onclick="toggleShare(this)">
                         <span>Share this product</span>
                         <span class="plus">+</span>
                     </div>
 
                     <div class="share-icons">
-
                         <div class="share-btn whatsapp" onclick="shareProduct('whatsapp')">
-                            <img src="static/images/whatsapp.png">
+                            <img src="static/images/whatsapp.png" alt="WhatsApp">
                         </div>
-
                         <div class="share-btn facebook" onclick="shareProduct('facebook')">
-                            <img src="static/images/facebook.png">
+                            <img src="static/images/facebook.png" alt="Facebook">
                         </div>
-
                         <div class="share-btn instagram" onclick="shareProduct('instagram')">
-                            <img src="static/images/instagram.png">
+                            <img src="static/images/instagram.png" alt="Instagram">
                         </div>
-
                         <div class="share-btn twitter" onclick="shareProduct('twitter')">
-                            <img src="static/images/twitter.png">
+                            <img src="static/images/twitter.png" alt="Twitter">
                         </div>
-
                     </div>
-
                 </div>
 
                 <div class="action-buttons">
@@ -667,7 +626,6 @@
             </div>
         </div>
 
-        <!-- REVIEWS SECTION -->
         <div class="wrapper" id="reviewSection">
             <div style="margin-top:40px; background:white; padding:30px; border-radius:12px;">
                 <h2 style="margin-bottom:20px;">Customer Reviews</h2>
@@ -679,10 +637,9 @@
 
     </div>
 
-</div><!-- /#pageContent -->
+</div>
 
 <script>
-
     let selectedSize = null;
     let selectedColor = null;
     let productId = new URLSearchParams(window.location.search).get("id");
@@ -691,11 +648,11 @@
     let currentProductImage = null;
     let isLoading = false;
 
-
     function getToken(){
         return localStorage.getItem("userToken") || sessionStorage.getItem("userToken");
     }
 
+    style="text-transform: capitalize;"
     function isLoggedIn(){
         return !!getToken();
     }
@@ -707,37 +664,42 @@
             : `<div class="auth-btn" onclick="goToLogin()">Login</div>`;
     }
 
-    function getCacheKey(){
-        return `product_detail_${productId}`;
+    // High performance trick: Pre-populate structural view data from card instantly
+    function renderPreviewIfAvailable() {
+        try {
+            const cachedData = localStorage.getItem("preview_product_" + productId);
+            if (cachedData) {
+                const preview = JSON.parse(cachedData);
+                document.getElementById("productName").innerText = preview.name;
+                document.getElementById("price").innerText = "₹" + preview.price;
+                if (preview.image) {
+                    document.getElementById("mainImage").src = preview.image;
+                }
+                document.title = preview.name + " | Buy Online at MadHut";
+            }
+        } catch (e) {
+            console.error("Cache rendering skipped", e);
+        }
     }
 
     /* ================= LOAD ================= */
-
     async function loadProduct(){
-
         const loader = document.getElementById("loader");
-        const page = document.getElementById("pageContent");
 
         try{
-            loader.style.display = "flex";   // show loader
-            page.style.display = "none";     // hide page
+            loader.style.display = "flex";   // show clean semi-transparent overlay spinner
 
             const res = await fetch(
                 `https://madhut-qeqj.onrender.com/user/product/detail/?productId=${productId}`
             );
-
             const product = await res.json();
 
             renderProduct(product);
 
-            // ✅ AFTER FULL RENDER
+            // Cleanly remove loader only after options & layouts fully compute
             loader.style.display = "none";
-            page.style.display = "block";
-
         }catch{
             loader.style.display = "none";
-            page.style.display = "block";
-
             document.getElementById("productName").innerText = "Failed to load product";
         }
     }
@@ -756,107 +718,100 @@
     }
 
     /* ================= RENDER ================= */
-
     function renderProduct(product){
+        document.title = product.name + " | Buy Online at MadHut";
 
-    // ✅ Dynamic title
-    document.title = product.name + " | Buy Online at MadHut";
+        currentProductPrice = product.price;
+        currentProductImage = product.images?.[0];
 
-    currentProductPrice = product.price;
-    currentProductImage = product.images?.[0];
+        document.getElementById("productName").innerText = product.name;
+        document.getElementById("price").innerText = "₹" + product.price;
+        renderDescription(product.description);
 
-    document.getElementById("productName").innerText = product.name;
-    document.getElementById("price").innerText = "₹" + product.price;
-    renderDescription(product.description);
+        const seoTitle = document.getElementById("seoTitle");
+        if(seoTitle){
+            seoTitle.innerText = product.name;
+        }
 
+        const metaDesc = document.getElementById("metaDesc");
+        if(metaDesc){
+            metaDesc.setAttribute(
+                "content",
+                product.name + " at best price ₹" + product.price + ". Buy now from MadHut."
+            );
+        }
 
-    const seoTitle = document.getElementById("seoTitle");
-    if(seoTitle){
-        seoTitle.innerText = product.name;
-    }
+        const canonical = document.getElementById("canonicalUrl");
+        if(canonical){
+            canonical.href = window.location.href;
+        }
 
-    const metaDesc = document.getElementById("metaDesc");
-    if(metaDesc){
-        metaDesc.setAttribute(
-            "content",
-            product.name + " at best price ₹" + product.price + ". Buy now from MadHut."
-        );
-    }
+        const mainImg = document.getElementById("mainImage");
+        mainImg.src = currentProductImage;
+        mainImg.loading = "eager";
+        mainImg.decoding = "async";
 
-    const canonical = document.getElementById("canonicalUrl");
-    if(canonical){
-        canonical.href = window.location.href;
-    }
+        const thumbRow = document.getElementById("thumbnailRow");
+        thumbRow.innerHTML = "";
 
-    const mainImg = document.getElementById("mainImage");
-    mainImg.src = currentProductImage;
-    mainImg.loading = "eager";
-    mainImg.decoding = "async";
+        const fragment = document.createDocumentFragment();
 
-    const thumbRow = document.getElementById("thumbnailRow");
-    thumbRow.innerHTML = "";
+        product.images.forEach((img, index) => {
+            const image = document.createElement("img");
+            image.src = img;
+            image.loading = "lazy";
+            image.decoding = "async";
+            image.alt = product.name;
 
-    const fragment = document.createDocumentFragment();
+            if(index === 0) image.classList.add("active-thumb");
 
-    product.images.forEach((img, index) => {
+            image.addEventListener("mouseenter", () => {
+                mainImg.src = img;
+                currentProductImage = img;
+                thumbRow.querySelectorAll("img").forEach(t => t.classList.remove("active-thumb"));
+                image.classList.add("active-thumb");
+            });
 
-        const image = document.createElement("img");
-        image.src = img;
-        image.loading = "lazy";
-        image.decoding = "async";
+            image.addEventListener("click", () => {
+                mainImg.src = img;
+                currentProductImage = img;
+                thumbRow.querySelectorAll("img").forEach(t => t.classList.remove("active-thumb"));
+                image.classList.add("active-thumb");
+                window.scrollTo({top: 0, behavior: "smooth"});
+            });
 
-        image.alt = product.name;
-
-        if(index === 0) image.classList.add("active-thumb");
-
-        image.addEventListener("mouseenter", () => {
-            mainImg.src = img;
-            currentProductImage = img;
-            thumbRow.querySelectorAll("img").forEach(t => t.classList.remove("active-thumb"));
-            image.classList.add("active-thumb");
+            fragment.appendChild(image);
         });
 
-        image.addEventListener("click", () => {
-            mainImg.src = img;
-            currentProductImage = img;
-            thumbRow.querySelectorAll("img").forEach(t => t.classList.remove("active-thumb"));
-            image.classList.add("active-thumb");
-            window.scrollTo({top: 0, behavior: "smooth"});
-        });
+        thumbRow.appendChild(fragment);
 
-        fragment.appendChild(image);
-    });
+        createOptions("sizes", product.sizes, "size");
+        createOptions("colors", product.colors, "color");
 
-    thumbRow.appendChild(fragment);
-
-    createOptions("sizes", product.sizes, "size");
-    createOptions("colors", product.colors, "color");
-
-    const schema = document.getElementById("productSchema");
-    if(schema){
-        schema.textContent = JSON.stringify({
-            "@context": "https://schema.org/",
-            "@type": "Product",
-            "name": product.name,
-            "image": product.images,
-            "description": product.description,
-            "brand": {
-                "@type": "Brand",
-                "name": "MadHut"
-            },
-            "offers": {
-                "@type": "Offer",
-                "priceCurrency": "INR",
-                "price": product.price,
-                "availability": "https://schema.org/InStock",
-                "url": window.location.href
-            }
-        });
+        const schema = document.getElementById("productSchema");
+        if(schema){
+            schema.textContent = JSON.stringify({
+                "@context": "https://schema.org/",
+                "@type": "Product",
+                "name": product.name,
+                "image": product.images,
+                "description": product.description,
+                "brand": {
+                    "@type": "Brand",
+                    "name": "MadHut"
+                },
+                "offers": {
+                    "@type": "Offer",
+                    "priceCurrency": "INR",
+                    "price": product.price,
+                    "availability": "https://schema.org/InStock",
+                    "url": window.location.href
+                }
+            });
+        }
     }
-}
 
     /* ================= OPTIONS ================= */
-
     function createOptions(id, data, type){
         const div = document.getElementById(id);
         div.innerHTML = "";
@@ -874,14 +829,12 @@
     }
 
     /* ================= QUANTITY ================= */
-
     function changeQty(val){
         const qty = document.getElementById("quantity");
         qty.value = Math.max(1, parseInt(qty.value) + val);
     }
 
     /* ================= CART ================= */
-
     async function addToCart(){
         if(!selectedSize || !selectedColor){
             alert("Please select size and color");
@@ -922,7 +875,6 @@
                 btn.innerHTML = "Add To Cart";
                 btn.disabled = false;
             }, 1200);
-
         }catch{
             btn.innerHTML = "Add To Cart";
             btn.disabled = false;
@@ -930,7 +882,6 @@
     }
 
     /* ================= CART COUNT ================= */
-
     async function updateCartCount(){
         if(!isLoggedIn()){
             document.getElementById("cartCount").innerText = 0;
@@ -948,7 +899,6 @@
     }
 
     /* ================= BUY ================= */
-
     function buyNow(){
         if(!selectedSize || !selectedColor){
             alert("Please select size and color");
@@ -972,7 +922,6 @@
     }
 
     /* ================= NAV ================= */
-
     function goHome(){ window.history.back(); }
     function goToCart(){ window.location.href = "fetch_add_item_in_cart.html"; }
     function goToLogin(){ window.location.href = "user_login.html"; }
@@ -982,34 +931,27 @@
         sessionStorage.removeItem("userToken");
         window.location.href = "user_login.html";
     }
+
     function toggleShare(element){
         const section = element.parentElement;
         section.classList.toggle("active");
     }
-    // ADD THIS FUNCTION IN SCRIPT
 
     function shareProduct(platform){
-
         const productName = document.getElementById("productName").innerText;
         const productId = new URLSearchParams(window.location.search).get("id");
-
-        // ✅ FRONTEND SHARE LINK (IMPORTANT)
         const shareUrl = `${window.location.origin}/product_detail.html?id=${productId}`;
-
         const message = `${productName}\n${shareUrl}`;
 
         if(platform === "whatsapp"){
             window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank");
         }
-
         if(platform === "facebook"){
             window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`);
         }
-
         if(platform === "twitter"){
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(productName)}&url=${encodeURIComponent(shareUrl)}`);
         }
-
         if(platform === "instagram"){
             navigator.clipboard.writeText(shareUrl);
             alert("Link copied! Share on Instagram.");
@@ -1020,9 +962,7 @@
         document.getElementById("reviewSection").scrollIntoView({behavior: "smooth"});
     }
 
-
     /* ================= REVIEWS ================= */
-
     async function loadReviews(){
         const container = document.getElementById("reviewsContainer");
         try{
@@ -1057,14 +997,12 @@
                     </div>
                 `;
             }).join("");
-
         }catch{
             container.innerHTML = `<div class="review-empty">Failed to load reviews</div>`;
         }
     }
 
     /* ================= ACCORDION ================= */
-
     function toggleAccordion(element){
         const item = element.parentElement;
         document.querySelectorAll(".accordion-item").forEach(i => {
@@ -1074,14 +1012,13 @@
     }
 
     /* ================= INIT ================= */
-
     window.addEventListener("DOMContentLoaded", () => {
+        renderPreviewIfAvailable(); // Instantly show cached image/name/price layout without white-flashing
         updateAuthUI();
-        loadProduct();      // showPage() is called inside after data is ready
+        loadProduct();
         updateCartCount();
         loadReviews();
     });
-
 </script>
 </body>
 </html>

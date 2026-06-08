@@ -464,7 +464,8 @@
 </script>
 
 <script type="module">
-    window.addEventListener("pageshow", () => {
+    window.addEventListener("pageshow", (event) => {
+        // Fix: If user presses back button, reset loaders so cards don't stay frozen
         document.querySelectorAll(".card-image-loader").forEach(el => {
             el.style.display = "none";
         });
@@ -617,6 +618,14 @@
             const visualLoader = card.querySelector(".card-image-loader");
             visualLoader.style.display = "flex";
             card.style.pointerEvents = "none";
+
+            // Optimize experience: Store item data temporarily for instant structural rendering
+            const previewData = {
+                name: product.name,
+                price: product.price,
+                image: product.images?.[0] || ""
+            };
+            localStorage.setItem("preview_product_" + product._id, JSON.stringify(previewData));
 
             window.location.href = `product_detail.html?id=${product._id}`;
         };
