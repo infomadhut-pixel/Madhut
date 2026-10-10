@@ -217,7 +217,7 @@
     }else{
         const type = new URLSearchParams(window.location.search).get("type");
 
-        fetch(`https://madhut-qeqj.onrender.com/tshirt/variety?type=${type}`)
+        fetch(`http://127.0.0.1:5000/tshirt/variety?type=${type}`)
         .then(res => res.json())
         .then(resData => {
             data = resData;

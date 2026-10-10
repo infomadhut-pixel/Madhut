@@ -9,9 +9,8 @@ from app.extensions import socketio
 load_dotenv()
 
 app = create_app()
-
+print(app)
 socketio.init_app(app)
 
 if __name__ == "__main__":
-    print("Server Starting...")
     socketio.run(app,debug=True)

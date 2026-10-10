@@ -1,3 +1,4 @@
+from flask import jsonify
 from pymongo import MongoClient
 from datetime import datetime
 from bson import ObjectId
@@ -110,3 +111,32 @@ class OrderTshirt:
         self.collection.update_one({"order_id": order_id}, {
             "$set": {"is_reviewed": True}
         })
+
+    def find_order(self, order_id):
+        projection = {
+            "_id": 0,
+            "order_id": 1,
+            "user_email": 1,
+            "created_at": 1,
+            "shipping_address": 1,
+            "items.name": 1,
+            "items.size": 1,
+            "items.color": 1,
+            "items.quantity": 1,
+            "items.price": 1,
+            "items.subtotal": 1,
+            "total_amount": 1,
+            "payment_mode": 1,
+            "payment_status": 1,
+            "order_status": 1
+        }
+
+        order = self.collection.find_one(
+            {"order_id": order_id},
+            projection
+        )
+
+        if order is None:
+            return {"message": "Order not found"}, 404
+
+        return order

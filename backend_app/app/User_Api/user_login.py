@@ -17,6 +17,7 @@ class UserLogin(MethodView):
 
     # @limiter.limit("2 per minute")
     def post(self):
+        print("hello world")
 
         auth_header = request.headers.get("Authorization")
         if not auth_header or not auth_header.startswith("Bearer "):

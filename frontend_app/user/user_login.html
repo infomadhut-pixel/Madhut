@@ -1,258 +1,1029 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>MADHUT - User Login</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="icon" type="image/x-icon" href="static/images/mad_hut.jpeg">
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>MADHUT - User Login</title>
+
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+    >
+
+    <link
+            rel="icon"
+            type="image/x-icon"
+            href="static/images/mad_hut.jpeg"
+    >
+
 
     <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
 
-        body{
-            min-height:100vh;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            background:linear-gradient(120deg,#c7e6f2,#d6e8ff,#bff3e3);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
 
-        .login-container{
-            width:480px;
-            padding:50px;
-            border-radius:15px;
-            background:white;
-            box-shadow:0 8px 20px rgba(0,0,0,0.2);
-            text-align:center;
+
+        body {
+
+            min-height: 100vh;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background:
+                linear-gradient(
+                    120deg,
+                    #c7e6f2,
+                    #d6e8ff,
+                    #bff3e3
+                );
+
         }
 
-        h2{margin-bottom:30px;}
 
-        .input-group{margin-bottom:20px;}
+        .login-container {
 
-        .input-group input{
-            width:100%;
-            padding:12px;
-            border:none;
-            border-bottom:2px solid #333;
-            outline:none;
+            width: 480px;
+
+            padding: 50px;
+
+            border-radius: 15px;
+
+            background: white;
+
+            box-shadow:
+                0 8px 20px
+                rgba(0, 0, 0, 0.2);
+
+            text-align: center;
+
         }
 
-        .btn-login{
-            width:100%;
-            padding:12px;
-            background:#2d5c88;
-            color:white;
-            border:none;
-            border-radius:5px;
-            cursor:pointer;
+
+        h2 {
+
+            margin-bottom: 30px;
+
         }
 
-        .btn-signup{
-            width:100%;
-            padding:12px;
-            background:#2ecc71;
-            color:white;
-            border:none;
-            border-radius:5px;
-            margin-top:10px;
+
+        .input-group {
+
+            margin-bottom: 20px;
+
         }
 
-        .msg{margin-bottom:10px;font-size:14px;}
-        .error{color:red;}
-        .success{color:#2ecc71;}
-        .forgot-container{
-            margin-top:10px;
-            text-align:right;
+
+        .input-group input {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border: none;
+
+            border-bottom: 2px solid #333;
+
+            outline: none;
+
+            font-size: 15px;
+
         }
 
-        .forgot-link{
-            color:#2d5c88;
-            font-size:14px;
-            cursor:pointer;
-            transition:0.3s;
+
+        .input-group input:focus {
+
+            border-bottom-color: #2d5c88;
+
         }
 
-        .forgot-link:hover{
-            color:#f39c12;
-            text-decoration:underline;
+
+        .btn-login {
+
+            width: 100%;
+
+            padding: 12px;
+
+            background: #2d5c88;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
         }
+
+
+        .btn-login:hover {
+
+            background: #244c73;
+
+        }
+
+
+        .btn-login:disabled {
+
+            background: #8da4b8;
+
+            cursor: not-allowed;
+
+        }
+
+
+        .btn-signup {
+
+            width: 100%;
+
+            padding: 12px;
+
+            background: #2ecc71;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 5px;
+
+            margin-top: 10px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+        }
+
+
+        .btn-signup:hover {
+
+            background: #27ae60;
+
+        }
+
+
+        .msg {
+
+            margin-bottom: 10px;
+
+            font-size: 14px;
+
+            min-height: 20px;
+
+        }
+
+
+        .error {
+
+            color: red;
+
+        }
+
+
+        .success {
+
+            color: #2ecc71;
+
+        }
+
+
+        .forgot-container {
+
+            margin-top: 10px;
+
+            text-align: right;
+
+        }
+
+
+        .forgot-link {
+
+            color: #2d5c88;
+
+            font-size: 14px;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+
+        }
+
+
+        .forgot-link:hover {
+
+            color: #f39c12;
+
+            text-decoration: underline;
+
+        }
+
     </style>
+
 </head>
+
 
 <body>
 
+
 <div class="login-container">
+
     <h2>User Login</h2>
 
-    <div id="msg" class="msg"></div>
+
+    <div
+            id="msg"
+            class="msg"
+    ></div>
+
 
     <div class="input-group">
-        <input type="email" id="email" placeholder="Email">
+
+        <input
+                type="email"
+                id="email"
+                placeholder="Email"
+                autocomplete="email"
+        >
+
     </div>
 
+
     <div class="input-group">
-        <input type="password" id="password" placeholder="Password">
+
+        <input
+                type="password"
+                id="password"
+                placeholder="Password"
+                autocomplete="current-password"
+        >
+
     </div>
+
+
     <br>
-    <button class="btn-login" id="loginBtn">LOGIN</button>
-    <button class="btn-signup" onclick="goToSignup()">SIGN UP</button>
+
+
+    <button
+            class="btn-login"
+            id="loginBtn"
+            type="button"
+    >
+        LOGIN
+    </button>
+
+
+    <button
+            class="btn-signup"
+            id="signupBtn"
+            type="button"
+    >
+        SIGN UP
+    </button>
+
+
     <div class="forgot-container">
-        <span onclick="forgotPassword()" class="forgot-link">
+
+        <span
+                id="forgotPasswordBtn"
+                class="forgot-link"
+        >
             Forgot Password?
         </span>
+
     </div>
+
 </div>
 
+
 <script type="module">
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+    // =========================================================
+    // FIREBASE IMPORTS
+    // =========================================================
+
+    import {
+
+        initializeApp
+
+    } from
+        "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+
+    import {
+
+        getAuth,
+
+        signInWithEmailAndPassword,
+
+        signOut,
+
+        sendPasswordResetEmail
+
+    } from
+        "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+
+    // =========================================================
+    // FIREBASE CONFIGURATION
+    // =========================================================
 
     const firebaseConfig = {
-        apiKey: "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
-        authDomain: "MADHUT-97c1e.firebaseapp.com",
-        projectId: "MADHUT-97c1e",
-        appId: "1:443781397252:web:64f178cd71d0993cc0ae51"
+
+        apiKey:
+            "AIzaSyAIqeoNVZaz6XXJRT71ODhreTR-WsmVyXY",
+
+        authDomain:
+            "MADHUT-97c1e.firebaseapp.com",
+
+        projectId:
+            "MADHUT-97c1e",
+
+        appId:
+            "1:443781397252:web:64f178cd71d0993cc0ae51"
+
     };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
 
-    const API_URL = "https://madhut-qeqj.onrender.com/user/login";
 
-    const msgDiv = document.getElementById("msg");
+    // =========================================================
+    // INITIALIZE FIREBASE
+    // =========================================================
 
-    let checked = false;
+    const app =
+        initializeApp(
+            firebaseConfig
+        );
 
-    onAuthStateChanged(auth, (user) => {
 
-        if (!checked) {
-            checked = true;
+    const auth =
+        getAuth(app);
 
-            if (user) {
-                window.location.href = "index.html";
-            }
+
+
+    // =========================================================
+    // BACKEND API
+    // =========================================================
+
+    const API_URL =
+        "http://127.0.0.1:5000/user/login";
+
+
+
+    // =========================================================
+    // DOM ELEMENTS
+    // =========================================================
+
+    const emailInput =
+        document.getElementById(
+            "email"
+        );
+
+
+    const passwordInput =
+        document.getElementById(
+            "password"
+        );
+
+
+    const loginBtn =
+        document.getElementById(
+            "loginBtn"
+        );
+
+
+    const signupBtn =
+        document.getElementById(
+            "signupBtn"
+        );
+
+
+    const forgotPasswordBtn =
+        document.getElementById(
+            "forgotPasswordBtn"
+        );
+
+
+    const msgDiv =
+        document.getElementById(
+            "msg"
+        );
+
+
+
+    // =========================================================
+    // LOGIN STATE
+    // =========================================================
+
+    let loginInProgress = false;
+
+
+
+    // =========================================================
+    // MESSAGE HELPER
+    // =========================================================
+
+    function showMessage(
+        message,
+        type = ""
+    ) {
+
+        msgDiv.innerText =
+            message;
+
+        msgDiv.className =
+            "msg";
+
+
+        if (type) {
+
+            msgDiv.classList.add(
+                type
+            );
+
         }
-    });
 
-    async function loginUser(){
+    }
 
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
 
-        msgDiv.innerText = "";
-        msgDiv.className = "msg";
 
-        if(!email || !password){
-            msgDiv.innerText = "Fill all fields";
-            msgDiv.classList.add("error");
+    // =========================================================
+    // LOGIN BUTTON STATE
+    // =========================================================
+
+    function setLoginLoading(
+        loading
+    ) {
+
+        loginInProgress =
+            loading;
+
+
+        loginBtn.disabled =
+            loading;
+
+
+        if (loading) {
+
+            loginBtn.innerText =
+                "LOGGING IN...";
+
+        } else {
+
+            loginBtn.innerText =
+                "LOGIN";
+
+        }
+
+    }
+
+
+
+    // =========================================================
+    // LOGIN
+    // =========================================================
+
+    async function loginUser() {
+
+
+        // Prevent double click / double Enter.
+        if (loginInProgress) {
+
             return;
+
         }
 
-        try{
 
-            const userCredential = await signInWithEmailAndPassword(auth,email,password);
-            const user = userCredential.user;
+        const email =
+            emailInput.value
+                .trim();
 
-            const token = await user.getIdToken();
 
-            const response = await fetch(API_URL,{
-                method:"POST",
-                headers:{
-                    "Authorization":"Bearer "+token,
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify({ email:user.email })
-            });
+        const password =
+            passwordInput.value;
 
-            const data = await response.json();
 
-            if(data.status === false){
+        showMessage(
+            ""
+        );
 
-                await signOut(auth);
 
-                msgDiv.innerText = data.message;
-                msgDiv.classList.add("error");
+        // -----------------------------------------------------
+        // VALIDATION
+        // -----------------------------------------------------
+
+        if (!email || !password) {
+
+            showMessage(
+                "Fill all fields",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        setLoginLoading(
+            true
+        );
+
+
+        try {
+
+
+            // =================================================
+            // STEP 1
+            // FIREBASE LOGIN
+            // =================================================
+
+            console.log(
+                "Firebase login started..."
+            );
+
+
+            const userCredential =
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+            const user =
+                userCredential.user;
+
+
+            console.log(
+                "Firebase login successful:",
+                user.email
+            );
+
+
+
+            // =================================================
+            // STEP 2
+            // GET FRESH FIREBASE TOKEN
+            // =================================================
+
+            const token =
+                await user.getIdToken(
+                    true
+                );
+
+
+            console.log(
+                "Firebase token received."
+            );
+
+
+
+            // =================================================
+            // STEP 3
+            // BACKEND LOGIN VALIDATION
+            // =================================================
+
+            const response =
+                await fetch(
+                    API_URL,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Authorization":
+                                "Bearer " + token,
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify({
+                                email:
+                                    user.email
+                            })
+
+                    }
+                );
+
+
+            console.log(
+                "Backend login status:",
+                response.status
+            );
+
+
+
+            // =================================================
+            // READ BACKEND RESPONSE
+            // =================================================
+
+            let data = {};
+
+
+            try {
+
+                data =
+                    await response.json();
+
+            } catch (jsonError) {
+
+                console.error(
+                    "Backend returned invalid JSON:",
+                    jsonError
+                );
+
+            }
+
+
+
+            // =================================================
+            // BACKEND REQUEST FAILED
+            // =================================================
+
+            if (!response.ok) {
+
+                // Firebase user was authenticated,
+                // but backend rejected the login.
+                await signOut(
+                    auth
+                );
+
+
+                throw new Error(
+                    data.message ||
+                    `Backend login failed (${response.status})`
+                );
+
+            }
+
+
+
+            // =================================================
+            // BACKEND APPLICATION-LEVEL FAILURE
+            // =================================================
+
+            if (
+                data.status === false
+            ) {
+
+                await signOut(
+                    auth
+                );
+
+
+                showMessage(
+                    data.message ||
+                    "Login failed.",
+                    "error"
+                );
+
+
+                setLoginLoading(
+                    false
+                );
+
+
                 return;
+
             }
 
-            msgDiv.innerText = "Login successful!";
-            msgDiv.classList.add("success");
 
-            sessionStorage.setItem("userToken",token);
 
-            setTimeout(()=>{
-                window.location.href = "index.html";
-            },1000);
+            // =================================================
+            // LOGIN COMPLETELY SUCCESSFUL
+            // =================================================
 
-        }catch(error){
+            sessionStorage.setItem(
+                "userToken",
+                token
+            );
 
-            console.log(error); // debug
 
-            msgDiv.classList.add("error");
+            sessionStorage.setItem(
+                "userEmail",
+                user.email
+            );
 
-            switch(error.code){
+
+            showMessage(
+                "Login successful!",
+                "success"
+            );
+
+
+            console.log(
+                "Login completely successful."
+            );
+
+
+            /*
+            ----------------------------------------------------
+            IMPORTANT:
+
+            There is ONLY ONE redirect.
+
+            We do NOT use onAuthStateChanged()
+            to redirect anymore.
+
+            Firebase authentication has already completed,
+            backend validation has already completed,
+            and token has already been stored.
+            ----------------------------------------------------
+            */
+
+            window.location.replace(
+                "index.html"
+            );
+
+
+        } catch (error) {
+
+
+            console.error(
+                "Login error:",
+                error
+            );
+
+
+            // -------------------------------------------------
+            // FIREBASE AUTH ERRORS
+            // -------------------------------------------------
+
+            switch (
+                error.code
+            ) {
+
+
                 case "auth/user-not-found":
-                    msgDiv.innerText="User not found";
+
+                    showMessage(
+                        "User not found",
+                        "error"
+                    );
+
                     break;
+
+
                 case "auth/wrong-password":
-                    msgDiv.innerText="Wrong password";
+
+                    showMessage(
+                        "Wrong password",
+                        "error"
+                    );
+
                     break;
-                default:
-                    msgDiv.innerText="Login failed";
-            }
-        }
-    }
 
-    document.getElementById("loginBtn").addEventListener("click",loginUser);
 
-    document.addEventListener("keydown",(e)=>{
-        if(e.key==="Enter") loginUser();
-    });
+                case "auth/invalid-credential":
 
-    window.goToSignup=function(){
-        window.location.href="user_signup.html";
-    };
+                    showMessage(
+                        "Invalid email or password",
+                        "error"
+                    );
 
-    window.forgotPassword = async function(){
-
-        const email = document.getElementById("email").value;
-
-        msgDiv.innerText = "";
-        msgDiv.className = "msg";
-
-        if(!email){
-            msgDiv.innerText = "Enter your email first";
-            msgDiv.classList.add("error");
-            return;
-        }
-
-        try{
-
-            await sendPasswordResetEmail(auth, email);
-
-            msgDiv.innerText = "Password reset link sent to your email";
-            msgDiv.classList.add("success");
-
-        }catch(error){
-
-            msgDiv.classList.add("error");
-
-            switch(error.code){
-                case "auth/user-not-found":
-                    msgDiv.innerText = "No user found with this email";
                     break;
+
+
                 case "auth/invalid-email":
-                    msgDiv.innerText = "Invalid email format";
+
+                    showMessage(
+                        "Invalid email format",
+                        "error"
+                    );
+
                     break;
+
+
+                case "auth/user-disabled":
+
+                    showMessage(
+                        "This account has been disabled.",
+                        "error"
+                    );
+
+                    break;
+
+
+                case "auth/too-many-requests":
+
+                    showMessage(
+                        "Too many login attempts. Please try again later.",
+                        "error"
+                    );
+
+                    break;
+
+
+                case "auth/network-request-failed":
+
+                    showMessage(
+                        "Network error. Check your internet connection.",
+                        "error"
+                    );
+
+                    break;
+
+
                 default:
-                    msgDiv.innerText = "Failed to send reset email";
+
+                    showMessage(
+                        error.message ||
+                        "Login failed.",
+                        "error"
+                    );
+
+                    break;
+
             }
+
+
+            setLoginLoading(
+                false
+            );
+
         }
+
     }
+
+
+
+    // =========================================================
+    // LOGIN BUTTON
+    // =========================================================
+
+    loginBtn.addEventListener(
+        "click",
+        loginUser
+    );
+
+
+
+    // =========================================================
+    // ENTER KEY
+    // =========================================================
+
+    document.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
+
+                loginUser();
+
+            }
+
+        }
+    );
+
+
+
+    // =========================================================
+    // SIGN UP
+    // =========================================================
+
+    signupBtn.addEventListener(
+        "click",
+        () => {
+
+            window.location.href =
+                "user_signup.html";
+
+        }
+    );
+
+
+
+    // =========================================================
+    // FORGOT PASSWORD
+    // =========================================================
+
+    forgotPasswordBtn.addEventListener(
+        "click",
+        async () => {
+
+
+            const email =
+                emailInput.value
+                    .trim();
+
+
+            showMessage(
+                ""
+            );
+
+
+            if (!email) {
+
+                showMessage(
+                    "Enter your email first",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+
+                await sendPasswordResetEmail(
+                    auth,
+                    email
+                );
+
+
+                showMessage(
+                    "Password reset link sent to your email",
+                    "success"
+                );
+
+
+            } catch (error) {
+
+
+                console.error(
+                    "Password reset error:",
+                    error
+                );
+
+
+                switch (
+                    error.code
+                ) {
+
+
+                    case "auth/user-not-found":
+
+                        showMessage(
+                            "No user found with this email",
+                            "error"
+                        );
+
+                        break;
+
+
+                    case "auth/invalid-email":
+
+                        showMessage(
+                            "Invalid email format",
+                            "error"
+                        );
+
+                        break;
+
+
+                    case "auth/too-many-requests":
+
+                        showMessage(
+                            "Too many requests. Please try again later.",
+                            "error"
+                        );
+
+                        break;
+
+
+                    default:
+
+                        showMessage(
+                            "Failed to send reset email",
+                            "error"
+                        );
+
+                        break;
+
+                }
+
+            }
+
+        }
+    );
+
 
 </script>
 
+
 </body>
+
 </html>

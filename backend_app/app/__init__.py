@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from .User_Api import register_user_blueprint
 from .Admin_Api import register_admin_blueprint
+from .invoice import user_invoice_blueprint
 from .config import configure_app
 from .extensions import api, jwt, mail
 from .Database.User.user_data import UserDatabase
@@ -72,5 +73,6 @@ def create_app():
 
     register_user_blueprint(api)
     register_admin_blueprint(api)
+    user_invoice_blueprint(api)
 
     return app

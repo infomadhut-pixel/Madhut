@@ -682,7 +682,6 @@
         }
     }
 
-    /* ================= LOAD ================= */
     async function loadProduct(){
         const loader = document.getElementById("loader");
 
@@ -690,7 +689,7 @@
             loader.style.display = "flex";   // show clean semi-transparent overlay spinner
 
             const res = await fetch(
-                `https://madhut-qeqj.onrender.com/user/product/detail/?productId=${productId}`
+                `http://127.0.0.1:5000/user/product/detail/?productId=${productId}`
             );
             const product = await res.json();
 
@@ -717,7 +716,6 @@
             .join("");
     }
 
-    /* ================= RENDER ================= */
     function renderProduct(product){
         document.title = product.name + " | Buy Online at MadHut";
 
@@ -811,7 +809,6 @@
         }
     }
 
-    /* ================= OPTIONS ================= */
     function createOptions(id, data, type){
         const div = document.getElementById(id);
         div.innerHTML = "";
@@ -828,13 +825,12 @@
         });
     }
 
-    /* ================= QUANTITY ================= */
+
     function changeQty(val){
         const qty = document.getElementById("quantity");
         qty.value = Math.max(1, parseInt(qty.value) + val);
     }
 
-    /* ================= CART ================= */
     async function addToCart(){
         if(!selectedSize || !selectedColor){
             alert("Please select size and color");
@@ -859,7 +855,7 @@
         };
 
         try{
-            await fetch("https://madhut-qeqj.onrender.com/user/add/item/cart", {
+            await fetch("http://127.0.0.1:5000/user/add/item/cart", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -881,14 +877,13 @@
         }
     }
 
-    /* ================= CART COUNT ================= */
     async function updateCartCount(){
         if(!isLoggedIn()){
             document.getElementById("cartCount").innerText = 0;
             return;
         }
         try{
-            const res = await fetch("https://madhut-qeqj.onrender.com/fetch/total/item/in/cart", {
+            const res = await fetch("http://127.0.0.1:5000/fetch/total/item/in/cart", {
                 headers:{ "Authorization": "Bearer " + getToken() }
             });
             const data = await res.json();
@@ -898,7 +893,6 @@
         }
     }
 
-    /* ================= BUY ================= */
     function buyNow(){
         if(!selectedSize || !selectedColor){
             alert("Please select size and color");
@@ -921,7 +915,6 @@
         window.location.href = "check_out.html";
     }
 
-    /* ================= NAV ================= */
     function goHome(){ window.history.back(); }
     function goToCart(){ window.location.href = "fetch_add_item_in_cart.html"; }
     function goToLogin(){ window.location.href = "user_login.html"; }
@@ -962,12 +955,11 @@
         document.getElementById("reviewSection").scrollIntoView({behavior: "smooth"});
     }
 
-    /* ================= REVIEWS ================= */
     async function loadReviews(){
         const container = document.getElementById("reviewsContainer");
         try{
             const res = await fetch(
-                `https://madhut-qeqj.onrender.com/get/all/reviews?product_id=${productId}`,
+                `http://127.0.0.1:5000/get/all/reviews?product_id=${productId}`,
                 { method: "POST", headers:{ "Authorization": "Bearer " + getToken() } }
             );
             const reviews = await res.json();
@@ -1002,7 +994,7 @@
         }
     }
 
-    /* ================= ACCORDION ================= */
+
     function toggleAccordion(element){
         const item = element.parentElement;
         document.querySelectorAll(".accordion-item").forEach(i => {
@@ -1011,7 +1003,7 @@
         item.classList.toggle("active");
     }
 
-    /* ================= INIT ================= */
+
     window.addEventListener("DOMContentLoaded", () => {
         renderPreviewIfAvailable(); // Instantly show cached image/name/price layout without white-flashing
         updateAuthUI();
